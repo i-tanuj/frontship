@@ -39,7 +39,7 @@ function ForgetPassword() {
         if (response.ok) {
           // Password changed successfully
           // Reset the form fields
-          window.location.href = "/login";
+          window.location.href = "/";
           setUsername('');
           setNewPassword('');
           setConfirmPassword('');
