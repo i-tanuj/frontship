@@ -62,6 +62,7 @@ function Navbar() {
 					      <span class="navbar-toggler-icon"></span>
 					    </button>
 					</div>
+          
 				    <div class="" id="navbarScroll">
 				    	<div class="d-flex menu-container">
 					    	<div class="avtar">
@@ -71,13 +72,22 @@ function Navbar() {
 
 
 				    		<div class="notification">
-                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Notification">
+
+                  <span className='tooltip-holder'>
+                  <img className='Notification-img' src="/Assets/Navbar/bell.png"/>
+				    			   
+                  </span>
+                  
+				    			<ChangePass/>
+                  
+                {/* <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Notification">
 				    			<img src="/Assets/Navbar/bell.png"/>
 
-                </span>
-                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Edit Password">
+                </span> */}
+                {/* <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Edit Password">
 				    			<ChangePass/>
-                  </span>
+                  </span> */}
+
 				    			
                                 <Nav>
           <div className='container d-flex justify-content-between'>
@@ -98,6 +108,7 @@ function Navbar() {
 			</div>
 		</nav>
 	</hrader>
+
     </div>
   )
 }

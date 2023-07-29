@@ -38,62 +38,19 @@ function TransferMoneyToDriver() {
   const handleDriverChange = (event) => {
     setSelectedDriver(event.target.value);
   };
-
-
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const dataToSubmit = {
-  //     full_name,
-  //     shipment_id,
-  //     amount
-  //     //   date:fullDate,
-  //   };
-
-  //   if (
-  //     full_name.length == 0 ||
-  //     shipment_id.length == 0 ||
-  //     amount.length == 0
-  //   ) {
-  //     setError(true);
-  //     setSuccbtn(
-  //       <span className="" style={{ color: "green" }}>
-  //         Submit Succesfully
-  //       </span>
-  //     );
-  //   }
-  //   if (full_name&&shipment_id&&amount) {
-  //     console.log('erro');
-  //     fetch(
-  //       "http://localhost:5000/api/payment",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(dataToSubmit),
-  //       }
-  //       )
-  //       .then((res) => res.json())
-  //       .then((res) => {
-  //         console.log(res, dataToSubmit);
-  //       });
-  //   } else {
-  //     setSuccbtn(
-  //       <span className="" style={{ color: "red" }}>
-  //         Please fill all the field
-  //       </span>
-  //     );
-  //   }
-  // };
-
-
+  const currentDate = new Date().toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    hour12: true,
+  });
+  // const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
   const handleSubmit = async (e) => {
     e.preventDefault();
     const dataToSubmit = {
       full_name: selectedDriver,
       shipment_id,
       amount,
+      DateAndTime: currentDate, // Adding current date and time to the data object
+
     };
 
     if (selectedDriver === '' || shipment_id === '' || amount === '') {
@@ -102,12 +59,11 @@ function TransferMoneyToDriver() {
     } else {
       setError(false);
       setSuccbtn('');
-      axios.post('http://localhost:5000/api/payment', dataToSubmit)
+      axios.post('https://shippment-dfx.onrender.com/api/payment', dataToSubmit)
         .then((response) => {
           console.log(response.data);
           setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
     setModalIsOpen(false);
-
         })
         .catch((error) => {
           console.error('Error submitting data:', error);

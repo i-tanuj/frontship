@@ -32,14 +32,22 @@ async function ContactData(getContact){
   })
 }
 //************************************************************** */
-async function addBatch(name,email,address,setModalIsOpen,getBatchList){
-  if (name != "" && email != "" && address!= "" ) {
+
+const currentDate = new Date().toLocaleString('en-IN', {
+  timeZone: 'Asia/Kolkata',
+  hour12: true,
+});
+async function addBatch(name,email,address,phone,setModalIsOpen,getBatchList){
+  if (name != "" && email != "" && address!= "") {
     await axios.post('https://shippment-dfx.onrender.com/api/addhelper',
     {
         inst_hash: localStorage.getItem('name'),
         name: name,
        email: email,
+       phone:phone,
        address:address,
+      DateAndTime: currentDate, // Adding current date and time to the data object
+
     },
     {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}    
     )
@@ -98,6 +106,7 @@ function CreateHelper() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [address, setAddress] = useState("");
+    const [phone, setPhone] = useState("");
     const [assigndriver, setAssigndriver] = useState("");
     const [batchList,getBatchList] = useState([]);
 
@@ -146,7 +155,7 @@ function CreateHelper() {
                     
                     <FormGroup>
                         <label class="form-label">Helper’s Contact Number<span class="stra-icon">*</span></label>
-                        <Input type="number" name="email" id="email" placeholder="Helper’s Contact Number*" onBlur={(e) => setEmail(e.target.value)}/>
+                        <Input type="number" name="phone" id="phone" placeholder="Helper’s Contact Number*" onBlur={(e) => setPhone(e.target.value)}/>
                     </FormGroup>
                     </div>
                     <div className='col-6'>
@@ -157,7 +166,7 @@ function CreateHelper() {
                     </div>
                     </div>
                     <p id="validate-batch" style={{ color: 'red' }}></p>
-                    <Button variant="contained" className='main_botton submit-btn'  onClick={() => addBatch(name,email,address,setModalIsOpen,getBatchList)}>Create Helper</Button>
+                    <Button variant="contained" className='main_botton submit-btn'  onClick={() => addBatch(name,email,address,phone,setModalIsOpen,getBatchList)}>Create Helper</Button>
 
                 </Form>
             </Modal>

@@ -3,7 +3,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import axios from 'axios';
 import '../../css/dispatchlist.css'
 import Navbar from '../Navbar'
-import CreateHelper from '../CreateShipment/CreateHelper'
+
 
 import {
   Nav,
@@ -21,7 +21,7 @@ import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
 
-  await axios.get('http://localhost:5000/api/getpayment',
+  await axios.get('https://shippment-dfx.onrender.com/api/dispatcher',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -34,15 +34,15 @@ async function ContactData(getContact){
 }
 //************************************************************** */
 
-async function updateBatch(id,name,email,phone,address,setModalIsOpenEdit,getBatchList){
-  if (name != "" && email != "" && phone != "" && address != "") {
-      await axios.post('https://shippment-dfx.onrender.com/api/updatehelper',
+async function updateBatch(id,name,email,phone,setModalIsOpenEdit,getBatchList){
+  if (name != "" && email != "" && phone != "") {
+      await axios.post('https://shippment-dfx.onrender.com/api/updatedispatcher',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       name: name,
       email: email,
       phone: phone,
-      address: address
+  
       },
       {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
   )
@@ -57,7 +57,7 @@ async function updateBatch(id,name,email,phone,address,setModalIsOpenEdit,getBat
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippment-dfx.onrender.com/api/delhelper',
+  const results = await axios.post('https://shippment-dfx.onrender.com/api/deldispatcher',
       {
           id:ids
       },
@@ -70,7 +70,7 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
   }
 
 
-function PaymentRecords() {
+function DelaydShip() {
     const [rowCount, setRowCount] = useState(0);
     const [inquiries, setInquiries] = useState( );
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -78,7 +78,6 @@ function PaymentRecords() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
     const [batchList,getBatchList] = useState([]);
 
 
@@ -102,7 +101,7 @@ function PaymentRecords() {
     console.warn(contact)
 
     function handleInput(e){
-        setName(e.target.value)
+      setName(e.target.value)
   }
 
   return (
@@ -111,11 +110,11 @@ function PaymentRecords() {
 <Modal isOpen={modalIsOpenEdit} className='main_modal_body dispatcher-list-form'>
                 <ModalBody className='modal_body'>
                 <AiOutlineClose className='main_AiOutlineClose close-icon' onClick={()=>setModalIsOpenEdit(false)}/>
-                   <h5 className='main_h5'>Payment Records List</h5>
+                   <h5 className='main_h5'>Edit Dispatcher List</h5>
                 </ModalBody>
                 <Form className='form_main '>
                     <FormGroup>
-                        <Input type="text" name="name" id="name" placeholder="Edit Name"   onBlur={(e) => handleInput(e)}/>
+                        <Input type="text" name="name" id="name" placeholder="Edit Name" onBlur={(e) => handleInput(e)}/>
                     </FormGroup>
                     <FormGroup>
                         <Input type="email" name="email" id="email" placeholder="Edit Email" onBlur={(e) => setEmail(e.target.value)}/>
@@ -123,18 +122,15 @@ function PaymentRecords() {
                     <FormGroup>
                         <Input type="number" name="phone" id="phone" placeholder="Edit Phone Number " onBlur={(e) => {setPhone(e.target.value); console.log(e.target.value);}} />
                     </FormGroup>
-                    <FormGroup>
-                        <Input type="text" name="address" id="address" placeholder="Edit Address " onBlur={(e) => {setAddress(e.target.value); console.log(e.target.value);}} />
-                    </FormGroup>
                     <p id="edit-validate-batch" style={{ color: 'red' }}></p>
-                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => updateBatch(ids,name,email,phone,address,setModalIsOpenEdit,getBatchList)}>Edit Driver List</Button>
+                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => updateBatch(ids,name,email,phone,setModalIsOpenEdit,getBatchList)}>Edit Dispatcher List</Button>
                 </Form>
             </Modal>
 
- <Modal isOpen={modalIsOpenDelete} className="modal_body-delete">
-          <ModalBody className="dispatcher-list-form">
+<Modal isOpen={modalIsOpenDelete} className="modal_body-delete">
+          <ModalBody className="">
             <AiOutlineClose
-              className="main_AiOutlineClose close-icon"
+              className="main_AiOutlineClose"
               onClick={() => setModalIsOpenDelete(false)}
               color="black"
             />
@@ -158,7 +154,7 @@ function PaymentRecords() {
               </Button>
               &nbsp;
               <Button outline onClick={() => setModalIsOpenDelete(false)}>
-              Cancel
+                Cancle
               </Button>
             </div>
           </Form>
@@ -167,65 +163,51 @@ function PaymentRecords() {
     
   
   
-    <div class="rightdiv px-3 py-5">
-        <div class="container-fluid">
+    <div class="rightdiv px-3 py-2">
+        <div class="container-fluid table-header-title">
             <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser">
-                <h2>Payment Records List</h2>
-    
-        {/* <p>May 22, 2023</p>  */}
-                </div>
-                <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
-                    <div class="input-group input-group-lg">
-                    <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
-                 <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search Here" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
-                      </div>
-                </div>
-             
-            </div>
-          
-            <div className="row mt-3">
-              <div className='col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 '>
-              <Navbar/>
-
-                    </div>
-                <div class="col view-table-new">
-                <div className='driver-view-list'>
-                
-                      <div className=''>
-                        <h2>Payment Records</h2>
-                      </div>
-                      <div class="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+              <div class="w-50 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser">
+                <h2>Shipment Record</h2>
+              </div>
+              <div class="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                   <div class="input-group input-group-lg">
                     <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
                     <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search Here" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
                   </div>
               </div>
-                      <div className='d-flex'>
-                        <div className='add-new-form-btn'>
-                            {/* <CreateHelper/> */}
-                        </div>
-                        <div className='Back-btn-01'><a href='#'>Back</a></div>
-                      </div>
+             
+            </div>
+          
+            <div className="row pt-0">
+              <div className='col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 '>
+              <Navbar/>
                     </div>
-                    
-                    <table class="table align-middle bg-white rounded m-0" id="table-to-xls">
+                <div class="col p-0 shipment-view-table">
+                <div className='driver-view-list'>
+                
+                <div className=''>
+                  <h2> Delayed Shipment List</h2>
+                </div>
+                <div class="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+                    <div class="input-group input-group-lg">
+                      <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
+                      <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search Here" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
+                    </div>
+                </div>
+                <div className='d-flex'>
+                  <div className='Back-btn-01'><a href='#'>Back</a></div>
+                </div>
+              </div>
+              <table class="table align-middle bg-white rounded m-0" id="table-to-xls">
                         <thead class="tableheading">
                           <tr>
                             <th scope="col" class="borderre">No.</th>
-                            <th scope="col">Driver Name</th>
-
-                            {/* <th scope="col">Shipment Id</th>
-                            <th scope="col" class="borderre1">Amount</th>
-                            <th scope="col" class="borderre1">Amount Status</th>
-                            <th scope="col">Payment Details</th> */}
-                           
-
-                            <th scope="col">Shipment ID</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Amount Status</th>
-                            <th scope="col">Payment Details</th>
-                            
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">Order status</th>
+                            <th scope="col">Phone no.</th>
+                            <th scope="col">Pickup Location</th>
+                            <th scope="col">Drop Location</th>
+                            <th scope="col" class="borderre1">Action</th>
                           </tr>
                         </thead>
                       <tbody class="tbody">
@@ -236,20 +218,18 @@ function PaymentRecords() {
           }).map((item,i)=>
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
-            <td>{item.full_name}</td>
-            <td>{item.shipment_id}</td>
+            {/* <td>{item.id}</td> */}
+            <td>{item.name}</td>
+            <td><span className='ship-delayed'>Delayed</span></td>
+            <td className="dis-email text-left">{item.email}</td>
             
-            <td>{item.amount}</td>
-            <td>
-              <div className='Successful-py-01'>{item.status}</div></td>
-            <td>{item.DateAndTime}</td>
-            
+            <td>{item.phone}</td>
+            <td>{item.phone}</td>
             <td>
             {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
-            {/* <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>
-              <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button> */}
-              {/* <button className='btn bt Successful-py' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}>Successful</button> */}
-              
+            <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>
+            <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button>
+            <a href='/view'><button className='btn bt' ><i class="bi bi-eye"></i></button></a>
             </td>
             
           </tr>
@@ -299,6 +279,6 @@ function PaymentRecords() {
   }
 }
 
-export default PaymentRecords;
+export default DelaydShip;
 
 

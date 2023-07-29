@@ -159,7 +159,7 @@ function DriverList() {
               </Button>
               &nbsp;
               <Button outline onClick={() => setModalIsOpenDelete(false)}>
-                Cancle
+              Cancel
               </Button>
             </div>
           </Form>
@@ -192,24 +192,33 @@ function DriverList() {
                     </div>
                 <div class="col view-table-new">
                   <div className='driver-view-list'>
-                    <div className=''>
-                      <h2>All Driver List</h2>
+                      <div className=''>
+                        <h2>All Driver List</h2>
+                      </div>
+                      <div class="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+                          <div class="input-group input-group-lg">
+                            <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
+                            <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search Here" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
+                          </div>
+                      </div>
+                      <div className='d-flex'>
+                        <div className='add-new-form-btn'>
+                        <CreateDriver/>  
+                        </div>
+                        <div className='Back-btn-01'><a href='#'>Back</a></div>
+                      </div>
                     </div>
-                    <div className='add-new-form-btn'>
-                      <CreateDriver/>            
-                    </div>
-                    
-                  </div>
                     <table class="table align-middle bg-white rounded m-0" id="table-to-xls">
                         <thead class="tableheading">
                           <tr>
+                            <th scope="col" class="borderre">No.</th>
                             <th scope="col" class="borderre">Driver ID</th>
                             <th scope="col">Driver Name</th>
                             <th scope="col">Email</th>
                             <th scope="col">Phone number</th>
                             <th scope="col">Address</th>
                             <th scope="col">password</th>
-                            <th scope="col">Total Driver</th>
+                            <th scope="col">Total Orders</th>
                             
                             <th scope="col" class="borderre1">Action</th>
                           </tr>
@@ -223,6 +232,7 @@ function DriverList() {
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             {/* <td>{item.id}</td> */}
+            <td>{item.id}</td>
             <td>{item.full_name}</td>
             <td className="dis-email text-left">{item.email}</td>
             <td>{item.phone}</td>

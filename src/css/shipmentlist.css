@@ -20,7 +20,7 @@
 .close-icon {
     position: absolute;
     right: 30;
-    top: 20px;
+    top: 0;
     font-size: 20px;
     cursor: pointer;
     z-index: 99;

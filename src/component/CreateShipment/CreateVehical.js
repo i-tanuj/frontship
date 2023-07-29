@@ -67,7 +67,12 @@ async function updateBatch(id,vehicalplate,helper1, helper2,assigndriver,setModa
       {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
   )
   ContactData(getBatchList)
+  
+  
   setModalIsOpenEdit(false)
+
+
+
 } else {
   document.getElementById("edit-validate-batch").innerHTML =
     "*Please fill required field!";

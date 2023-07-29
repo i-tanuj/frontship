@@ -6,7 +6,9 @@ import { Nav, NavItem, Form, Button, Modal, ModalBody } from "reactstrap";
 import { Link } from "react-router-dom";
 
 function CreateDriver() {
-    const [modalIsOpen, setModalIsOpen] = useState(false);
+    // const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
 
     const [full_name, setFullname] = useState("");
     const [email, setEmail] = useState("");
@@ -16,6 +18,8 @@ function CreateDriver() {
     const [error, setError] = useState(false);
     const [modalPrivacy, setModalPrivacy] = useState(false);
     const [succbtn, setSuccbtn] = useState();
+    const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,46 +28,69 @@ function CreateDriver() {
       email,
       phone,
       password,
-      address
+      address,
+      // setModalIsOpenEdit
       //   date:fullDate,
     };
 
-    if (
-      full_name.length == 0 ||
-      email.length == 0 ||
-      phone.length == 10 ||
-      password.length == 0 ||
-      address.length == 0
-    ) {
+
+    if (full_name === '' || email === '' || phone === '' || password === '' || address === '') {
       setError(true);
-      setSuccbtn(
-        <span className="" style={{ color: "green" }}>
-          Submit Succesfully
-        </span>
-      );
-    }
-    if (full_name&&email&&phone&&password&&address) {
-      fetch(
-           "https://shippment-dfx.onrender.com/api/adddriver",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dataToSubmit),
-        }
-      )
-        .then((res) => res.json())
-        .then((res) => {
-          console.log(res, dataToSubmit);
-        });
+      setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
     } else {
-      setSuccbtn(
-        <span className="" style={{ color: "red" }}>
-          Please fill all the field
-        </span>
-      );
+      setError(false);
+      setSuccbtn('');
+      axios.post('https://shippment-dfx.onrender.com/api/adddriver', dataToSubmit)
+        .then((response) => {
+          console.log(response.data);
+          setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
+    setModalIsOpen(false);
+        })
+        .catch((error) => {
+          console.error('Error submitting data:', error);
+          setSuccbtn(<span className="" style={{ color: 'red' }}>Failed to submit data</span>);
+        });
     }
+
+    // if (
+    //   full_name.length == 0 ||
+    //   email.length == 0 ||
+    //   phone.length == 10 ||
+    //   password.length == 0 ||
+    //   address.length == 0
+    // ) {
+    //   setError(true);
+    //   setSuccbtn(
+    //     <span className="" style={{ color: "green" }}>
+    //       Submit Succesfully
+    //     </span>
+    //   );
+    // }
+    // setModalIsOpen(false);
+    // if (full_name&&email&&phone&&password&&address) {
+    //   fetch(
+    //        "https://shippment-dfx.onrender.com/api/adddriver",
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify(dataToSubmit),
+    //     }
+    //     )
+    //     .then((res) => res.json())
+    //     .then((res) => {
+    //       console.log(res, dataToSubmit);
+    //     });
+
+        
+    // } else {
+    //   setSuccbtn(
+    //     <span className="" style={{ color: "red" }}>
+    //       Please fill all the field
+    //     </span>
+    //   );
+    // }
   };
   
 
@@ -153,7 +180,7 @@ function CreateDriver() {
                        placeholder="Enter your password"
                        type="text"
                     />
-                  {error && password.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter the 10 Digit number*</span>:""}
+                  {error && password.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter Password*</span>:""}
 
                   </div>
 									  <button type="submit" class="submit-btn">Create Driver</button>
