@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 async function ContactData(getContact,id){
 
-  await axios.get('http://localhost:5000/createcustomer/creatcustomer',
+  await axios.get('https://shippment-dfx.onrender.com/createcustomer/creatcustomer',
   {
     headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
   }
@@ -20,7 +20,7 @@ async function ContactData(getContact,id){
 
 async function VehicalData(getVehicle,id){
 
-  await axios.get('http://localhost:5000/vehical/creatvehical',
+  await axios.get('https://shippment-dfx.onrender.com/vehical/creatvehical',
   {
     headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
   }
@@ -33,7 +33,7 @@ async function VehicalData(getVehicle,id){
 
 async function helperData(getHelper,id){
 
-  await axios.get('http://localhost:5000/vehical/creatvehical',
+  await axios.get('https://shippment-dfx.onrender.com/vehical/creatvehical',
   {
     headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
   }

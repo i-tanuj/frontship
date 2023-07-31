@@ -214,7 +214,7 @@ function SettlementRecords() {
                             <th scope="col" class="borderre">No.</th>
                             <th scope="col">Driver Name</th>
                             <th scope="col">Wallet Amount</th>
-                            <th scope="col">Helper Address</th>
+                            {/* <th scope="col">Helper Address</th> */}
                           <th scope="col" class="borderre1">Settled </th>
                           </tr>
                         </thead>
@@ -226,9 +226,9 @@ function SettlementRecords() {
           }).map((item,i)=>
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
-            <td>{item.id}</td>
             <td>{item.name}</td>
-            <td>{item.phone}</td>
+            <td>{item.amount}</td>
+            {/* <td>{item.phone}</td> */}
             <td>
             {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
             {/* <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>

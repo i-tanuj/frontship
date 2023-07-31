@@ -31,14 +31,20 @@ async function ContactData(getContact){
       getContact(res.data);
   })
 }
+const currentDate = new Date().toLocaleString('en-IN', {
+  timeZone: 'Asia/Kolkata',
+  hour12: true,
+});
 //************************************************************** */
-async function addBatch(name,vehicalplate,setModalIsOpen,getBatchList){
+async function addBatch(name,vehicalplate,DateAndTime,setModalIsOpen,getBatchList){
   if (name != "" && vehicalplate!= "" ) {
     await axios.post('https://shippment-dfx.onrender.com/api/addvehical',
     {
         inst_hash: localStorage.getItem('name'),
         name: name,
        vehicalplate:vehicalplate,
+      DateAndTime: currentDate, // Adding current date and time to the data object
+       
        
     },
     {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}    

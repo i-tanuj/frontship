@@ -21,7 +21,7 @@ import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
 
-  await axios.get('http://localhost:5000/api/getpayment',
+  await axios.get('https://shippment-dfx.onrender.com/api/getpayment',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },

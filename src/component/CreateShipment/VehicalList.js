@@ -106,6 +106,15 @@ function VehicalList() {
         setName(e.target.value)
   }
 
+   function handleEditClick(helper) {
+    setIds(helper.id);
+    setName(helper.name);
+    // setEmail(helper.email);
+    // setPhone(helper.phone);
+    setVehicalplate(helper.vehicalplate);
+    setModalIsOpenEdit(true);
+  }
+
   return (
     <section class="homedive ">
 
@@ -116,19 +125,14 @@ function VehicalList() {
                 </ModalBody>
                 <Form className='form_main '>
                     <FormGroup>
-                        <Input type="text" name="name" id="name" placeholder="Edit Name"   onBlur={(e) => handleInput(e)}/>
+                        <Input type="text" name="name" id="name" placeholder="Edit Name"   onChange={(e) => handleInput(e)} value={name}/>
                     </FormGroup>
+                   
                     <FormGroup>
-                        <Input type="email" name="email" id="email" placeholder="Edit Email" onBlur={(e) => setEmail(e.target.value)}/>
-                    </FormGroup>
-                    <FormGroup>
-                        <Input type="number" name="phone" id="phone" placeholder="Edit Phone Number " onBlur={(e) => {setPhone(e.target.value); console.log(e.target.value);}} />
-                    </FormGroup>
-                    <FormGroup>
-                        <Input type="text" name="vehicalplate" id="vehicalplate" placeholder="vehical plate" onBlur={(e) => {setVehicalplate(e.target.value); console.log(e.target.value);}} />
+                        <Input type="text" name="vehicalplate" id="vehicalplate" placeholder="vehical plate" onChange={(e) => {setVehicalplate(e.target.value); console.log(e.target.value);}} value={vehicalplate}/>
                     </FormGroup>
                     <p id="edit-validate-batch" style={{ color: 'red' }}></p>
-                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => updateBatch(ids,name,email,phone,vehicalplate,setModalIsOpenEdit,getBatchList)}>Edit Vehical List</Button>
+                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onChange={() => updateBatch(ids,name,vehicalplate,setModalIsOpenEdit,getBatchList)}>Edit Vehical List</Button>
                 </Form>
             </Modal>
 
@@ -216,6 +220,7 @@ function VehicalList() {
                             {/* <th scope="col">Vehical Email</th> */}
                             {/* <th scope="col">Vehical Phone number</th> */}
                             <th scope="col">Vehical plate</th>
+                            <th scope="col">Registration Date</th>
 
                             
                             <th scope="col" class="borderre1">Action</th>
@@ -233,10 +238,11 @@ function VehicalList() {
             <td>{item.name}</td>
             {/* <td className="dis-email text-left">{item.email}</td> */}
             {/* <td>{item.phone}</td> */}
-            <td>{item.vehicalplate}</td>
+            <td>{`#`+item.vehicalplate}</td>
+            <td>{item.DateAndTime}</td>
             <td>
             {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
-            <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>
+            <button className='btn btn1' onClick={() => handleEditClick(item)}><i class="bi bi-pen"></i></button>
               <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button>
             </td>
             
