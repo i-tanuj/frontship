@@ -29,8 +29,6 @@ function CreateDriver() {
       phone,
       password,
       address,
-      // setModalIsOpenEdit
-      //   date:fullDate,
     };
 
 
@@ -40,7 +38,7 @@ function CreateDriver() {
     } else {
       setError(false);
       setSuccbtn('');
-      axios.post('https://shippment-dfx.onrender.com/api/adddriver', dataToSubmit)
+      axios.post('https://shipment-backend.onrender.com/api/adddriver', dataToSubmit)
         .then((response) => {
           console.log(response.data);
           setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
@@ -51,46 +49,6 @@ function CreateDriver() {
           setSuccbtn(<span className="" style={{ color: 'red' }}>Failed to submit data</span>);
         });
     }
-
-    // if (
-    //   full_name.length == 0 ||
-    //   email.length == 0 ||
-    //   phone.length == 10 ||
-    //   password.length == 0 ||
-    //   address.length == 0
-    // ) {
-    //   setError(true);
-    //   setSuccbtn(
-    //     <span className="" style={{ color: "green" }}>
-    //       Submit Succesfully
-    //     </span>
-    //   );
-    // }
-    // setModalIsOpen(false);
-    // if (full_name&&email&&phone&&password&&address) {
-    //   fetch(
-    //        "https://shippment-dfx.onrender.com/api/adddriver",
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify(dataToSubmit),
-    //     }
-    //     )
-    //     .then((res) => res.json())
-    //     .then((res) => {
-    //       console.log(res, dataToSubmit);
-    //     });
-
-        
-    // } else {
-    //   setSuccbtn(
-    //     <span className="" style={{ color: "red" }}>
-    //       Please fill all the field
-    //     </span>
-    //   );
-    // }
   };
   
 

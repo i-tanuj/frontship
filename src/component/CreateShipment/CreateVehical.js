@@ -15,12 +15,10 @@ import {
   ModalBody,
 } from "reactstrap";
 
-import { Link } from "react-router-dom";
-import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
 
-  await axios.get('https://shippment-dfx.onrender.com/api/dispatcher',
+  await axios.get('https://shipment-backend.onrender.com/api/dispatcher',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -31,38 +29,11 @@ async function ContactData(getContact){
       getContact(res.data);
   })
 }
-const currentDate = new Date().toLocaleString('en-IN', {
-  timeZone: 'Asia/Kolkata',
-  hour12: true,
-});
-//************************************************************** */
-async function addBatch(name,vehicalplate,DateAndTime,setModalIsOpen,getBatchList){
-  if (name != "" && vehicalplate!= "" ) {
-    await axios.post('https://shippment-dfx.onrender.com/api/addvehical',
-    {
-        inst_hash: localStorage.getItem('name'),
-        name: name,
-       vehicalplate:vehicalplate,
-      DateAndTime: currentDate, // Adding current date and time to the data object
-       
-       
-    },
-    {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}    
-    )
-    ContactData(getBatchList);
-    setModalIsOpen(false);
 
-} else {
-document.getElementById("validate-batch").innerHTML=
-  "*Please fill required field!";
-console.log("Error :", "Please fill required field");
-}
-
-}
 //************************************************************** */
 async function updateBatch(id,vehicalplate,helper1, helper2,assigndriver,setModalIsOpenEdit,getBatchList){
   if (vehicalplate != "" && helper1 != "" && helper2 != "" && assigndriver != "") {
-      await axios.post('https://shippment-dfx.onrender.com/api/updatecreatshipment',
+      await axios.post('https://shipment-backend.onrender.com/api/updatecreatshipment',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : 3,
       vehicalplate:  vehicalplate,
@@ -88,7 +59,7 @@ async function updateBatch(id,vehicalplate,helper1, helper2,assigndriver,setModa
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippment-dfx.onrender.com/api/deldispatcher',
+  const results = await axios.post('https://shipment-backend.onrender.com/api/deldispatcher',
       {
           id:ids
       },
@@ -113,10 +84,7 @@ function Createvehical() {
     const [batchList,getBatchList] = useState([]);
 
 
-    const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
-    const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
     const [defaultcontact, DefaultgetContact] = useState([]);
-    const [ids, setIds] = useState('');
 
 
     useEffect(() => {
@@ -126,6 +94,35 @@ function Createvehical() {
 
     function handleInput(e){
         setName(e.target.value)
+  }
+  const currentDate = new Date().toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    hour12: true,
+  });
+  //************************************************************** */
+  async function addBatch(name,vehicalplate,DateAndTime,getBatchList){
+    if (name !== "" && vehicalplate!== "" ) {
+      await axios.post('https://shipment-backend.onrender.com/api/addvehical',
+      {
+          inst_hash: localStorage.getItem('name'),
+          name: name,
+         vehicalplate:vehicalplate,
+        DateAndTime: currentDate, // Adding current date and time to the data object
+         
+         
+      },
+      {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}    
+      )
+      setModalIsOpen(false);
+     
+      ContactData(getBatchList);
+  
+  } else {
+  document.getElementById("validate-batch").innerHTML=
+    "*Please fill required field!";
+  console.log("Error :", "Please fill required field");
+  }
+  
   }
 
   return (

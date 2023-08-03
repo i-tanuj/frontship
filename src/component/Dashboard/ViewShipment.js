@@ -1,28 +1,11 @@
 import React,{useState,useEffect} from 'react'
-import { AiOutlineClose } from "react-icons/ai";
 import axios from 'axios';
 import '../../css/dispatchlist.css'
 import Navbar from '../Navbar'
-import CreateDriver from './CreateDriver'
-
-
-import {
-  Nav,
-  NavItem,
-  Form,
-  FormGroup,
-  Input,
-  Button,
-  Modal,
-  ModalBody,
-} from "reactstrap";
-
-import { Link } from "react-router-dom";
-import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
 
-  await axios.get('https://shippment-dfx.onrender.com/api/driver',
+  await axios.get('https://shipment-backend.onrender.com/api/driver',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -37,7 +20,7 @@ async function ContactData(getContact){
 
 async function updateBatch(id,full_name,email,phone,address,setModalIsOpenEdit,getBatchList){
   if (full_name != "" && email != "" && phone != "" && address != "") {
-      await axios.post('https://shippment-dfx.onrender.com/driver/updatedriver',
+      await axios.post('https://shipment-backend.onrender.com/driver/updatedriver',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       full_name: full_name,
@@ -58,7 +41,7 @@ async function updateBatch(id,full_name,email,phone,address,setModalIsOpenEdit,g
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippment-dfx.onrender.com/driver/deldriver',
+  const results = await axios.post('https://shipment-backend.onrender.com/driver/deldriver',
       {
           id:ids
       },
@@ -72,19 +55,10 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function DriverList() {
-    const [rowCount, setRowCount] = useState(0);
-    const [inquiries, setInquiries] = useState( );
-    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [contact, getContact] = useState([]);
     const [full_name, setFullName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
-    const [batchList,getBatchList] = useState([]);
 
 
-    const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
-    const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
     const [defaultcontact, DefaultgetContact] = useState([]);
     const [ids, setIds] = useState('');
     const [search,setSearch] =useState('');

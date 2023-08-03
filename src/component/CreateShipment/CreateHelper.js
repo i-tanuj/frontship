@@ -5,23 +5,17 @@ import '../../css/dispatchlist.css'
 
 
 import {
-  Nav,
-  NavItem,
   Form,
   FormGroup,
   Input,
   Button,
-  Modal,
-  ModalBody,
+  Modal
 } from "reactstrap";
 
-import { Link } from "react-router-dom";
-import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
 
-  await axios.get('https://shippment-dfx.onrender.com/api/dispatcher',
-  // { inst_hash: localStorage.getItem('inst_hash_manual') },
+  await axios.get('https://shipment-backend.onrender.com/api/dispatcher',
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
   }
@@ -33,20 +27,20 @@ async function ContactData(getContact){
 }
 //************************************************************** */
 
-const currentDate = new Date().toLocaleString('en-IN', {
-  timeZone: 'Asia/Kolkata',
-  hour12: true,
-});
 async function addBatch(name,email,address,phone,setModalIsOpen,getBatchList){
+  const currentDate = new Date().toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    hour12: true,
+  });
   if (name != "" && email != "" && address!= "") {
-    await axios.post('https://shippment-dfx.onrender.com/api/addhelper',
+    await axios.post('https://shipment-backend.onrender.com/api/addhelper',
     {
         inst_hash: localStorage.getItem('name'),
         name: name,
        email: email,
        phone:phone,
        address:address,
-      DateAndTime: currentDate, // Adding current date and time to the data object
+      DateAndTime: currentDate // Adding current date and time to the data object
 
     },
     {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}    
@@ -64,7 +58,7 @@ console.log("Error :", "Please fill required field");
 //************************************************************** */
 async function updateBatch(id,vehicalplate,helper1, helper2,assigndriver,setModalIsOpenEdit,getBatchList){
   if (vehicalplate != "" && helper1 != "" && helper2 != "" && assigndriver != "") {
-      await axios.post('https://shippment-dfx.onrender.com/api/updatecreatshipment',
+      await axios.post('https://shipment-backend.onrender.com/api/updatecreatshipment',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : 3,
       vehicalplate:  vehicalplate,
@@ -85,7 +79,7 @@ async function updateBatch(id,vehicalplate,helper1, helper2,assigndriver,setModa
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippment-dfx.onrender.com/api/deldispatcher',
+  const results = await axios.post('https://shipment-backend.onrender.com/api/deldispatcher',
       {
           id:ids
       },
@@ -99,23 +93,16 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function CreateHelper() {
-    const [rowCount, setRowCount] = useState(0);
-    const [inquiries, setInquiries] = useState( );
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [contact, getContact] = useState([]);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [address, setAddress] = useState("");
     const [phone, setPhone] = useState("");
-    const [assigndriver, setAssigndriver] = useState("");
     const [batchList,getBatchList] = useState([]);
 
 
-    const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
-    const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
     const [defaultcontact, DefaultgetContact] = useState([]);
-    const [ids, setIds] = useState('');
-
 
     useEffect(() => {
       ContactData(getContact,DefaultgetContact)   

@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
-  await axios.get('https://shippment-dfx.onrender.com/api/deliverycreation',
+  await axios.get('https://shipment-backend.onrender.com/api/pickupcreation',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -33,7 +33,7 @@ async function ContactData(getContact){
 //************************************************************** */
 async function updateBatch(id,name,email,phone,setModalIsOpenEdit,getBatchList){
   if (name != "" && email != "" && phone != "") {
-      await axios.post('https://shippment-dfx.onrender.com/api/updatedispatcher',
+      await axios.post('https://shipment-backend.onrender.com/api/updatedispatcher',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       name: name,
@@ -54,7 +54,7 @@ async function updateBatch(id,name,email,phone,setModalIsOpenEdit,getBatchList){
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippment-dfx.onrender.com/api/deltotalshipmentrecord',
+  const results = await axios.post('https://shipment-backend.onrender.com/api/delcreatshipment',
       {
           id:ids
       },
@@ -68,9 +68,6 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function DispatchList() {
-    const [rowCount, setRowCount] = useState(0);
-    const [inquiries, setInquiries] = useState( );
-    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -184,15 +181,11 @@ function DispatchList() {
                         <thead class="tableheading">
                           <tr>
                              <th scope="col" class="borderre">S.No</th>
-                             <th scope="col" class="borderre">Task ID</th>
-                            {/* <th scope="col" class="borderre">S.no</th> */}
-                            <th scope="col">Driver details</th>
-                            <th scope="col">Delivery details</th>
-                            <th scope="col">vehical</th>
-                            <th scope="col">helper</th>
-                            <th scope="col">Task status</th>
-                            <th scope="col">Creation date time</th>
-                            <th scope="col">Created by</th>
+                             <th scope="col" class="borderre">Customer Name</th>
+                            <th scope="col">Phone No.</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Pickup Location</th>
+                            <th scope="col">Drop Location</th>
                     
                             <th scope="col" class="borderre1">Action</th>
                           </tr>
@@ -206,16 +199,13 @@ function DispatchList() {
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             <td>{item.id}</td>
-            <td>{item.assigndriver}<br></br>Id:{item.assigndriverid}</td>
-            <td className="dis-email text-left">{item.droplocation}<br></br>{item.dropdate}<br></br></td>
-            <td>{item.vehicleplate}</td>
-            <td>{item.helper}</td>
-            <td>pending</td>
-            <td>{item.dropdate}</td>
-            <td>manager dashboard</td>
+            <td>{item.discontactnum}</td>
+            <td>{item.dispatchname}</td>
+            {/* <td className="dis-email text-left">{item.droplocation}<br></br>{item.dropdate}<br></br></td> */}
+            <td>{item.dispatchemail}</td>
+            <td>{item.selectshipdrop}</td>
 
             <td>
-            {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
             <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>
             <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button>
             <a href='/view'><button className='btn bt' ><i class="bi bi-eye"></i></button></a>

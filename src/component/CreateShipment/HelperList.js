@@ -5,26 +5,13 @@ import "../../css/dispatchlist.css";
 import Navbar from "../Navbar";
 import CreateHelper from "../CreateShipment/CreateHelper";
 
-import {
-  Nav,
-  NavItem,
-  Form,
-  FormGroup,
-  Input,
-  Button,
-  Modal,
-  ModalBody,
-} from "reactstrap";
+import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 
 async function ContactData(getContact) {
   await axios
-    .get(
-      "https://shippment-dfx.onrender.com/api/createhelper",
-      // { inst_hash: localStorage.getItem('inst_hash_manual') },
-      {
-        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-      }
-    )
+    .get("https://shipment-backend.onrender.com/api/createhelper", {
+      headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
     .then((res) => {
       console.log(res.data);
       getContact(res.data);
@@ -41,9 +28,13 @@ async function updateBatch(
   setModalIsOpenEdit,
   getBatchList
 ) {
+  const currentDate = new Date().toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    hour12: true,
+  });
   if (name != "" && email != "" && phone != "" && address != "") {
     await axios.post(
-      "https://shippment-dfx.onrender.com/api/updatehelper",
+      "https://shipment-backend.onrender.com/api/updatehelper",
       {
         inst_hash: localStorage.getItem("inst_hash"),
         id: id,
@@ -51,6 +42,7 @@ async function updateBatch(
         email: email,
         phone: phone,
         address: address,
+        DateAndTime: currentDate, // Adding current date and time to the data object
       },
       { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
@@ -66,13 +58,12 @@ async function updateBatch(
 //************************************************************** */
 async function deleteContact(ids, getContact, DefaultgetContact) {
   const results = await axios.post(
-    "https://shippment-dfx.onrender.com/api/delhelper",
+    "https://shipment-backend.onrender.com/api/delhelper",
     {
       id: ids,
     },
     { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
   );
-  console.log(results);
   if (results.status == 200) {
     ContactData(getContact, DefaultgetContact);
   }
@@ -129,7 +120,7 @@ function HelperList() {
             className="main_AiOutlineClose close-icon"
             onClick={() => setModalIsOpenEdit(false)}
           />
-          <h5 className="main_h5">Edit Driver List</h5>
+          <h5 className="main_h5">Edit Helper List</h5>
         </ModalBody>
         <Form className="form_main ">
           <FormGroup>
@@ -137,7 +128,7 @@ function HelperList() {
               type="text"
               name="name"
               id="name"
-              placeholder="Edit Name"
+              placeholder="Edit Helper Name"
               onChange={(e) => handleInput(e)}
               value={name}
             />
@@ -158,10 +149,7 @@ function HelperList() {
               name="phone"
               id="phone"
               placeholder="Edit Phone Number "
-              onChange={(e) => {
-                setPhone(e.target.value);
-                console.log(e.target.value);
-              }}
+              onChange={(e) => setPhone(e.target.value)}
               value={phone}
             />
           </FormGroup>
@@ -173,7 +161,6 @@ function HelperList() {
               placeholder="Edit Address "
               onChange={(e) => {
                 setAddress(e.target.value);
-                console.log(e.target.value);
               }}
               value={address}
             />
@@ -183,7 +170,7 @@ function HelperList() {
             variant="contained"
             className="main_botton"
             style={{ backgroundColor: "#6A3187" }}
-            onChange={() =>
+            onClick={() =>
               updateBatch(
                 ids,
                 name,
@@ -195,7 +182,7 @@ function HelperList() {
               )
             }
           >
-            Edit Driver List
+            Upadate Helper List
           </Button>
         </Form>
       </Modal>
@@ -238,8 +225,6 @@ function HelperList() {
           <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser">
               <h2>All Helper List</h2>
-
-              {/* <p>May 22, 2023</p>  */}
             </div>
             <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
               <div class="input-group input-group-lg">
@@ -295,7 +280,7 @@ function HelperList() {
                     <CreateHelper />
                   </div>
                   <div className="Back-btn-01">
-                    <a href="#">Back</a>
+                    <a href="/">Back</a>
                   </div>
                 </div>
               </div>
@@ -336,7 +321,6 @@ function HelperList() {
                         <td>{item.address}</td>
                         <td>{item.DateAndTime}</td>
                         <td>
-                          {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
                           <button
                             className="btn btn1"
                             onClick={() => handleEditClick(item)}

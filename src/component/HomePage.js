@@ -5,18 +5,8 @@ import AdminDash from './Dashboard/AdminDash';
 import ShipmentList from './Dashboard/ShipmentList';
 
 import {
-    Nav,
-    NavItem,
-    Form,
-    Button,
     Col,
-    Row,
-    CardBody,
-    CardTitle,
-    CardText,
-    CardImg,
-    Card,
-    CardGroup,
+    Row
   } from "reactstrap";
 import ShippmentRecord from './Dashboard/ShippmentRecord';
 

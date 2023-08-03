@@ -6,18 +6,8 @@ import { MdOutlineLock } from "react-icons/md";
 import { AiOutlineMail,AiOutlineUser,AiOutlineKey } from "react-icons/ai";
 import {BsArrowRight} from "react-icons/bs"
 import {
-  Nav,
-  NavItem,
-  Form,
-  Button,
-  Col,
-  Row,
-  Label,
-  Input,
-  FormGroup,
+  Col
 } from "reactstrap";
-import { Link } from "react-router-dom";
-// import logo from "../images/logoPng.png";
 import "../css/login.css";
 
 function ForgetPassword() {
@@ -29,7 +19,7 @@ function ForgetPassword() {
       e.preventDefault();
       // Make a POST request to the change-password endpoint
       try {
-        const response = await fetch('https://shippment-dfx.onrender.com/api/reset-password1', {
+        const response = await fetch('https://shipment-backend.onrender.com/api/reset-password1', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -37,8 +27,6 @@ function ForgetPassword() {
           body: JSON.stringify({ username, newPassword, confirmPassword }),
         });
         if (response.ok) {
-          // Password changed successfully
-          // Reset the form fields
           window.location.href = "/";
           setUsername('');
           setNewPassword('');

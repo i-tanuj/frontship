@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import "../../css/shippment.css";
 import axios from "axios";
-import { Nav, NavItem, Form, Button, Modal, ModalBody } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Modal, ModalBody } from "reactstrap";
+
 
 function CreateCustomer() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -34,10 +34,7 @@ function CreateCustomer() {
       altphone,
       address,
       DateAndTime: currentDate, // Adding current date and time to the data object
-
-      //   date:fullDate,
     };
-
 
 
 
@@ -47,7 +44,7 @@ function CreateCustomer() {
     } else {
       setError(false);
       setSuccbtn('');
-      axios.post('https://shippment-dfx.onrender.com/api/addcustomer', dataToSubmit)
+      axios.post('https://shipment-backend.onrender.com/api/addcustomer', dataToSubmit)
         .then((response) => {
           console.log(response.data);
           setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);

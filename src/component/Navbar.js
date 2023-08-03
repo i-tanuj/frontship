@@ -79,15 +79,7 @@ function Navbar() {
                   </span>
                   
 				    			<ChangePass/>
-                  
-                {/* <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Notification">
-				    			<img src="/Assets/Navbar/bell.png"/>
-
-                </span> */}
-                {/* <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Edit Password">
-				    			<ChangePass/>
-                  </span> */}
-
+                
 				    			
                                 <Nav>
           <div className='container d-flex justify-content-between'>

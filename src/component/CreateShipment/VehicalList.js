@@ -7,8 +7,6 @@ import CreateVehical from '../CreateShipment/CreateVehical'
 
 
 import {
-  Nav,
-  NavItem,
   Form,
   FormGroup,
   Input,
@@ -17,12 +15,10 @@ import {
   ModalBody,
 } from "reactstrap";
 
-import { Link } from "react-router-dom";
-import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
 
-  await axios.get('https://shippment-dfx.onrender.com/api/creatvehical',
+  await axios.get('https://shipment-backend.onrender.com/api/creatvehical',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -35,15 +31,19 @@ async function ContactData(getContact){
 }
 //************************************************************** */
 
-async function updateBatch(id,name,email,phone,vehicalplate,setModalIsOpenEdit,getBatchList){
-  if (name != "" && email != "" && phone != "" && vehicalplate != "") {
-      await axios.post('https://shippment-dfx.onrender.com/api/updatevehical',
+  const currentDate = new Date().toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    hour12: true,
+  });
+
+async function updateBatch(id,name,vehicalplate,setModalIsOpenEdit,getBatchList){
+  if (name != "" && vehicalplate != "") {
+      await axios.post('https://shipment-backend.onrender.com/api/updatevehical',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       name: name,
-      email: email,
-      phone: phone,
-      vehicalplate: vehicalplate
+      vehicalplate: vehicalplate,
+      DateAndTime: currentDate, // Adding current date and time to the data object
       },
       {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
   )
@@ -58,7 +58,7 @@ async function updateBatch(id,name,email,phone,vehicalplate,setModalIsOpenEdit,g
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippment-dfx.onrender.com/api/delvehical',
+  const results = await axios.post('https://shipment-backend.onrender.com/api/delvehical',
       {
           id:ids
       },
@@ -72,13 +72,8 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function VehicalList() {
-    const [rowCount, setRowCount] = useState(0);
-    const [inquiries, setInquiries] = useState( );
-    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
     const [vehicalplate, setVehicalplate] = useState('');
     const [batchList,getBatchList] = useState([]);
 
@@ -109,10 +104,9 @@ function VehicalList() {
    function handleEditClick(helper) {
     setIds(helper.id);
     setName(helper.name);
-    // setEmail(helper.email);
-    // setPhone(helper.phone);
     setVehicalplate(helper.vehicalplate);
     setModalIsOpenEdit(true);
+    
   }
 
   return (
@@ -125,14 +119,16 @@ function VehicalList() {
                 </ModalBody>
                 <Form className='form_main '>
                     <FormGroup>
-                        <Input type="text" name="name" id="name" placeholder="Edit Name"   onChange={(e) => handleInput(e)} value={name}/>
+                        <Input type="text" name="name" id="name" placeholder="Edit Vehicle Name" onChange={(e) => handleInput(e)} value={name}/>
                     </FormGroup>
                    
                     <FormGroup>
-                        <Input type="text" name="vehicalplate" id="vehicalplate" placeholder="vehical plate" onChange={(e) => {setVehicalplate(e.target.value); console.log(e.target.value);}} value={vehicalplate}/>
+                        <Input type="text" name="vehicalplate" id="vehicalplate" placeholder="Edit Vehicle Number"  onChange={(e) => {
+                setVehicalplate(e.target.value);
+              }} value={vehicalplate}/>
                     </FormGroup>
                     <p id="edit-validate-batch" style={{ color: 'red' }}></p>
-                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onChange={() => updateBatch(ids,name,vehicalplate,setModalIsOpenEdit,getBatchList)}>Edit Vehical List</Button>
+                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => updateBatch(ids,name,vehicalplate,setModalIsOpenEdit,getBatchList)}>Update Vehical List</Button>
                 </Form>
             </Modal>
 
@@ -178,7 +174,6 @@ function VehicalList() {
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser">
                 <h2>All Vehical List</h2>
     
-        {/* <p>May 22, 2023</p>  */}
                 </div>
                 <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                     <div class="input-group input-group-lg">
@@ -209,7 +204,7 @@ function VehicalList() {
                         <div className='add-new-form-btn'>
                         <CreateVehical/>  
                         </div>
-                        <div className='Back-btn-01'><a href='#'>Back</a></div>
+                        <div className='Back-btn-01'><a href='/'>Back</a></div>
                       </div>
                     </div>
                     <table class="table align-middle bg-white rounded m-0" id="table-to-xls">
@@ -234,14 +229,10 @@ function VehicalList() {
           }).map((item,i)=>
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
-            {/* <td>{item.id}</td> */}
             <td>{item.name}</td>
-            {/* <td className="dis-email text-left">{item.email}</td> */}
-            {/* <td>{item.phone}</td> */}
             <td>{`#`+item.vehicalplate}</td>
             <td>{item.DateAndTime}</td>
             <td>
-            {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
             <button className='btn btn1' onClick={() => handleEditClick(item)}><i class="bi bi-pen"></i></button>
               <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button>
             </td>

@@ -3,25 +3,16 @@ import { AiOutlineClose } from "react-icons/ai";
 import axios from 'axios';
 import '../../css/dispatchlist.css'
 import Navbar from '../Navbar'
-import CreateHelper from '../CreateShipment/CreateHelper'
-
 import {
-  Nav,
-  NavItem,
   Form,
-  FormGroup,
-  Input,
   Button,
   Modal,
   ModalBody,
 } from "reactstrap";
 
-import { Link } from "react-router-dom";
-import { AiTwotoneDelete } from "react-icons/ai";
-
 async function ContactData(getContact){
 
-  await axios.get('http://localhost:5000/api/sattlementrecord',
+  await axios.get('https://shipment-backend.onrender.com/api/sattlementrecord',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -34,30 +25,27 @@ async function ContactData(getContact){
 }
 //************************************************************** */
 
-async function updateBatch(id,name,email,phone,address,setModalIsOpenEdit,getBatchList){
-  if (name != "" && email != "" && phone != "" && address != "") {
-      await axios.post('https://shippment-dfx.onrender.com/api/updatehelper',
+async function updateRecord(id,full_name,amount,DateAndTime,getBatchList,setModalIsOpenEdit){
+  if (amount) {
+      await axios.post('https://shipment-backend.onrender.com/api/updaterecord',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
-      name: name,
-      email: email,
-      phone: phone,
-      address: address
+      full_name: full_name,
+      amount: amount,
+      DateAndTime: DateAndTime
       },
       {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
   )
   ContactData(getBatchList)
   setModalIsOpenEdit(false)
 } else {
-  document.getElementById("edit-validate-batch").innerHTML =
-    "*Please fill required field!";
   console.log("Error :", "Please fill required field");
 }    
 }
 
 //************************************************************** */
-async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippment-dfx.onrender.com/api/delhelper',
+async function deleteContact(ids,getContact,DefaultgetContact, ){
+  const results = await axios.post('https://shipment-backend.onrender.com/api/delhelper',
       {
           id:ids
       },
@@ -71,19 +59,13 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function SettlementRecords() {
-    const [rowCount, setRowCount] = useState(0);
-    const [inquiries, setInquiries] = useState( );
-    const [modalIsOpen, setModalIsOpen] = useState(false);
+
     const [contact, getContact] = useState([]);
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
+    const [full_name, setName] = useState('');
+    const [id, setId] = useState('');
+    const [amount, setAmount] = useState('');
     const [batchList,getBatchList] = useState([]);
-
-
     const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
-    const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
     const [defaultcontact, DefaultgetContact] = useState([]);
     const [ids, setIds] = useState('');
     const [search,setSearch] =useState('');
@@ -105,31 +87,49 @@ function SettlementRecords() {
         setName(e.target.value)
   }
 
+
+  const handleUpdateClick = () => {
+    fetch('https://shipment-backend.onrender.com/api/updateAmount', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error updating data:', error);
+      });
+  };
+
+
+  
+// async function handleUpdateClick(id,full_name,amount,setModalIsOpenEdit,getBatchList){
+//   if () {
+//       await axios.post('https://shipment-backend.onrender.com/api/updateAmount',
+//       {inst_hash: localStorage.getItem('inst_hash'),
+//       id : id,
+//       full_namename: full_name,
+//       amount: amount
+  
+//       },
+//       {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
+//   )
+//   ContactData(getBatchList)
+//   setModalIsOpenEdit(false)
+// } else {
+//   document.getElementById("edit-validate-batch").innerHTML =
+//     "*Please fill required field!";
+//   console.log("Error :", "Please fill required field");
+// }    
+// }
+
+  
   return (
     <section class="homedive ">
-
-<Modal isOpen={modalIsOpenEdit} className='main_modal_body dispatcher-list-form'>
-                <ModalBody className='modal_body'>
-                <AiOutlineClose className='main_AiOutlineClose close-icon' onClick={()=>setModalIsOpenEdit(false)}/>
-                   <h5 className='main_h5'>Settlement Record List</h5>
-                </ModalBody>
-                <Form className='form_main '>
-                    <FormGroup>
-                        <Input type="text" name="name" id="name" placeholder="Edit Name"   onBlur={(e) => handleInput(e)}/>
-                    </FormGroup>
-                    <FormGroup>
-                        <Input type="email" name="email" id="email" placeholder="Edit Email" onBlur={(e) => setEmail(e.target.value)}/>
-                    </FormGroup>
-                    <FormGroup>
-                        <Input type="number" name="phone" id="phone" placeholder="Edit Phone Number " onBlur={(e) => {setPhone(e.target.value); console.log(e.target.value);}} />
-                    </FormGroup>
-                    <FormGroup>
-                        <Input type="text" name="address" id="address" placeholder="Edit Address " onBlur={(e) => {setAddress(e.target.value); console.log(e.target.value);}} />
-                    </FormGroup>
-                    <p id="edit-validate-batch" style={{ color: 'red' }}></p>
-                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => updateBatch(ids,name,email,phone,address,setModalIsOpenEdit,getBatchList)}>Edit Driver List</Button>
-                </Form>
-            </Modal>
 
  <Modal isOpen={modalIsOpenDelete} className="modal_body-delete">
           <ModalBody className="dispatcher-list-form">
@@ -173,8 +173,8 @@ function SettlementRecords() {
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser">
                 <h2>Settlement Record List</h2>
     
-        {/* <p>May 22, 2023</p>  */}
                 </div>
+                
                 <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                     <div class="input-group input-group-lg">
                     <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
@@ -214,7 +214,6 @@ function SettlementRecords() {
                             <th scope="col" class="borderre">No.</th>
                             <th scope="col">Driver Name</th>
                             <th scope="col">Wallet Amount</th>
-                            {/* <th scope="col">Helper Address</th> */}
                           <th scope="col" class="borderre1">Settled </th>
                           </tr>
                         </thead>
@@ -230,14 +229,11 @@ function SettlementRecords() {
             <td>{item.amount}</td>
             {/* <td>{item.phone}</td> */}
             <td>
-            {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
-            {/* <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>
-              <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button> */}
-            <button className='settled'> settled</button>
-            <button className='Settle-amount'> Settle Amount</button>
+            <button className='settled' onClick={handleUpdateClick} id={item.id}> settled</button>
+            {/* <button onClick={() => {updateRecord(amount,getBatchList);setIds(item.id)}} className='Settle-amount'> Settle Amount</button> */}
+            <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => {updateRecord(ids,amount,getBatchList);setIds(item.id)}}>Edit Driver List</Button>
+
             </td>
-            
-            
           </tr>
           )
         }

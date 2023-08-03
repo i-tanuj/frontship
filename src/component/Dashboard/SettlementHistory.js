@@ -21,7 +21,7 @@ import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
 
-  await axios.get('https://shippment-dfx.onrender.com/api/createhelper',
+  await axios.get('https://shipment-backend.onrender.com/api/getpayment',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -36,7 +36,7 @@ async function ContactData(getContact){
 
 async function updateBatch(id,name,email,phone,address,setModalIsOpenEdit,getBatchList){
   if (name != "" && email != "" && phone != "" && address != "") {
-      await axios.post('https://shippment-dfx.onrender.com/api/updatehelper',
+      await axios.post('https://shipment-backend.onrender.com/api/updatehelper',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       name: name,
@@ -57,7 +57,7 @@ async function updateBatch(id,name,email,phone,address,setModalIsOpenEdit,getBat
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippment-dfx.onrender.com/api/delhelper',
+  const results = await axios.post('https://shipment-backend.onrender.com/api/delhelper',
       {
           id:ids
       },
@@ -71,9 +71,6 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function SettlementHistory() {
-    const [rowCount, setRowCount] = useState(0);
-    const [inquiries, setInquiries] = useState( );
-    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -200,9 +197,6 @@ function SettlementHistory() {
                           </div>
                       </div>
                       <div className='d-flex'>
-                        {/* <div className='add-new-form-btn'>
-                            <CreateHelper/>
-                        </div> */}
                         <div className='Back-btn-01'><a href='#'>Back</a></div>
                       </div>
                     </div>
@@ -224,16 +218,15 @@ function SettlementHistory() {
           }).map((item,i)=>
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
-            <td>{item.id}</td>
-            {/* <td>{item.name}</td> */}
-            <td className="dis-email text-left">{item.email}</td>
+            <td>{item.full_name}</td>
+            <td>{item.amount}</td>
+            <td>{item.DateAndTime}</td>
+            {/* <td className="dis-email text-left">{item.full_name}</td> */}
             {/* <td>{item.phone}</td> */}
-            <td>{item.address}</td>
             <td><div className='Successful-py-01'>Successful</div></td>
+            {/* <td><div className='pending-py-01'>Pending</div></td> */}
             <td>
-            {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
-            {/* <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>
-              <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button> */}
+          
             </td>
             
           </tr>

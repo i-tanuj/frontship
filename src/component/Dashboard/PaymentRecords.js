@@ -3,7 +3,6 @@ import { AiOutlineClose } from "react-icons/ai";
 import axios from 'axios';
 import '../../css/dispatchlist.css'
 import Navbar from '../Navbar'
-import CreateHelper from '../CreateShipment/CreateHelper'
 
 import {
   Nav,
@@ -16,12 +15,10 @@ import {
   ModalBody,
 } from "reactstrap";
 
-import { Link } from "react-router-dom";
-import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
 
-  await axios.get('https://shippment-dfx.onrender.com/api/getpayment',
+  await axios.get('https://shipment-backend.onrender.com/api/getpayment',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -36,7 +33,7 @@ async function ContactData(getContact){
 
 async function updateBatch(id,name,email,phone,address,setModalIsOpenEdit,getBatchList){
   if (name != "" && email != "" && phone != "" && address != "") {
-      await axios.post('https://shippment-dfx.onrender.com/api/updatehelper',
+      await axios.post('https://shipment-backend.onrender.com/api/updatehelper',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       name: name,
@@ -57,7 +54,7 @@ async function updateBatch(id,name,email,phone,address,setModalIsOpenEdit,getBat
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippment-dfx.onrender.com/api/delhelper',
+  const results = await axios.post('https://shipment-backend.onrender.com/api/delhelper',
       {
           id:ids
       },
@@ -71,9 +68,6 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function PaymentRecords() {
-    const [rowCount, setRowCount] = useState(0);
-    const [inquiries, setInquiries] = useState( );
-    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -214,13 +208,6 @@ function PaymentRecords() {
                           <tr>
                             <th scope="col" class="borderre">No.</th>
                             <th scope="col">Driver Name</th>
-
-                            {/* <th scope="col">Shipment Id</th>
-                            <th scope="col" class="borderre1">Amount</th>
-                            <th scope="col" class="borderre1">Amount Status</th>
-                            <th scope="col">Payment Details</th> */}
-                           
-
                             <th scope="col">Shipment ID</th>
                             <th scope="col">Amount</th>
                             <th scope="col">Amount Status</th>
@@ -245,11 +232,6 @@ function PaymentRecords() {
             <td>{item.DateAndTime}</td>
             
             <td>
-            {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
-            {/* <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>
-              <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button> */}
-              {/* <button className='btn bt Successful-py' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}>Successful</button> */}
-              
             </td>
             
           </tr>

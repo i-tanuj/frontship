@@ -4,29 +4,21 @@ import { AiOutlineClose } from "react-icons/ai";
 // import "../../css/shippment.css";
 import '../../css/transfermoneytodriver.css'
 import axios from "axios";
-import { Nav, NavItem, Form, Button, Modal, ModalBody } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Modal, ModalBody } from "reactstrap";
+
 
 function TransferMoneyToDriver() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-
-  const [full_name, setFullname] = useState("");
   const [shipment_id, setShipmentid] = useState("");
   const [amount, setAmount] = useState("");
-  // const [shipment, setShipment] = useState("");
-
-  
   const [error, setError] = useState(false);
-  const [modalPrivacy, setModalPrivacy] = useState(false);
   const [succbtn, setSuccbtn] = useState();
-
-
   const [drivers, setDrivers] = useState([]);
   const [selectedDriver, setSelectedDriver] = useState('');
 
   useEffect(() => {
     // Fetch the data from the API
-    axios.get('https://shippment-dfx.onrender.com/api/driver')
+    axios.get('https://shipment-backend.onrender.com/api/driver')
       .then(response => {
         setDrivers(response.data);
       })
@@ -59,7 +51,7 @@ function TransferMoneyToDriver() {
     } else {
       setError(false);
       setSuccbtn('');
-      axios.post('https://shippment-dfx.onrender.com/api/payment', dataToSubmit)
+      axios.post('https://shipment-backend.onrender.com/api/payment', dataToSubmit)
         .then((response) => {
           console.log(response.data);
           setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
@@ -108,7 +100,6 @@ function TransferMoneyToDriver() {
       </select>
 
 
-               {/* {error && full_name.length<=0?<span className="valid-form" style={{color:'red'}}>Please Select Driver*</span>:""} */}
                   </div>
                   <div className="mb-4">
                     <label className="form-label">

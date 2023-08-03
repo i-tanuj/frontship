@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { AiFillEye } from "react-icons/ai";
-import { AiFillEyeInvisible } from "react-icons/ai";
-import { MdOutlineLock } from "react-icons/md";
-import { AiOutlineMail,AiOutlineUser,AiOutlineKey } from "react-icons/ai";
-import {BsArrowRight} from "react-icons/bs"
 import {
   Nav,
   NavItem,
@@ -17,7 +12,6 @@ import {
   FormGroup,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-// import logo from "../images/logoPng.png";
 import "../css/login.css";
 
 function VerifyOTP() {
@@ -29,7 +23,7 @@ function VerifyOTP() {
   async function handleSendOTP() {
     if(username!=''){
      const sendOTP = await axios
-     .post("https://shippment-dfx.onrender.com/api/otpsendusrname", {
+     .post("https://shipment-backend.onrender.com/api/otpsendusrname", {
        username: `${username}`,
      })
      .then(
@@ -53,7 +47,7 @@ function VerifyOTP() {
      
     if(username!='' && otp!=''){
      const verifyOTP = await axios
-     .post("https://shippment-dfx.onrender.com/api/verify-otp", {
+     .post("https://shipment-backend.onrender.com/api/verify-otp", {
        username: `${username}`,
        otp: `${otp}`,
      })
@@ -108,7 +102,7 @@ P&G TRUCKERS</h2>
        
         <div className=" px-lg-5">
            
-          {/* <h5 style={{ color: "#211E6D",fontSize:"16px" }} >Request a demo to see how Dwellfox platform can power your extended workforce.</h5> */}
+
           <form className="mt-4">
           
            

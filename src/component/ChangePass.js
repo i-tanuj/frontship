@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import "../css/navbar.css";
 import axios from 'axios';
-import { Nav, NavItem, Form, Button, Modal, ModalBody } from "reactstrap";
+import { Nav, NavItem, Modal, ModalBody } from "reactstrap";
 import { Link } from "react-router-dom";
 
 function ChangePass() {
@@ -24,7 +24,7 @@ function ChangePass() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://shippment-dfx.onrender.com/api/change-password', {
+      const response = await axios.post('https://shipment-backend.onrender.com/api/change-password', {
         // username:,
         // oldPassword,
         // newPassword,

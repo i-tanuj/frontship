@@ -9,7 +9,7 @@ import DeliveryCreation from "./DeliveryCreation";
 
 async function ContactData(getContact,id){
 
-  await axios.get('https://shippment-dfx.onrender.com/api/dispatcher',
+  await axios.get('https://shipment-backend.onrender.com/api/dispatcher',
   {
     headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
   }
@@ -35,14 +35,6 @@ function CreateShipment() {
   const [selectshipment , setSelectshipment] = useState("");
   const [adddescription , setAdddescription] = useState("");
 
-    //  const dispatchname = req.body.dispatchname;
-    //           const discontactnum = req.body.discontactnum;
-    //           const disaltnum = req.body.disaltnum;
-    //           const dispatchemail = req.body.dispatchemail;
-    //           const pickuplocation = req.body.pickuplocation;
-    //           const pickupbeforedate = req.body.pickupbeforedate;
-    //           const selectshipment = req.body.selectshipment;
-    //           const adddescription = req.body.adddescription;
  
   const [error, setError] = useState(false);
   const [modalPrivacy, setModalPrivacy] = useState(false);
@@ -85,7 +77,7 @@ function CreateShipment() {
     }
     if (dispatchname&&discontactnum&&disaltnum&&dispatchemail&&pickuplocation&&pickupbeforedate&&selectshipment&&adddescription) {
       fetch(
-           "https://shippment-dfx.onrender.com/api/addtotalshipmentrecord",
+           "https://shipment-backend.onrender.com/api/addtotalshipmentrecord",
         {
           method: "POST",
           headers: {
@@ -136,20 +128,6 @@ function CreateShipment() {
             <div className="row card-holder">
                   <form className="form-control-holder"  onSubmit={handleSubmit}>
                     <div className="row">
-                      {/* <div className="mb-4 w-50">
-                        <label for="exampleInputEmail1" className="form-label">
-                        Customers Full name<span className="stra-icon">*</span>
-                        </label>
-                        <input
-                          name="full_name"   
-                          onChange={(e)=> setCustoname(e.target.value)}          
-                          id="first_name"
-                          placeholder="Enter your name"
-                          type="text"
-                        />
-                  {error && custoname.length<=0?<span className="valid-form" style={{color:'red'}}>Please Enter full name*</span>:""}
-                      </div> */}
-
                    <div className="mb-4 w-50">
                         <label className="form-label">
                         Dispatcher Name<span className="stra-icon">*</span>
@@ -157,13 +135,6 @@ function CreateShipment() {
                         <select  onChange={(e)=> setDispatchName(e.target.value)}>
                          <option value="">Select Dispatcher</option>
   
-                  {/* {
-                    contact.map((item)=>
-                    <option key={item.id}>
-                    <option value="">{item.name}</option>
-                   </option>
-                    )
-                  } */}
                    {
                     contact.map((item,i)=>
                     <option key={i}>
@@ -179,14 +150,14 @@ function CreateShipment() {
 
                       <div className="mb-4 w-50">
                         <label className="form-label">
-                        Customers Email<span className="stra-icon">*</span>
+                        Dispatcher Contact Number<span className="stra-icon">*</span>
                         </label>
                         <input
-                          name="email"   
-                          onChange={(e)=> setDispatchemail(e.target.value)}          
-                          id="email"
-                          placeholder="Enter your email"
-                          type="email"
+                          name="phone"   
+                          onChange={(e)=> setDiscontactnum(e.target.value)}          
+                          id="phone"
+                          placeholder="Enter Contact Number"
+                          type="number"
                         />
                       {error && dispatchemail.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter the valid Email*</span>:""}
 
@@ -195,27 +166,27 @@ function CreateShipment() {
                   <div className="row">
                       <div className="mb-4 w-50">
                         <label className="form-label">
-                        Customers Contact Number<span className="stra-icon">*</span>
+                        Dispatcher Email Address<span className="stra-icon">*</span>
                         </label>
                         <input
-                          name="phone"   
-                          onChange={(e)=> setDiscontactnum(e.target.value)}          
-                          id="phone"
-                          placeholder="Enter your phone"
-                          type="number"
+                          name="email"   
+                          onChange={(e)=> setDispatchemail(e.target.value)}          
+                          id="email"
+                          placeholder="Enter Email Address"
+                          type="email"
                         />
                         {error && discontactnum.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter the 10 Digit number*</span>:""}
 
                       </div>
                       <div className="mb-4 w-50">
                         <label className="form-label">
-                        Customers Alternate Contact Number<span className="stra-icon">*</span>{" "}
+                        Dispatcher Alternate Number<span className="stra-icon">*</span>{" "}
                         </label>
                         <input
                           name="phone"   
                           onChange={(e)=> setDisaltnum(e.target.value)}          
                           id="phone"
-                          placeholder="Enter alternate number"
+                          placeholder="Enter Alternate Number"
                           type="number"
                         />
                       {error && disaltnum.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter the 10 Digit number*</span>:""}
@@ -225,13 +196,13 @@ function CreateShipment() {
                     <div className="row">
                       <div className="mb-4 w-50">
                         <label className="form-label">
-                        Customers Pickup Location<span className="stra-icon">*</span>
+                        Pic kup Location<span className="stra-icon">*</span>
                         </label>
                         <input
                           name="pickuplocation"   
                           onChange={(e)=> setPickuplocation(e.target.value)}          
                           id="pickuplocation"
-                          placeholder="pickup Location"
+                          placeholder="Enter Pickup Location"
                           type="text"
                         />
                         {error && pickuplocation.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter pickup location*</span>:""}
@@ -239,7 +210,7 @@ function CreateShipment() {
                       </div>
                       <div className="mb-4 w-50">
                         <label className="form-label">
-                        Customers Drop Location<span className="stra-icon">*</span>{" "}
+                        Pic kup Before<span className="stra-icon">*</span>{" "}
                         </label>
                         <input
                           name="date"   
@@ -258,7 +229,7 @@ function CreateShipment() {
                         Please Select<span className="stra-icon">*</span>
                         </label>
                         <select class="" aria-label="Default select example" onChange={(e)=>setSelectshipment(e.target.value)}>
-                        <option selected>Open this select menu</option>
+                        <option selected>Select Here</option>
                         <option value="Shipment">Shipment</option>
                         <option value="Force work">Force Work</option>
                       </select> 
@@ -267,7 +238,7 @@ function CreateShipment() {
                     </div>
                       <div className="mb-4 w-50">
                         <label className="form-label">
-                        Add Description<span className="stra-icon">*</span>{" "}
+                        Add Description<span className="stra-icon"></span>{" "}
                         </label>
                         <input
                           name="description"   
@@ -281,7 +252,7 @@ function CreateShipment() {
                       </div>
                     </div>
                     <button type="submit" className="submit-btn"  value="Send Message">
-                      Create Shipment
+                      Save & Next
                     </button>
                     <div className="succbtn mb-4" >{succbtn ? <p>{succbtn}</p> : null}</div>
                   </form>

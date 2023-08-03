@@ -235,6 +235,28 @@ p.shiping-label {
     border-radius: 50%;
     margin-top: -2.5px;
 }
+.pending-py-01 {
+    background-color: #E5FEE7;
+    border-radius: 50px;
+    color: #c30000;
+    position: relative;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    display: inline-block;
+    padding: 5px 30px;
+}
+.pending-py:after, .pending-py-01:after {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    background-color: #c30000;
+    border-radius: 50%;
+    margin-top: -2.5px;
+}
 ul.pagination {
     justify-content: end;
     background-color: #1b2644;

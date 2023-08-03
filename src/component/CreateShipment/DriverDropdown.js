@@ -7,7 +7,7 @@ const DriverDropdown = () => {
 
   useEffect(() => {
     // Fetch the data from the API
-    axios.get('https://shippment-dfx.onrender.com/api/driver')
+    axios.get('https://shipment-backend.onrender.com/api/driver')
       .then(response => {
         setDrivers(response.data);
       })

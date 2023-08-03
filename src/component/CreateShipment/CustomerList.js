@@ -6,8 +6,6 @@ import Navbar from '../Navbar'
 
 
 import {
-  Nav,
-  NavItem,
   Form,
   FormGroup,
   Input,
@@ -16,13 +14,11 @@ import {
   ModalBody,
 } from "reactstrap";
 
-import { Link } from "react-router-dom";
-import { AiTwotoneDelete } from "react-icons/ai";
 import CreateCustomer from './CreateCustomer';
 
 async function ContactData(getContact){
 
-  await axios.get('https://shippment-dfx.onrender.com/api/creatcustomer',
+  await axios.get('https://shipment-backend.onrender.com/api/creatcustomer',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -35,15 +31,16 @@ async function ContactData(getContact){
 }
 //************************************************************** */
 
-async function updateBatch(id,name,email,phone,altphone,setModalIsOpenEdit,getBatchList){
-  if (name != "" && email != "" && phone != "" && altphone != "") {
-      await axios.post('https://shippment-dfx.onrender.com/api/updatecustomer',
+async function updateBatch(id,name,email,phoneno,altphone,address,setModalIsOpenEdit,getBatchList){
+  if (name != "" && email != "" && phoneno != "" && altphone != "") {
+      await axios.post('https://shipment-backend.onrender.com/api/updatecustomer',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       name: name,
       email: email,
-      phone: phone,
-      altphone: altphone
+      phoneno: phoneno,
+      altphone: altphone,
+      address: address
       },
       {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
   )
@@ -58,7 +55,7 @@ async function updateBatch(id,name,email,phone,altphone,setModalIsOpenEdit,getBa
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippment-dfx.onrender.com/api/delcustomer',
+  const results = await axios.post('https://shipment-backend.onrender.com/api/delcustomer',
       {
           id:ids
       },
@@ -72,14 +69,12 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function CustomerList() {
-    const [rowCount, setRowCount] = useState(0);
-    const [inquiries, setInquiries] = useState( );
-    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [altphone, setAltphone] = useState("");
+    const [phoneno, setPhoneno] = useState('');
+    const [altphone, setAltPhone] = useState("");
+    const [address, setAddress] = useState("");
     const [batchList,getBatchList] = useState([]);
 
 
@@ -106,29 +101,43 @@ function CustomerList() {
         setName(e.target.value)
   }
 
+  
+  function handleEditClick(customer) {
+    setIds(customer.id);
+    setName(customer.name);
+    setEmail(customer.email);
+    setPhoneno(customer.phoneno);
+    setAltPhone(customer.altphone);
+    setAddress(customer.address);
+    setModalIsOpenEdit(true);
+  }
+
   return (
     <section class="homedive ">
 
 <Modal isOpen={modalIsOpenEdit} className='main_modal_body dispatcher-list-form'>
                 <ModalBody className='modal_body'>
                 <AiOutlineClose className='main_AiOutlineClose close-icon' onClick={()=>setModalIsOpenEdit(false)}/>
-                   <h5 className='main_h5'>Edit Driver List</h5>
+                   <h5 className='main_h5'>Edit Customer List</h5>
                 </ModalBody>
                 <Form className='form_main '>
                     <FormGroup>
-                        <Input type="text" name="name" id="name" placeholder="Edit Name"   onBlur={(e) => handleInput(e)}/>
+                        <Input type="text" name="name" id="name" placeholder="Edit Name"   onChange={(e) => handleInput(e)} value={name}/>
                     </FormGroup>
                     <FormGroup>
-                        <Input type="email" name="email" id="email" placeholder="Edit Email" onBlur={(e) => setEmail(e.target.value)}/>
+                        <Input type="email" name="email" id="email" placeholder="Edit Email" onChange={(e) => setEmail(e.target.value)} value={email}/>
                     </FormGroup>
                     <FormGroup>
-                        <Input type="number" name="phone" id="phone" placeholder="Edit Phone Number " onBlur={(e) => {setPhone(e.target.value); console.log(e.target.value);}} />
+                        <Input type="number" name="phoneno" id="phoneno" placeholder="Edit Phone Number " onChange={(e) => {setPhoneno(e.target.value);}} value={phoneno}/>
                     </FormGroup>
                     <FormGroup>
-                        <Input type="number" name="phone" id="phone" placeholder="Edit Alternate number " onBlur={(e) => {setAltphone(e.target.value); console.log(e.target.value);}} />
+                        <Input type="number" name="altphone" id="altphone" placeholder="Edit Alternate number " onChange={(e) => {setAltPhone(e.target.value); }} value={altphone} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Input type="text" name="address" id="address" placeholder="Edit Address" onChange={(e) => {setAddress(e.target.value);  }} value={address} />
                     </FormGroup>
                     <p id="edit-validate-batch" style={{ color: 'red' }}></p>
-                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => updateBatch(ids,name,email,phone,altphone,setModalIsOpenEdit,getBatchList)}>Edit Driver List</Button>
+                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => updateBatch(ids,name,email,phoneno,altphone,address,setModalIsOpenEdit,getBatchList)}>Edit Customer List</Button>
                 </Form>
             </Modal>
 
@@ -227,13 +236,13 @@ function CustomerList() {
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             <td>{item.id}</td>
             <td>{item.name}</td>
-            <td>{item.phone}</td>
+            <td>{item.phoneno}</td>
             <td className="dis-email text-left">{item.email}</td>
             <td>{item.address}</td>
             <td>{item.DateAndTime}</td>
             <td>
             {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
-            <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>
+            <button className='btn btn1' onClick={() => handleEditClick(item)}><i class="bi bi-pen"></i></button>
               <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button>
             </td>
             

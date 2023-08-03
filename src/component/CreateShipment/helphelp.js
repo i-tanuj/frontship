@@ -14,7 +14,7 @@ import {
 import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact) {
-  await axios.get('https://shippment-dfx.onrender.com/api/createhelper', {
+  await axios.get('https://shipment-backend.onrender.com/api/createhelper', {
     headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
   })
   .then((res) => {
@@ -25,7 +25,7 @@ async function ContactData(getContact) {
 
 async function updateBatch(id, name, email, phone, address, setModalIsOpenEdit, getBatchList) {
   if (name !== "" && email !== "" && phone !== "" && address !== "") {
-    await axios.post('https://shippment-dfx.onrender.com/api/updatehelper', {
+    await axios.post('https://shipment-backend.onrender.com/api/updatehelper', {
       inst_hash: localStorage.getItem('inst_hash'),
       id: id,
       name: name,
@@ -44,7 +44,7 @@ async function updateBatch(id, name, email, phone, address, setModalIsOpenEdit, 
 }
 
 async function deleteContact(ids, getContact, DefaultgetContact) {
-  const results = await axios.post('https://shippment-dfx.onrender.com/api/delhelper', {
+  const results = await axios.post('https://shipment-backend.onrender.com/api/delhelper', {
     id: ids
   }, {
     headers: { authorization: `Bearer ${localStorage.getItem('token')}` }

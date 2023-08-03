@@ -14,7 +14,6 @@ function CreateDispatch() {
   const [password, setPassword] = useState("");
 
   const [error, setError] = useState(false);
-  const [modalPrivacy, setModalPrivacy] = useState(false);
   const [succbtn, setSuccbtn] = useState();
 
   const handleSubmit = async (e) => {
@@ -23,8 +22,7 @@ function CreateDispatch() {
       name,
       email,
       phone,
-      password,
-      //   date:fullDate,
+      password
     };
 
     if (name === "" || email === "" || phone === "" || password === "") {
@@ -39,7 +37,7 @@ function CreateDispatch() {
       setSuccbtn("");
       axios
         .post(
-          "https://shippment-dfx.onrender.com/api/addispatcher",
+          "https://shipment-backend.onrender.com/api/addispatcher",
           dataToSubmit
         )
         .then((response) => {

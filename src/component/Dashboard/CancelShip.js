@@ -21,7 +21,7 @@ import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
 
-  await axios.get('https://shippment-dfx.onrender.com/api/dispatcher',
+  await axios.get('https://shipment-backend.onrender.com/api/dispatcher',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -36,7 +36,7 @@ async function ContactData(getContact){
 
 async function updateBatch(id,name,email,phone,setModalIsOpenEdit,getBatchList){
   if (name != "" && email != "" && phone != "") {
-      await axios.post('https://shippment-dfx.onrender.com/api/updatedispatcher',
+      await axios.post('https://shipment-backend.onrender.com/api/updatedispatcher',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       name: name,
@@ -57,7 +57,7 @@ async function updateBatch(id,name,email,phone,setModalIsOpenEdit,getBatchList){
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippment-dfx.onrender.com/api/deldispatcher',
+  const results = await axios.post('https://shipment-backend.onrender.com/api/deldispatcher',
       {
           id:ids
       },
@@ -71,9 +71,6 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function CancelShip() {
-    const [rowCount, setRowCount] = useState(0);
-    const [inquiries, setInquiries] = useState( );
-    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');

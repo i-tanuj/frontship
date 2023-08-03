@@ -6,14 +6,8 @@ import { MdOutlineLock } from "react-icons/md";
 import { AiOutlineMail,AiOutlineUser,AiOutlineKey } from "react-icons/ai";
 import {BsArrowRight} from "react-icons/bs"
 import {
-  Nav,
-  NavItem,
-  Form,
   Button,
   Col,
-  Row,
-  Label,
-  Input,
   FormGroup,
 } from "reactstrap";
 import { Link } from "react-router-dom";
@@ -29,7 +23,7 @@ function Login() {
     //var item={username,password};
 
     const result = await axios
-      .post("https://shippment-dfx.onrender.com/login/", {
+      .post("https://shipment-backend.onrender.com/login/", {
         username: username,
         password: password,
       }).then(
@@ -49,8 +43,7 @@ function Login() {
            
             document.getElementById("validate_id").innerHTML =
               "Invalid Credentials.";
-            // window.alert('Incorrect Password or username')
-             
+          
           }
         },
         (error) => {
@@ -79,7 +72,7 @@ P&G TRUCKERS</h2>
        
         <div className=" px-lg-5">
            
-          {/* <h5 style={{ color: "#211E6D",fontSize:"16px" }} >Request a demo to see how Dwellfox platform can power your extended workforce.</h5> */}
+
           <form className="mt-4">
           
            
@@ -90,20 +83,13 @@ P&G TRUCKERS</h2>
         <img
           src="/Assets/dashboard/login-logo.png"
           alt="Rectangle 220"
-          // className="img-fluid"
         />
         </div>
       </div>
                 
 
                 <FormGroup action="" className="form">
-                {/* <label
-                          htmlFor=""
-                          className=""
-                          style={{ fontSize: "16px" }}
-                        >
-                           Email or Username<sup className="text-danger">*</sup>
-                        </label> */}
+            
                   <div className="form-input">
                     <AiOutlineUser className="icon2" />
                     
@@ -119,13 +105,7 @@ P&G TRUCKERS</h2>
                   </div>
                 </FormGroup>
                 <FormGroup action="" className="form">
-                {/* <label
-                          htmlFor=""
-                          className=""
-                          style={{ fontSize: "16px" }}
-                        >
-                          Password<sup className="text-danger">*</sup>
-                        </label> */}
+            
                   <div className="form-input">
                     <span className="icon1">
                       {isRevealPwd ? (
