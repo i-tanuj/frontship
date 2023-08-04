@@ -61,21 +61,50 @@ function DeliveryCreation() {
   const [vehicleplate, setVehicleplate] = useState("");
   const [helper, setHelper] = useState("");
   const [assigndriver, setAssigndriver] = useState("");
+  const [selectedCustomer, setSelectedCustomer] = useState('');
+  const [customer, setCustomer] = useState([]);
+  const [phoneno, setPhoneno] = useState('');
 
   const [contact, getContact] = useState([]);
   const [vehicle, getVehicle] = useState([]);
   const [helper1, getHelper] = useState([]);
   const [assidrive, getAssigndrive] = useState([]);
-
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  // const [phoneno, setPhoneno] = useState('');
+  const [altphone, setAltPhone] = useState("");
+  const [address, setAddress] = useState("");
   const [defaultcontact, DefaultgetContact] = useState([]);
-  // const adddesc = req.body.adddesc ;
-  // const vehicleplate = req.body.vehicleplate;
-  // const helper = req.body.helper;
-  // const assigndriver = req.body.assigndriver;
+  const [ids, setIds] = useState('');
+  const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
+
 
   const [error, setError] = useState(false);
-  const [modalPrivacy, setModalPrivacy] = useState(false);
   const [succbtn, setSuccbtn] = useState();
+
+  const handleCustomerChange = (event) => {
+    
+      setIds(customer.id);
+      setName(customer.name);
+      setEmail(customer.email);
+      setPhoneno(customer.phoneno);
+      setAltPhone(customer.altphone);
+      setAddress(customer.address);
+      setModalIsOpenEdit(true);
+    
+    setSelectedCustomer(event.target.value);
+  };
+
+  useEffect(() => {
+    // Fetch the data from the API
+    axios.get('https://shipment-backend.onrender.com/api/creatcustomer')
+      .then(response => {
+        setCustomer(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
 
   useEffect(() => {
     ContactData(getContact, DefaultgetContact);
@@ -105,7 +134,6 @@ function DeliveryCreation() {
       vehicleplate,
       helper,
       assigndriver,
-      //   date:fullDate,
     };
 
     if (
@@ -172,18 +200,21 @@ function DeliveryCreation() {
                     <label for="exampleInputEmail1" className="form-label">
                       Customers Name<span className="stra-icon">*</span>
                     </label>
-                    <select onChange={(e) => setCustoname(e.target.value)}>
-                      <option value="">Select Customers</option>
+              
 
-                      {contact.map((item, i) => (
-                        <option key={i}>
-                          <option value={item.id}>{item.name}</option>
-                        </option>
-                      ))}
-                    </select>
+                    <select name="full_name"  id="full_name" onChange={handleCustomerChange} value={selectedCustomer}>
+                    
+                    <option  value="">Select a Customer</option>
+                    {customer.map((customer) => (
+                      <option key={customer.id} value={customer.name}>
+                        {customer.name}
+                      </option>
+                    ))}
+                  </select>
+
                     {error && custoname.length <= 0 ? (
                       <span className="valid-form" style={{ color: "red" }}>
-                        Please Enter full name*
+                        Please Select Customer*
                       </span>
                     ) : (
                       ""
@@ -197,6 +228,7 @@ function DeliveryCreation() {
                     <input
                       name="phone"
                       onChange={(e) => setCustonum(e.target.value)}
+                      value={phoneno}
                       id="email"
                       placeholder="Enter Contact Number"
                       type="number"
