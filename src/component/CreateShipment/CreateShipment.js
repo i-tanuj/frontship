@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import "../../css/shippment.css";
 import axios from "axios";
-import { Nav, NavItem, Form, Button, Modal, ModalBody } from "reactstrap";
+import { Modal, ModalBody } from "reactstrap";
 import { Link } from "react-router-dom";
 import DeliveryCreation from "./DeliveryCreation";
 
@@ -12,9 +12,43 @@ async function ContactData(getContact, id) {
       headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
     })
     .then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       getContact(res.data);
     });
+}
+
+
+async function addBatch(dispatchname,discontactnum,disaltnum,dispatchemail,pickuplocation,pickupbeforedate,selectshipment,adddescription,setModalIsOpen){
+  // console.log("hiii");
+  const currentDate = new Date().toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    hour12: true,
+  });
+  if (dispatchname !== "" && discontactnum !== "" && disaltnum!== "" && dispatchemail !== "" && pickuplocation!== "" && pickupbeforedate !== "" && selectshipment!== "" && adddescription!== "") {
+    await axios.post('http://localhost:5000/api/addtotalshipmentrecord',
+    {
+        inst_hash: localStorage.getItem('dispatchname'),
+        dispatchname: dispatchname,
+        discontactnum: discontactnum,
+        disaltnum:disaltnum,
+        dispatchemail:dispatchemail,
+        pickuplocation: pickuplocation,
+        pickupbeforedate: pickupbeforedate,
+        selectshipment:selectshipment,
+        adddescription:adddescription
+    },
+    {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}    
+    )
+    // ContactData(getBatchList);
+    // console.log("   hello"+dispatchname);
+    setModalIsOpen(false);
+
+} else {
+document.getElementById("validate-batch").innerHTML=
+  "*Please fill required field!";
+console.log("Error :", "Please fill required field");
+}
+
 }
 
 function CreateShipment() {
@@ -90,6 +124,80 @@ function CreateShipment() {
     ContactData(getContact, DefaultgetContact);
   }, []);
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const dataToSubmit = {
+  //     dispatchname,
+  //     discontactnum,
+  //     disaltnum,
+  //     dispatchemail,
+  //     pickuplocation,
+  //     pickupbeforedate,
+  //     selectshipment,
+  //     adddescription,
+  //   };
+
+  //   // if (
+  //   //   dispatchname.length == 0 ||
+  //   //   discontactnum.length == 0 ||
+  //   //   disaltnum.length == 0 ||
+  //   //   dispatchemail.length == 0 ||
+  //   //   pickuplocation.length == 0 ||
+  //   //   pickupbeforedate.length == 0 ||
+  //   //   selectshipment.length == 0 ||
+  //   //   adddescription.length == 0
+  //   // ) {
+  //   //   setError(true);
+  //   //   setSuccbtn(
+  //   //     <span className="" style={{ color: "green" }}>
+  //   //       Submit Succesfully
+  //   //     </span>
+  //   //   );
+  //   // }
+  //   if (
+  //     dispatchname &&
+  //     discontactnum &&
+  //     disaltnum &&
+  //     dispatchemail &&
+  //     pickuplocation &&
+  //     pickupbeforedate &&
+  //     selectshipment &&
+  //     adddescription
+  //   ) {
+  //     fetch(
+  //       "http://localhost:5000/api/addtotalshipmentrecord",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(dataToSubmit),
+  //       }
+  //     )
+  //       .then((res) => res.json())
+  //       .then((res) => {
+  //         console.log(res, dataToSubmit);
+  //       });
+  //   } else {
+  //     setSuccbtn(
+  //       <span className="" style={{ color: "red" }}>
+  //         Please fill all the field
+  //       </span>
+  //     );
+  //   }
+  // };
+
+  // function handleEditClick(dispatcher) {
+  //   setIds(dispatcher.id);
+  //   setName(dispatcher.name);
+  //   setEmail(dispatcher.email);
+  //   setPhoneno(dispatcher.phone);
+  //   // setAltPhone(customer.altphone);
+  //   // setAddress(customer.address);
+  //   setModalIsOpenEdit(true);
+  // }
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const dataToSubmit = {
@@ -100,68 +208,28 @@ function CreateShipment() {
       pickuplocation,
       pickupbeforedate,
       selectshipment,
-      adddescription,
+      adddescription
     };
 
-    // if (
-    //   dispatchname.length == 0 ||
-    //   discontactnum.length == 0 ||
-    //   disaltnum.length == 0 ||
-    //   dispatchemail.length == 0 ||
-    //   pickuplocation.length == 0 ||
-    //   pickupbeforedate.length == 0 ||
-    //   selectshipment.length == 0 ||
-    //   adddescription.length == 0
-    // ) {
-    //   setError(true);
-    //   setSuccbtn(
-    //     <span className="" style={{ color: "green" }}>
-    //       Submit Succesfully
-    //     </span>
-    //   );
-    // }
-    if (
-      dispatchname &&
-      discontactnum &&
-      disaltnum &&
-      dispatchemail &&
-      pickuplocation &&
-      pickupbeforedate &&
-      selectshipment &&
-      adddescription
-    ) {
-      fetch(
-        "http://localhost:5000/api/addtotalshipmentrecord",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dataToSubmit),
-        }
-      )
-        .then((res) => res.json())
-        .then((res) => {
-          console.log(res, dataToSubmit);
-        });
+
+    if (dispatchname === '' || discontactnum === '' || disaltnum === '' || pickuplocation === '' || pickupbeforedate === '' || selectshipment === '' || adddescription === '') {
+      setError(true);
+      setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
     } else {
-      setSuccbtn(
-        <span className="" style={{ color: "red" }}>
-          Please fill all the field
-        </span>
-      );
+      setError(false);
+      setSuccbtn('');
+      axios.post('http://localhost:5000/api/addtotalshipmentrecord', dataToSubmit)
+        .then((response) => {
+          console.log(response.data);
+          setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
+    setModalIsOpen(false);
+        })
+        .catch((error) => {
+          console.error('Error submitting data:', error);
+          setSuccbtn(<span className="" style={{ color: 'red' }}>Failed to submit data</span>);
+        });
     }
   };
-
-  function handleEditClick(dispatcher) {
-    setIds(dispatcher.id);
-    setName(dispatcher.name);
-    setEmail(dispatcher.email);
-    setPhoneno(dispatcher.phone);
-    // setAltPhone(customer.altphone);
-    // setAddress(customer.address);
-    setModalIsOpenEdit(true);
-  }
 
   return (
     <div>
@@ -440,6 +508,7 @@ function CreateShipment() {
                           type="submit"
                           className="submit-btn"
                           value="Send Message"
+                          // onClick={() => addBatch(dispatchname,discontactnum,disaltnum,dispatchemail,pickuplocation,pickupbeforedate,selectshipment,adddescription)}
                         >
                           Save & Next
                         </button>

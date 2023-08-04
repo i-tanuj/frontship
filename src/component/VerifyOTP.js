@@ -80,6 +80,7 @@ function VerifyOTP() {
        document.getElementById("validate").innerHTML =
          "Invalid Credentials";
      }
+     
    }
   
   return (
@@ -166,6 +167,7 @@ P&G TRUCKERS</h2>
                       <Col md={6}>
                         <FormGroup>
                           <Button
+
                             className="verify-otp"
                             onClick={handleVerifyOTP}
                           >
@@ -184,7 +186,7 @@ P&G TRUCKERS</h2>
                       id="success-verifyOTPid"
                     ></p>
 
-                   {username != "" && otp != "" && flagValue === 1 ? (
+                   {username !== "" && otp !== "" && flagValue === 1 ? (
                       <>
                         <Col md={6}>
                           <FormGroup>
@@ -199,13 +201,17 @@ P&G TRUCKERS</h2>
                     ) : (
                       <Col md={6}>
                         <FormGroup>
+                        <Link to="/ForgetPassword">
+
                           <Button
                             className="resetPassword"
                             outline
                             onClick={toggleResetPassword}
+                          
                           >
                             Reset Password
                           </Button>
+                        </Link>
                         </FormGroup>
                       </Col>
                     )}

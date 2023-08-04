@@ -231,7 +231,7 @@ function SettlementRecords() {
             <td>
             <button className='settled' onClick={handleUpdateClick} id={item.id}> settled</button>
             {/* <button onClick={() => {updateRecord(amount,getBatchList);setIds(item.id)}} className='Settle-amount'> Settle Amount</button> */}
-            <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => {updateRecord(ids,amount,getBatchList);setIds(item.id)}}>Edit Driver List</Button>
+            {/* <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => {updateRecord(ids,amount,getBatchList);setIds(item.id)}}>Edit Driver List</Button> */}
 
             </td>
           </tr>
