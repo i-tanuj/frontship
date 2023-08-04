@@ -6,6 +6,7 @@ import PaymentRecords from './component/Dashboard/PaymentRecords';
 import SettlementRecords from './component/Dashboard/SettlementRecords';
 import SettlementHistory from './component/Dashboard/SettlementHistory';
 import AmountZero from './component/Dashboard/AmountZero';
+import Testdispatcher from './component/CreateShipment/Testdispatcher';
 
 const Login = React.lazy(() => import("./component/Login"));
 const VerifyOTP =  React.lazy(() => import("./component/VerifyOTP"))
@@ -26,6 +27,7 @@ const ViewShipment = React.lazy(() => import("./component/Dashboard/ViewShipment
 const DelaydShip = React.lazy(() => import("./component/Dashboard/DelaydShip"))
 const PendingShip = React.lazy(() => import("./component/Dashboard/PendingShip"))
 const CancelShip = React.lazy(() => import("./component/Dashboard/CancelShip"))
+// const Testdispatcher = React.lazy(() => import("./component/CreateShipment/Testdispatcher"))
 // const AmountZero = React.lazy(() => import("./component/Dashboard/AmountZero"))
 
 
@@ -64,6 +66,7 @@ function App() {
             <Route  exact path="/cancel" element={<CancelShip/>}/>
 
             <Route  exact path="/driverdropdown" element={<DriverDropdown/>}/>
+            <Route  exact path="/testdispatcher" element={<Testdispatcher/>}/>
 
 
           </Routes>

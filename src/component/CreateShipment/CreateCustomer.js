@@ -10,7 +10,7 @@ function CreateCustomer() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneno, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [altphone, setAltphone] = useState("");
 
@@ -30,7 +30,7 @@ function CreateCustomer() {
     const dataToSubmit = {
       name,
       email,
-      phone,
+      phoneno,
       altphone,
       address,
       DateAndTime: currentDate, // Adding current date and time to the data object
@@ -38,7 +38,7 @@ function CreateCustomer() {
 
 
 
-    if (name === '' || email === '' || phone === '' || altphone === '' || address === '') {
+    if (name === '' || email === '' || phoneno === '' || altphone === '' || address === '') {
       setError(true);
       setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
     } else {
@@ -112,13 +112,13 @@ function CreateCustomer() {
                     Customer Contact Number<span className="stra-icon">*</span>
                     </label>
                     <input
-                       name="phone"   
+                       name="phoneno"   
                        onChange={(e)=> setPhone(e.target.value)}          
-                       id="phone"
+                       id="phoneno"
                        placeholder="Enter your phone"
                        type="number"
                     />
-                     {error && phone.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter the 10 Digit number*</span>:""}
+                     {error && phoneno.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter the 10 Digit number*</span>:""}
 
                   </div>
                   <div className="mb-4 w-50">
