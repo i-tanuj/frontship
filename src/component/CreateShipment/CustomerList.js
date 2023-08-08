@@ -83,6 +83,7 @@ function CustomerList() {
     const [defaultcontact, DefaultgetContact] = useState([]);
     const [ids, setIds] = useState('');
     const [search,setSearch] =useState('');
+  
   const [currentPage,setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;

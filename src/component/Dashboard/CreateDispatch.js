@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import "../../css/shippment.css";
 import axios from "axios";
-import { Nav, NavItem, Form, Button, Modal, ModalBody } from "reactstrap";
-
+import { Modal, ModalBody } from "reactstrap";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function CreateDispatch() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -48,6 +49,15 @@ function CreateDispatch() {
             </span>
           );
           setModalIsOpen(false);
+             // Show Toastify notification for success
+       toast.success('Dispatcher Created Successfully!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+      });
         })
         .catch((error) => {
           console.error("Error submitting data:", error);
@@ -174,6 +184,8 @@ function CreateDispatch() {
           </div>
         </div>
       </Modal>
+          {/* Created Toast Container  */}
+          <ToastContainer/>
       <div className="d-flex create-dispatcher align-items-center">
         <div className="plus-icon">
           <button type="submit" onClick={() => setModalIsOpen(true)}>

@@ -8,6 +8,8 @@ function AdminDash() {
 							<div class="admin-dashboard">
 								<div class="title-header">
 									<h5 class="card-header-01">Admin Dashboard</h5>
+									<input className='ms-5' type="date" name="from" id="from" />
+									<input className='ms-5' type="date" name="to" id="to" />
 								</div>
 								<div class="row card-holder">
 								<div class="col-md-4 col-sm-6 col-xs-12">

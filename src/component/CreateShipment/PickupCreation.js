@@ -49,7 +49,7 @@ async function ContactData(getContact, id) {
 // }
 
 
-function CreateShipment() {
+function PickupCreation() {
   const [dispatchers, setDispatchers] = useState([]);
   const [selectedDispatcher, setSelectedDispatcher] = useState("");
   const [dispatcherData, setDispatcherData] = useState({
@@ -100,20 +100,13 @@ function CreateShipment() {
   const [defaultcontact, DefaultgetContact] = useState([]);
 
   const [dispatchname, setDispatchName] = useState("");
-  const [discontactnum, setDiscontactnum] = useState("");
-  const [disaltnum, setDisaltnum] = useState("");
-  const [dispatchemail, setDispatchemail] = useState("");
-  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-
-  const [error, setError] = useState(false);
 
   useEffect(() => {
     ContactData(getContact, DefaultgetContact);
   }, []);
 
 
-
-  const [name, setName] = useState('');
+const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [altphone, setAltphone] = useState('');
   const [phone, setPhone] = useState('');
@@ -145,6 +138,9 @@ const handleSubmit = async (e) => {
       console.error('Error submitting data:', error);
     }
   };
+
+
+
 
 
 
@@ -201,7 +197,7 @@ const handleSubmit = async (e) => {
                     tabindex="0"
                   >
                     <div className="row card-holder">
-                    <form
+                      <form
                         className="form-control-holder"
                         onSubmit={handleSubmit}
                       >
@@ -468,7 +464,8 @@ const handleSubmit = async (e) => {
       </Modal>
       <div className="d-flex create-dispatcher-01 align-items-center">
         <div className="plus-icon">
-          <button type="submit" onClick={() => setModalIsOpen(true)}>
+          <button type="submit" 
+          onClick={() => setModalIsOpen(true)}>
             <img src="/Assets/dash/plus.png" />
             Create New Shipment
           </button>
@@ -478,4 +475,4 @@ const handleSubmit = async (e) => {
   );
 }
 
-export default CreateShipment;
+export default PickupCreation;

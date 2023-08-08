@@ -61,6 +61,7 @@ async function deleteContact(ids,getContact,DefaultgetContact, ){
 function SettlementRecords() {
 
     const [contact, getContact] = useState([]);
+    
     const [full_name, setName] = useState('');
     const [id, setId] = useState('');
     const [amount, setAmount] = useState('');
@@ -88,22 +89,71 @@ function SettlementRecords() {
   }
 
 
-  const handleUpdateClick = () => {
-    fetch('https://shipment-backend.onrender.com/api/updateAmount', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  const handleUpdateClick = (id) => {
+    axios.post(
+      'https://shipment-backend.onrender.com/api/updateAmount',
+      {
+        inst_hash: localStorage.getItem('inst_hash'),
+        id: id,
+        full_name: full_name,
+        amount: 0, // Set the wallet amount to 0
       },
-      body: JSON.stringify({ id }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error('Error updating data:', error);
+      {
+        headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
+      }
+    )
+    .then((response) => {
+      console.log(response.data);
+      // Update the 'contact' state to reflect the changes
+      const updatedContacts = contact.map(item => {
+        if (item.id === id) {
+          return {
+            ...item,
+            amount: 0, // Update the wallet amount to 0
+          };
+        }
+        return item;
       });
+      getContact(updatedContacts); // Update the state
+    })
+    .catch((error) => {
+      console.error('Error updating data:', error);
+    });
   };
+
+  <Modal isOpen={modalIsOpenDelete} className="modal_body-delete">
+  <ModalBody className="dispatcher-list-form">
+    <AiOutlineClose
+      className="main_AiOutlineClose close-icon"
+      onClick={() => setModalIsOpenDelete(false)}
+      color="black"
+    />
+  </ModalBody>
+  <Form className="">
+    <h3 style={{ color: "grey", textAlign: "center" }}>
+      Do you really want to delete?
+    </h3>
+    <div
+      className="d-flex justify-content-center"
+      style={{ marginBottom: "50px" }}
+    >
+      <Button
+        outline
+        onClick={() => {
+          deleteContact(ids, getContact, DefaultgetContact);
+          setModalIsOpenDelete(false);
+        }}
+      >
+        Yes
+      </Button>
+      &nbsp;
+      <Button outline onClick={() => setModalIsOpenDelete(false)}>
+        Cancel
+      </Button>
+    </div>
+  </Form>
+</Modal>
+  
 
 
   
@@ -227,12 +277,8 @@ function SettlementRecords() {
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             <td>{item.full_name}</td>
             <td>{item.amount}</td>
-            {/* <td>{item.phone}</td> */}
             <td>
-            <button className='settled' onClick={handleUpdateClick} id={item.id}> settled</button>
-            {/* <button onClick={() => {updateRecord(amount,getBatchList);setIds(item.id)}} className='Settle-amount'> Settle Amount</button> */}
-            {/* <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => {updateRecord(ids,amount,getBatchList);setIds(item.id)}}>Edit Driver List</Button> */}
-
+            <button className='settled'  onClick={() => handleUpdateClick(item.id)} id={item.id}> settled</button>
             </td>
           </tr>
           )
@@ -282,5 +328,6 @@ function SettlementRecords() {
 }
 
 export default SettlementRecords;
+
 
 

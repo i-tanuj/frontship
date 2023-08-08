@@ -1,11 +1,28 @@
 import React,{useState,useEffect} from 'react'
+import { AiOutlineClose } from "react-icons/ai";
 import axios from 'axios';
 import '../../css/dispatchlist.css'
 import Navbar from '../Navbar'
+import CreateDriver from './CreateDriver'
+
+
+import {
+  Nav,
+  NavItem,
+  Form,
+  FormGroup,
+  Input,
+  Button,
+  Modal,
+  ModalBody,
+} from "reactstrap";
+
+import { Link } from "react-router-dom";
+import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
 
-  await axios.get('https://shipment-backend.onrender.com/api/driver',
+  await axios.get('https://shippment-dfx.onrender.com/api/driver',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -20,7 +37,7 @@ async function ContactData(getContact){
 
 async function updateBatch(id,full_name,email,phone,address,setModalIsOpenEdit,getBatchList){
   if (full_name != "" && email != "" && phone != "" && address != "") {
-      await axios.post('https://shipment-backend.onrender.com/driver/updatedriver',
+      await axios.post('https://shippment-dfx.onrender.com/driver/updatedriver',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       full_name: full_name,
@@ -41,7 +58,7 @@ async function updateBatch(id,full_name,email,phone,address,setModalIsOpenEdit,g
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shipment-backend.onrender.com/driver/deldriver',
+  const results = await axios.post('https://shippment-dfx.onrender.com/driver/deldriver',
       {
           id:ids
       },
@@ -55,10 +72,19 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function DriverList() {
+    const [rowCount, setRowCount] = useState(0);
+    const [inquiries, setInquiries] = useState( );
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [contact, getContact] = useState([]);
     const [full_name, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [address, setAddress] = useState('');
+    const [batchList,getBatchList] = useState([]);
 
 
+    const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
+    const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
     const [defaultcontact, DefaultgetContact] = useState([]);
     const [ids, setIds] = useState('');
     const [search,setSearch] =useState('');
@@ -102,6 +128,7 @@ function DriverList() {
                         <h2>All Driver List</h2>
                         </div>
                   </div>
+                  
                   <div className='shipment-header-row'>
                         <div className='column-one'>
                             <div>
@@ -154,6 +181,61 @@ function DriverList() {
                         </div>
                         
                   </div>
+                  <h3 className='Delivery-Documents'>1 Delivery Documents</h3>
+                  
+                  <div className='shipment-header-row'>
+                        <div className='column-one'>
+                            <div>
+                                <p className='shiping-label'>Customers Name<span>*</span></p>
+                                <p className='shiping-input'>Cameron Williamson</p>
+                            </div>
+                            <div>
+                                <p className='shiping-label'>Drop Location<span>*</span></p>
+                                <p className='shiping-input'>2715 Ash Dr. San Jose, South Dakota 83475</p>
+                            </div>
+                            <div>
+                                <p className='shiping-label'>POD Stamp <span>*</span></p>
+                                <p className='shiping-img-pre'>
+                                    <img src="/Assets/dashboard/shipment-view.png" />
+                                </p>
+                            </div>
+                            
+                        </div>
+                        <div className='column-two'>
+                        <div>
+                                <p className='shiping-label'>Customer’s Contact Number<span>*</span></p>
+                                <p className='shiping-input'>(808) 555-0111</p>
+                            </div>
+                            <div>
+                                <p className='shiping-label'>Drop date <span>*</span></p>
+                                <p className='shiping-input'>12 Jul</p>
+                            </div>
+                            <div>
+                                <p className='shiping-label'>Receivers ID <span>*</span></p>
+                                <p className='shiping-img-pre'>
+                                    <img src="/Assets/dashboard/shipment-view.png" />
+                                </p>
+                            </div>
+                        </div>
+                        <div className='column-three'>
+                        <div>
+                                <p className='shiping-label'>Customer’s Email Number* <span>*</span></p>
+                                <p className='shiping-input'>jackson.graham@example.com</p>
+                            </div>
+                            <div>
+                                <p className='shiping-label'>Description <span>*</span></p>
+                                <p className='shiping-input'>Lorem ipsum dolor sit amet consectetur. Varius posuere lacus lectus quisque </p>
+                            </div>
+                            <div>
+                                <p className='shiping-label'>Receivers Signature<span>*</span></p>
+                                <p className='shiping-img-pre'>
+                                    <img src="/Assets/dashboard/shipment-view.png" />
+                                </p>
+                            </div>
+                        </div>
+                        
+                  </div>
+                  <h3 className='Delivery-Documents'>2 Delivery Documents</h3>
                   <div className='shipment-header-row'>
                         <div className='column-one'>
                             <div>
@@ -264,5 +346,3 @@ function DriverList() {
 }
 
 export default DriverList;
-
-

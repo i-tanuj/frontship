@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import '../../css/shippment.css'
 import axios from 'axios';
-import { Nav, NavItem, Form, Button, Modal, ModalBody } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Modal, ModalBody } from "reactstrap";
+
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function CreateDriver() {
     // const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -43,6 +45,17 @@ function CreateDriver() {
           console.log(response.data);
           setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
     setModalIsOpen(false);
+
+    
+    toast.success('Driver Created Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
+
         })
         .catch((error) => {
           console.error('Error submitting data:', error);
@@ -150,6 +163,8 @@ function CreateDriver() {
             </div>
 
            </Modal>
+               {/* Created Toast Container  */}
+               <ToastContainer/>
                 	<div class="d-flex create-dispatcher align-items-center">
                         <div class="plus-icon">							    
                             <button type="submit"  onClick={() => setModalIsOpen(true)}><img src="/Assets/dash/plus.png"/>Driver</button>

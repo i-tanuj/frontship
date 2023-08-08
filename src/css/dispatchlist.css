@@ -122,6 +122,8 @@ input::placeholder{
 /********************* view shipment record dashboaed ********************/
 .view-table-shipment {
     margin-top: 86px;
+    box-shadow: 0px 4px 23px 0px #1B264426;
+    padding: 0;
 }
 .view-table-shipment-header {
     background-color: #B2D9FF;
@@ -141,7 +143,7 @@ input::placeholder{
     color: #1B2644;
 }
 .shipment-header-row {
-    background-color: #FFFFFF;
+    background-color: #EEF1F5;
     z-index: 9;
     position: relative;
     padding: 30px;
@@ -149,6 +151,16 @@ input::placeholder{
     justify-content: space-between;
     column-gap: 40px;
     padding-bottom: 20px;
+}
+h3.Delivery-Documents {
+    padding: 10px;
+    text-align: center;
+    background-color: #b2d9ff;
+    position: relative;
+    z-index: 9;
+    margin-bottom: 0;
+    font-size: 16px;
+    font-weight: 600;
 }
 .shiping-label span {
     color: #FF0000;
@@ -160,6 +172,7 @@ p.shiping-input {
     padding: 10px 15px;
     border-radius: 10px;
     font-size: 15px;
+    background-color: #fff;
 }
 p.shiping-label {
     font-size: 15px;
@@ -175,7 +188,7 @@ p.shiping-label {
     color: #1b2644;
     text-align: right;
     background-color: #fff;
-    padding: 8px 20px;
+    padding: 13px 30px 10px;
     border-radius: 5px;
     text-decoration: none;
 }
@@ -232,28 +245,6 @@ p.shiping-label {
     width: 5px;
     height: 5px;
     background-color: #00c313;
-    border-radius: 50%;
-    margin-top: -2.5px;
-}
-.pending-py-01 {
-    background-color: #E5FEE7;
-    border-radius: 50px;
-    color: #c30000;
-    position: relative;
-    font-size: 12px;
-    font-weight: 500;
-    text-align: center;
-    display: inline-block;
-    padding: 5px 30px;
-}
-.pending-py:after, .pending-py-01:after {
-    content: "";
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    width: 5px;
-    height: 5px;
-    background-color: #c30000;
     border-radius: 50%;
     margin-top: -2.5px;
 }
@@ -356,4 +347,22 @@ span.ship-cancel:after {
 
 thead.tableheading th {
     font-weight: 700;
+}
+input.form-control.me-2.serch-filed {
+    background-color: #0000;
+    border: 1px solid #000000;
+    border-left: 0;
+    padding-left: 0;
+    font-size: 16px;
+    font-weight: 500;
+    padding-right: 0px;
+}
+span#basic-addon1 {
+    background-color: #0000 !important;
+    border: 1px solid;
+    border-right: 0;
+}
+.bi-search::before {
+    content: "\f52a";
+    font-weight: 800 !important;
 }

@@ -23,7 +23,7 @@ async function updateBatch(
   id,
   name,
   email,
-  phone,
+  phoneno,
   address,
   setModalIsOpenEdit,
   getBatchList
@@ -32,7 +32,7 @@ async function updateBatch(
     timeZone: "Asia/Kolkata",
     hour12: true,
   });
-  if (name != "" && email != "" && phone != "" && address != "") {
+  if (name != "" && email != "" && phoneno != "" && address != "") {
     await axios.post(
       "https://shipment-backend.onrender.com/api/updatehelper",
       {
@@ -40,7 +40,7 @@ async function updateBatch(
         id: id,
         name: name,
         email: email,
-        phone: phone,
+        phoneno: phoneno,
         address: address,
         DateAndTime: currentDate, // Adding current date and time to the data object
       },
@@ -73,7 +73,7 @@ function HelperList() {
   const [contact, getContact] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneno, setPhoneno] = useState("");
   const [address, setAddress] = useState("");
   const [batchList, getBatchList] = useState([]);
 
@@ -82,7 +82,6 @@ function HelperList() {
   const [defaultcontact, DefaultgetContact] = useState([]);
   const [ids, setIds] = useState("");
   const [search, setSearch] = useState("");
-  console.log(search);
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
@@ -104,7 +103,7 @@ function HelperList() {
     setIds(helper.id);
     setName(helper.name);
     setEmail(helper.email);
-    setPhone(helper.phone);
+    setPhoneno(helper.phoneno);
     setAddress(helper.address);
     setModalIsOpenEdit(true);
   }
@@ -146,11 +145,11 @@ function HelperList() {
           <FormGroup>
             <Input
               type="number"
-              name="phone"
-              id="phone"
+              name="phoneno"
+              id="phoneno"
               placeholder="Edit Phone Number "
-              onChange={(e) => setPhone(e.target.value)}
-              value={phone}
+              onChange={(e) => setPhoneno(e.target.value)}
+              value={phoneno}
             />
           </FormGroup>
           <FormGroup>
@@ -175,7 +174,7 @@ function HelperList() {
                 ids,
                 name,
                 email,
-                phone,
+                phoneno,
                 address,
                 setModalIsOpenEdit,
                 getBatchList
@@ -294,9 +293,9 @@ function HelperList() {
                       No.
                     </th>
                     <th scope="col">Helper Name</th>
-                    <th scope="col">Helper Phone number</th>
-                    <th scope="col">Helper Email</th>
                     <th scope="col">Helper Address</th>
+                    <th scope="col">Helper Email</th>
+                    <th scope="col">Helper Phone number</th>
                     <th scope="col">Registration Date</th>
                     <th scope="col" class="borderre1">
                       Action
@@ -316,9 +315,9 @@ function HelperList() {
                           <span className="dispatcher-id">{i + 1}</span>
                         </th>
                         <td>{item.name}</td>
-                        <td>{item.phone}</td>
-                        <td>{item.email}</td>
                         <td>{item.address}</td>
+                        <td>{item.email}</td>
+                        <td>{item.phoneno}</td>
                         <td>{item.DateAndTime}</td>
                         <td>
                           <button

@@ -49,6 +49,31 @@ async function assigndriverData(getAssigndrive, id) {
     });
 }
 
+
+async function updateBatch(id, customername, customernumber, selectshipdrop, adddescriptiondrop, vehicleplate, helper1, helper2){
+  if (customername != "" && customernumber != "") {
+      await axios.post('http://localhost:5000/api/updatedelivery',
+      {inst_hash: localStorage.getItem('inst_hash'),
+      id : id,
+      customername: customername,
+      customernumber: customernumber,
+      selectshipdrop: selectshipdrop,
+      adddescriptiondrop: adddescriptiondrop,
+      vehicleplate: vehicleplate,
+      helper1: helper1,
+      helper2: helper2
+      },
+      {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
+  )
+  // ContactData(getBatchList)
+  // setModalIsOpenEdit(false)
+} else {
+  document.getElementById("edit-validate-batch").innerHTML =
+    "*Please fill required field!";
+  console.log("Error :", "Please fill required field");
+}    
+}
+
 function DeliveryCreation() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -56,44 +81,41 @@ function DeliveryCreation() {
   const [custonum, setCustonum] = useState("");
   const [droplocation, setDroplocation] = useState("");
   const [dropdate, setDropdate] = useState("");
-  const [selectshipment, setSelectshipment] = useState("");
+  // const [selectshipment, setSelectshipment] = useState("");
   const [adddesc, setAdddesc] = useState("");
-  const [vehicleplate, setVehicleplate] = useState("");
   const [helper, setHelper] = useState("");
   const [assigndriver, setAssigndriver] = useState("");
   const [selectedCustomer, setSelectedCustomer] = useState('');
   const [customer, setCustomer] = useState([]);
-  const [phoneno, setPhoneno] = useState('');
+  // const [helper2, setHelper2] = useState('');
 
   const [contact, getContact] = useState([]);
   const [vehicle, getVehicle] = useState([]);
-  const [helper1, getHelper] = useState([]);
   const [assidrive, getAssigndrive] = useState([]);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  // const [phoneno, setPhoneno] = useState('');
-  const [altphone, setAltPhone] = useState("");
   const [address, setAddress] = useState("");
   const [defaultcontact, DefaultgetContact] = useState([]);
-  const [ids, setIds] = useState('');
+  const [id, setId] = useState('');
   const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
 
 
   const [error, setError] = useState(false);
   const [succbtn, setSuccbtn] = useState();
 
-  const handleCustomerChange = (event) => {
+  // const handleCustomerChange = (event) => {
     
-      setIds(customer.id);
-      setName(customer.name);
-      setEmail(customer.email);
-      setPhoneno(customer.phoneno);
-      setAltPhone(customer.altphone);
-      setAddress(customer.address);
-      setModalIsOpenEdit(true);
+  //     setId(customer.id);
+  //     setCustomername(customer.customername);
+  //     setCustomernumber(customer.customernumber);
+  //     setSelectshipdrop(customer.selectshipdrop);
+  //     setAdddescriptiondrop(customer.adddescriptiondrop);
+  //     setVehicleplate(customer.vehicleplate);
+  //     setHelper1(customer.helper1);
+  //     setHelper2(customer.helper2);
+
+  //     setModalIsOpenEdit(true);
     
-    setSelectedCustomer(event.target.value);
-  };
+  //   setSelectedCustomer(event.target.value);
+  // };
 
   useEffect(() => {
     // Fetch the data from the API
@@ -114,78 +136,49 @@ function DeliveryCreation() {
     VehicalData(getVehicle, DefaultgetContact);
   }, []);
 
-  useEffect(() => {
-    helperData(getHelper, DefaultgetContact);
-  }, []);
+  // useEffect(() => {
+  //   helperData(getHelper, DefaultgetContact);
+  // }, []);
 
   useEffect(() => {
     assigndriverData(getAssigndrive, DefaultgetContact);
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const dataToSubmit = {
-      custoname,
-      custonum,
-      droplocation,
-      dropdate,
-      selectshipment,
-      adddesc,
-      vehicleplate,
-      helper,
-      assigndriver,
-    };
 
-    if (
-      custoname.length == 0 ||
-      custonum.length == 0 ||
-      droplocation.length == 10 ||
-      dropdate.length == 10 ||
-      selectshipment.length == 0 ||
-      droplocation.length == 0 ||
-      adddesc.length == 0 ||
-      vehicleplate.length == 0 ||
-      helper.length == 0 ||
-      assigndriver.length == 0
-    ) {
-      setError(true);
-      setSuccbtn(
-        <span className="" style={{ color: "green" }}>
-          Submit Succesfully
-        </span>
-      );
-    }
-    if (
-      custoname &&
-      custonum &&
-      droplocation &&
-      dropdate &&
-      selectshipment &&
-      droplocation &&
-      adddesc &&
-      vehicleplate &&
-      helper &&
-      assigndriver
-    ) {
-      fetch("https://shipment-backend.onrender.com/api/adddeliverycreation", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToSubmit),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          console.log(res, dataToSubmit);
-        });
+  
+const [customername, setCustomername] = useState('');
+const [customernumber, setCustomernumber] = useState('');
+const [selectshipdrop, setSelectshipdrop] = useState('');
+const [adddescriptiondrop, setAdddescriptiondrop] = useState('');
+const [vehicleplate, setVehicleplate] = useState('');
+const [helper1, setHelper1] = useState('');
+const [helper2, setHelper2] = useState('');
+
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch('http://localhost:5000/api/updatedelivery', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ customername, customernumber, selectshipdrop, adddescriptiondrop, vehicleplate, helper1, helper2 }),
+    });
+
+    if (response.ok) {
+      console.log('Data submitted successfully');
+      // You can reset the form here
     } else {
-      setSuccbtn(
-        <span className="" style={{ color: "red" }}>
-          Please fill all the field
-        </span>
-      );
+      console.error('Data submission failed');
     }
-  };
+  } catch (error) {
+    console.error('Error submitting data:', error);
+  }
+};
+
+
 
   return (
     <div>
@@ -194,7 +187,9 @@ function DeliveryCreation() {
           <div className="admin-dashboard">
             <div className="title-header"></div>
             <div className="row card-holder form-control-delivery">
-              <form className="" onSubmit={handleSubmit}>
+              <form className="" 
+              // onSubmit={handleSubmit}
+              >
                 <div className="row">
                   <div className="mb-4 w-50">
                     <label for="exampleInputEmail1" className="form-label">
@@ -202,7 +197,13 @@ function DeliveryCreation() {
                     </label>
               
 
-                    <select name="full_name"  id="full_name" onChange={handleCustomerChange} value={selectedCustomer}>
+                    <select name="full_name"  id="full_name"
+                    //  onChange={handleCustomerChange}
+                     onChange={(e) => {setCustomername(e.target.value);}}
+
+                    //  value={selectedCustomer}
+                      value={customername}
+                      >
                     
                     <option  value="">Select a Customer</option>
                     {customer.map((customer) => (
@@ -227,8 +228,10 @@ function DeliveryCreation() {
                     </label>
                     <input
                       name="phone"
-                      onChange={(e) => setCustonum(e.target.value)}
-                      value={phoneno}
+                      // onChange={(e) => setCustonum(e.target.value)}
+                      onChange={(e) => {setCustomernumber(e.target.value);}}
+                      // value={phoneno}
+                      value={customernumber}
                       id="email"
                       placeholder="Enter Contact Number"
                       type="number"
@@ -250,8 +253,9 @@ function DeliveryCreation() {
                     </label>
                     <input
                       name="droplocation"
-                      onChange={(e) => setDroplocation(e.target.value)}
+                      onChange={(e) => {setSelectshipdrop(e.target.value);}}
                       id="droplocation"
+                      value={selectshipdrop}
                       placeholder="Enter your drop location"
                       type="text"
                     />
@@ -269,7 +273,7 @@ function DeliveryCreation() {
                     </label>
                     <input
                       name="date"
-                      onChange={(e) => setDropdate(e.target.value)}
+                      onChange={(e)  => { setDropdate(e.target.value);}}
                       id="date"
                       placeholder="Date"
                       type="date"
@@ -288,19 +292,21 @@ function DeliveryCreation() {
                     <label className="form-label">
                       Please Select<span className="stra-icon">*</span>
                     </label>
-                    <select onChange={(e) => setSelectshipment(e.target.value)}>
+                    <select 
+                    // onChange={(e) => setSelectshipment(e.target.value)}
+                    >
                       <option value="">select option</option>
 
                       <option value="Shipment">Shipment</option>
                       <option value="Work Force">Work Force</option>
                     </select>
-                    {error && selectshipment.length <= 0 ? (
+                    {/* {error && selectshipment.length <= 0 ? (
                       <span className="valid-form" style={{ color: "red" }}>
                         Please Enter pickup location*
                       </span>
                     ) : (
                       ""
-                    )}
+                    )} */}
                   </div>
                   <div className="mb-4 w-50">
                     <label className="form-label">
@@ -308,8 +314,9 @@ function DeliveryCreation() {
                     </label>
                     <input
                       name="description"
-                      onChange={(e) => setAdddesc(e.target.value)}
+                      onChange={(e) =>{ setAdddescriptiondrop(e.target.value);}}
                       id="description"
+                      value={adddescriptiondrop}
                       placeholder="Add description"
                       type="text"
                     />
@@ -330,7 +337,8 @@ function DeliveryCreation() {
                     <select
                       class=""
                       aria-label="Default select example"
-                      onChange={(e) => setVehicleplate(e.target.value)}
+                      value={vehicleplate}
+                      onChange={(e) => {setVehicleplate(e.target.value);}}
                     >
                       <option value="">Select Vehicle Plate</option>
                       {vehicle.map((item, i) => (
@@ -349,19 +357,21 @@ function DeliveryCreation() {
                   </div>
                   <div className="mb-4 w-50">
                     <label className="form-label">
-                      Helper<span className="stra-icon">*</span>{" "}
+                      Helper 1<span className="stra-icon">*</span>{" "}
                     </label>
                     <select
                       class=""
                       aria-label="Default select example"
-                      onChange={(e) => setHelper(e.target.value)}
+                      value={helper1}
+                      onChange={(e) => { setHelper1(e.target.value);}}
                     >
                       <option selected>Select Helper</option>
-                      {helper1.map((item, i) => (
+                      {/* {
+                        helper1.map((item, i) => (
                         <option key={i}>
                           <option value={item.id}>{item.name}</option>
                         </option>
-                      ))}
+                      ))} */}
                     </select>
                     {error && helper.length <= 0 ? (
                       <span className="valid-form" style={{ color: "red" }}>
@@ -373,6 +383,31 @@ function DeliveryCreation() {
                   </div>
                 </div>
                 <div className="row">
+                <div className="mb-4 w-50">
+                    <label className="form-label">
+                      Helper 2<span className="stra-icon">*</span>{" "}
+                    </label>
+                    <select
+                      class=""
+                      aria-label="Default select example"
+                      value={helper2}
+                      onChange={(e) => { setHelper2(e.target.value); }}
+                    >
+                      <option selected>Select Helper</option>
+                      {/* {helper1.map((item, i) => (
+                        <option key={i}>
+                          <option value={item.id}>{item.name}</option>
+                        </option>
+                      ))} */}
+                    </select>
+                    {error && helper.length <= 0 ? (
+                      <span className="valid-form" style={{ color: "red" }}>
+                        Enter Description*
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                   <div className="mb-4 w-50">
                     <label className="form-label">
                       Assign driver<span className="stra-icon">*</span>
@@ -380,7 +415,7 @@ function DeliveryCreation() {
                     <select
                       class=""
                       aria-label="Default select example"
-                      onChange={(e) => setAssigndriver(e.target.value)}
+                      onChange={(e) => {setAssigndriver(e.target.value);}}
                     >
                       <option>Select Driver</option>
                       {assidrive.map((item, i) => (
@@ -403,6 +438,7 @@ function DeliveryCreation() {
                   type="submit"
                   className="submit-btn"
                   value="Send Message"
+                  onClick={() => updateBatch(id,customername,customernumber,selectshipdrop,adddescriptiondrop,vehicleplate,helper1,helper2)}
                 >
                   Create Task
                 </button>

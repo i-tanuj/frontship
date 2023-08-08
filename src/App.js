@@ -26,7 +26,7 @@ const settlementHistory = React.lazy(() => import("./component/Dashboard/Settlem
 const ViewShipment = React.lazy(() => import("./component/Dashboard/ViewShipment"))
 const DelaydShip = React.lazy(() => import("./component/Dashboard/DelaydShip"))
 const PendingShip = React.lazy(() => import("./component/Dashboard/PendingShip"))
-const CancelShip = React.lazy(() => import("./component/Dashboard/CancelShip"))
+const PickupCreation = React.lazy(() => import("./component/CreateShipment/PickupCreation"))
 // const Testdispatcher = React.lazy(() => import("./component/CreateShipment/Testdispatcher"))
 // const AmountZero = React.lazy(() => import("./component/Dashboard/AmountZero"))
 
@@ -63,10 +63,11 @@ function App() {
             <Route  exact path="/view" element={<ViewShipment />}/>
             <Route  exact path="/delayd" element={<DelaydShip/>}/>
             <Route  exact path="/pending" element={<PendingShip/>}/>
-            <Route  exact path="/cancel" element={<CancelShip/>}/>
+            {/* <Route  exact path="/cancel" element={<CancelShip/>}/> */}
 
             <Route  exact path="/driverdropdown" element={<DriverDropdown/>}/>
             <Route  exact path="/testdispatcher" element={<Testdispatcher/>}/>
+            <Route  exact path="/pickupcreation" element={<PickupCreation/>}/>
 
 
           </Routes>

@@ -343,7 +343,6 @@ function DriverList() {
 
                         <td>12</td>
                         <td>
-                          {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
                           <button
                             className="btn btn1"
                             onClick={() => handleEditClick(item)}
