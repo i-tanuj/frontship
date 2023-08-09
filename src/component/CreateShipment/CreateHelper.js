@@ -30,7 +30,7 @@ async function ContactData(getContact){
 
 async function addBatch(name,email,phoneno,address,setModalIsOpen,getBatchList){
   if (name !== "" && email !== "" && phoneno !== "" && address!== "" ) {
-    await axios.post('http://localhost:5000/api/addhelper',
+    await axios.post('https://shipment-backend.onrender.com/api/addhelper',
     {
         inst_hash: localStorage.getItem('name'),
         name: name,

@@ -7,7 +7,7 @@ import DeliveryCreation from "./DeliveryCreation";
 
 async function ContactData(getContact, id) {
   await axios
-    .get("http://localhost:5000/api/dispatcher", {
+    .get("https://shipment-backend.onrender.com/api/dispatcher", {
       headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
     })
     .then((res) => {
@@ -20,7 +20,7 @@ async function ContactData(getContact, id) {
 
 // async function addBatch(name,email,phone,altphone,pickuplocation,pickupdate,selectshipment,adddescription,setModalIsOpen,getBatchList){
 //   if (name !== "" && email !== "" && phone !== "" && altphone!== "" ) {
-//     await axios.post('http://localhost:5000/api/addtotalshipmentrecord',
+//     await axios.post('https://shipment-backend.onrender.com/api/addtotalshipmentrecord',
 //     {
 //         inst_hash: localStorage.getItem('name'),
 //         name: name,
@@ -66,7 +66,7 @@ function PickupCreation() {
   const fetchDispatchers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/dispatcher"
+        "https://shipment-backend.onrender.com/api/dispatcher"
       );
       const dispatcherData = response.data;
       setDispatchers(dispatcherData);
@@ -84,7 +84,7 @@ function PickupCreation() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/fetchData/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/fetchData/${selectedOptionValue}`
         );
         const selectedDispatcherData = response.data;
         setDispatcherData(selectedDispatcherData);
@@ -120,7 +120,7 @@ const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/api/addtotalshipmentrecord', {
+      const response = await fetch('https://shipment-backend.onrender.com/api/addtotalshipmentrecord', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -209,18 +209,18 @@ const handleSubmit = async (e) => {
                             </label>
 
                             <select
-                            //   value={selectedDispatcher}
-                            //   onChange={handleSelectChange}
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                              value={selectedDispatcher}
+                              onChange={handleSelectChange}
+                            // value={name}
+                            // onChange={(e) => setName(e.target.value)}
                               name="name"
                               id="name"
                             >
-                              <option value="">Select Dispatcher</option>
+                              <option value="">Select Customer</option>
                               {dispatchers.map((dispatcher) => (
                                 <option
-                                //   key={dispatcher.id}
-                                //   value={dispatcher.id}
+                                  key={dispatcher.id}
+                                  value={dispatcher.id}
                                   name="name"
                               id="name"
                                 >
@@ -248,8 +248,8 @@ const handleSubmit = async (e) => {
                             </label>
                             <input
                               name="phone"
-                            //   value={dispatcherData.phone}
-                            value={phone}
+                              value={dispatcherData.phone}
+                            // value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                               // readOnly
                               id="phone"
@@ -276,9 +276,9 @@ const handleSubmit = async (e) => {
                             </label>
                             <input
                               name="email"
-                            //   value={dispatcherData.email}
+                              value={dispatcherData.email}
                               id="email"
-                              value={email}
+                              // value={email}
                               onChange={(e) => setEmail(e.target.value)}
                               placeholder="Enter Email Address"
                               type="email"

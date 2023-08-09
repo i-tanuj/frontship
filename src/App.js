@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PaymentRecords from './component/Dashboard/PaymentRecords';
 import SettlementRecords from './component/Dashboard/SettlementRecords';
 import SettlementHistory from './component/Dashboard/SettlementHistory';
-import AmountZero from './component/Dashboard/AmountZero';
+// import AmountZero from './component/Dashboard/AmountZero';
 import Testdispatcher from './component/CreateShipment/Testdispatcher';
 
 const Login = React.lazy(() => import("./component/Login"));
@@ -58,12 +58,11 @@ function App() {
             <Route  exact path="/paymentRecords" element={<PaymentRecords/>}/>
             <Route  exact path="/settlementRecord" element={<SettlementRecords/>}/>
             <Route  exact path="/settlementhistory" element={<SettlementHistory/>}/>
-            <Route  exact path="/amountzero" element={<AmountZero/>}/>
+            {/* <Route  exact path="/amountzero" element={<AmountZero/>}/> */}
 
             <Route  exact path="/view" element={<ViewShipment />}/>
             <Route  exact path="/delayd" element={<DelaydShip/>}/>
             <Route  exact path="/pending" element={<PendingShip/>}/>
-            {/* <Route  exact path="/cancel" element={<CancelShip/>}/> */}
 
             <Route  exact path="/driverdropdown" element={<DriverDropdown/>}/>
             <Route  exact path="/testdispatcher" element={<Testdispatcher/>}/>

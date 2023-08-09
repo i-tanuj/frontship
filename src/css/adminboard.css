@@ -65,6 +65,30 @@
 .card-holder img {
     width: 35%;
 }
+.title-header-admin {
+    font-size: 24px;
+    font-weight: 700;
+    padding: 13px 30px;
+    border-radius: 10px 10px 0 0;
+}
+.datepicker-admin {
+    display: flex;
+    justify-content: space-between;
+    background-color: #1B26441F;
+    align-items: center;
+    padding: 0 20px;
+}
+.datepicker-date {
+    width: 63%;
+    display: flex;
+    column-gap: 10px;
+}
+.datepicker-date input {
+    width: 100%;
+    padding: 6px;
+    border: none;
+    border-radius: 6px;
+}
 
 @media only screen and (max-width:1440px){
  

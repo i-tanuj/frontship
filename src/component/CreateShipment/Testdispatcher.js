@@ -37,7 +37,7 @@ function Testdispatcher() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/fetchData/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/fetchData/${selectedOptionValue}`
         );
         const selectedDispatcherData = response.data;
         setDispatcherData(selectedDispatcherData);

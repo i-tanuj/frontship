@@ -52,7 +52,7 @@ async function assigndriverData(getAssigndrive, id) {
 
 async function updateBatch(id, customername, customernumber, selectshipdrop, adddescriptiondrop, vehicleplate, helper1, helper2){
   if (customername != "" && customernumber != "") {
-      await axios.post('http://localhost:5000/api/updatedelivery',
+      await axios.post('https://shipment-backend.onrender.com/api/updatedelivery',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       customername: customername,
@@ -159,7 +159,7 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    const response = await fetch('http://localhost:5000/api/updatedelivery', {
+    const response = await fetch('https://shipment-backend.onrender.com/api/updatedelivery', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

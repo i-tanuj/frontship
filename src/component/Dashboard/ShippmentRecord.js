@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
-  await axios.get('https://shipment-backend.onrender.com/api/pickupcreation',
+  await axios.get('https://shipment-backend.onrender.com/api/getshipmentrecords',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -80,7 +80,6 @@ function DispatchList() {
     const [defaultcontact, DefaultgetContact] = useState([]);
     const [ids, setIds] = useState('');
     const [search,setSearch] =useState('');
-  console.log(search)
   const [currentPage,setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
@@ -181,12 +180,14 @@ function DispatchList() {
                         <thead class="tableheading">
                           <tr>
                              <th scope="col" class="borderre">S.No</th>
-                             <th scope="col" class="borderre">Customer Name</th>
-                            <th scope="col">Phone No.</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Pickup Location</th>
-                            <th scope="col">Drop Location</th>
-                    
+                             <th scope="col" class="borderre">Task Id</th>
+                             <th scope="col" class="borderre">Driver Details</th>
+                            <th scope="col">Delivery Details</th>
+                            <th scope="col">Vehicle</th>
+                            <th scope="col">Helper</th>
+                            <th scope="col">Task Status</th>
+                            <th scope="col">Creation Date & Time</th>
+                            <th scope="col">Created By</th>
                             <th scope="col" class="borderre1">Action</th>
                           </tr>
                         </thead>
@@ -199,11 +200,14 @@ function DispatchList() {
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             <td>{item.id}</td>
-            <td>{item.discontactnum}</td>
-            <td>{item.dispatchname}</td>
+            <td>{item.assigndriver}</td>
+            <td>{item.phone}</td>
+            <td>{item.vehicleplate}</td>
+            <td>{item.helper1}</td>
+            <td>{"pending"}</td>
+            <td>{"12/03/2023"}</td>
             {/* <td className="dis-email text-left">{item.droplocation}<br></br>{item.dropdate}<br></br></td> */}
-            <td>{item.dispatchemail}</td>
-            <td>{item.selectshipdrop}</td>
+            <td>{"Manager Dashboard"}</td>
 
             <td>
             <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>

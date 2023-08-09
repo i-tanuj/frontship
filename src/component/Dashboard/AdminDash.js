@@ -6,10 +6,13 @@ function AdminDash() {
     <div>
         	<div class="">
 							<div class="admin-dashboard">
-								<div class="title-header">
-									<h5 class="card-header-01">Admin Dashboard</h5>
-									<input className='ms-5' type="date" name="from" id="from" />
-									<input className='ms-5' type="date" name="to" id="to" />
+								<div class="title-header datepicker-admin">
+									<h5 class="title-header-admin">Admin Dashboard</h5>
+									<div  className='datepicker-date'>
+										<input className='' type="date" name="from" id="from" />
+										<input className='' type="date" name="to" id="to" />
+									</div>
+									
 								</div>
 								<div class="row card-holder">
 								<div class="col-md-4 col-sm-6 col-xs-12">
