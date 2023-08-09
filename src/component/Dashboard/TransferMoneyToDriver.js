@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-
 import { AiOutlineClose } from "react-icons/ai";
 // import "../../css/shippment.css";
 import '../../css/transfermoneytodriver.css'
 import axios from "axios";
 import { Modal, ModalBody } from "reactstrap";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function TransferMoneyToDriver() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -56,6 +56,14 @@ function TransferMoneyToDriver() {
           console.log(response.data);
           setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
     setModalIsOpen(false);
+    toast.success("Transfer Amount Successfully!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
         })
         .catch((error) => {
           console.error('Error submitting data:', error);

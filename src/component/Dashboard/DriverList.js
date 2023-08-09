@@ -4,6 +4,8 @@ import axios from "axios";
 import "../../css/dispatchlist.css";
 import Navbar from "../Navbar";
 import CreateDriver from "./CreateDriver";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 
@@ -27,7 +29,14 @@ async function deleteContact(ids, getContact, DefaultgetContact) {
     },
     { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
   );
-  console.log(results);
+  toast.success('Driver Deleted Successfully!', {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+  });
   if (results.status == 200) {
     ContactData(getContact, DefaultgetContact);
   }
@@ -65,6 +74,14 @@ async function updateBatch(
     );
     ContactData(getBatchList);
     setModalIsOpenEdit(false);
+    toast.success('Driver Updated Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
   } else {
     document.getElementById("edit-validate-batch").innerHTML =
       "*Please fill required field!";
@@ -293,7 +310,7 @@ function DriverList() {
                     <CreateDriver />
                   </div>
                   <div className="Back-btn-01">
-                    <a href="#">Back</a>
+                    <a href="/">Back</a>
                   </div>
                 </div>
               </div>
@@ -397,6 +414,8 @@ function DriverList() {
           </div>
         </div>
       </div>
+      <ToastContainer/>
+
     </section>
   );
 

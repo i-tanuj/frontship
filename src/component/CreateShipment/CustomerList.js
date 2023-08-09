@@ -3,6 +3,8 @@ import { AiOutlineClose } from "react-icons/ai";
 import axios from 'axios';
 import '../../css/dispatchlist.css'
 import Navbar from '../Navbar'
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 import {
@@ -46,6 +48,14 @@ async function updateBatch(id,name,email,phoneno,altphone,address,setModalIsOpen
   )
   ContactData(getBatchList)
   setModalIsOpenEdit(false)
+  toast.success("Customer Updated Successfully!", {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+  });
 } else {
   document.getElementById("edit-validate-batch").innerHTML =
     "*Please fill required field!";
@@ -61,7 +71,14 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
       },
       {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
   )
-  console.log(results);
+  toast.success("Customer Deleted Successfully!", {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+  });
       if(results.status == 200){
           ContactData(getContact,DefaultgetContact);
       }
@@ -209,7 +226,7 @@ function CustomerList() {
                         <div className='add-new-form-btn'>
                         <CreateCustomer/>  
                         </div>
-                        <div className='Back-btn-01'><a href='#'>Back</a></div>
+                        <div className='Back-btn-01'><a href='/'>Back</a></div>
                       </div>
                     </div>
 
@@ -273,6 +290,8 @@ function CustomerList() {
             </div>
         </div>
     </div>
+    <ToastContainer />
+
    </section>
   )
 

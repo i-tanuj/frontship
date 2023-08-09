@@ -2,7 +2,8 @@ import React,{useState,useEffect} from 'react'
 import { AiOutlineClose } from "react-icons/ai";
 import axios from 'axios';
 import '../../css/dispatchlist.css'
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import {
   Nav,
@@ -47,6 +48,14 @@ async function updateBatch(id,vehicalplate,helper1, helper2,assigndriver,setModa
   
   
   setModalIsOpenEdit(false)
+  toast.success('Dispatcher Updated Successfully!', {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+  });
 
 
 
@@ -65,7 +74,6 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
       },
       {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
   )
-  console.log(results);
       if(results.status == 200){
           ContactData(getContact,DefaultgetContact);
       }
@@ -114,6 +122,14 @@ function Createvehical() {
       {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}    
       )
       setModalIsOpen(false);
+      toast.success('Helper Created Successfully!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+      });
      
       ContactData(getBatchList);
   
@@ -162,6 +178,8 @@ function Createvehical() {
           </button>
         </div>
       </div>
+      <ToastContainer/>
+
    </section>
   )
 }

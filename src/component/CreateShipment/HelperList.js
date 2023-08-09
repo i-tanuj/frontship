@@ -4,6 +4,8 @@ import axios from "axios";
 import "../../css/dispatchlist.css";
 import Navbar from "../Navbar";
 import CreateHelper from "../CreateShipment/CreateHelper";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 
@@ -48,6 +50,14 @@ async function updateBatch(
     );
     ContactData(getBatchList);
     setModalIsOpenEdit(false);
+    toast.success('Helper Updated Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
   } else {
     document.getElementById("edit-validate-batch").innerHTML =
       "*Please fill required field!";
@@ -64,6 +74,14 @@ async function deleteContact(ids, getContact, DefaultgetContact) {
     },
     { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
   );
+  toast.success('Helper Deleted Successfully!', {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+  });
   if (results.status == 200) {
     ContactData(getContact, DefaultgetContact);
   }
@@ -374,6 +392,8 @@ function HelperList() {
           </div>
         </div>
       </div>
+      <ToastContainer/>
+
     </section>
   );
 

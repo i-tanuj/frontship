@@ -199,7 +199,7 @@ function PaymentRecords() {
                         <div className='add-new-form-btn'>
                             {/* <CreateHelper/> */}
                         </div>
-                        <div className='Back-btn-01'><a href='#'>Back</a></div>
+                        <div className='Back-btn-01'><a href='/'>Back</a></div>
                       </div>
                     </div>
                     

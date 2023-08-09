@@ -103,7 +103,6 @@ function SettlementRecords() {
       }
     )
     .then((response) => {
-      console.log(response.data);
       // Update the 'contact' state to reflect the changes
       const updatedContacts = contact.map(item => {
         if (item.id === id) {
@@ -255,7 +254,7 @@ function SettlementRecords() {
                         {/* <div className='add-new-form-btn'>
                             <CreateHelper/>
                         </div> */}
-                        <div className='Back-btn-01'><a href='#'>Back</a></div>
+                        <div className='Back-btn-01'><a href='/'>Back</a></div>
                       </div>
                     </div>
                     <table class="table align-middle bg-white rounded m-0" id="table-to-xls">
@@ -278,7 +277,7 @@ function SettlementRecords() {
             <td>{item.full_name}</td>
             <td>{item.amount}</td>
             <td>
-            <button className='settled'  onClick={() => handleUpdateClick(item.id)} id={item.id}> settled</button>
+            <button className='Settle-amount  '  onClick={() => handleUpdateClick(item.id)} id={item.id}>Settled Amount</button>
             </td>
           </tr>
           )
