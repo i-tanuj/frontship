@@ -213,18 +213,18 @@ const handleSubmit = async (e) => {
                             </label>
 
                             <select
-                            //   value={selectedDispatcher}
-                            //   onChange={handleSelectChange}
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                              value={selectedDispatcher}
+                              onChange={handleSelectChange}
+                            // value={name}
+                            // onChange={(e) => setName(e.target.value)}
                               name="name"
                               id="name"
                             >
                               <option value="">Select Dispatcher</option>
                               {dispatchers.map((dispatcher) => (
                                 <option
-                                //   key={dispatcher.id}
-                                //   value={dispatcher.id}
+                                  key={dispatcher.id}
+                                  value={dispatcher.id}
                                   name="name"
                               id="name"
                                 >
@@ -252,8 +252,8 @@ const handleSubmit = async (e) => {
                             </label>
                             <input
                               name="phone"
-                            //   value={dispatcherData.phone}
-                            value={phone}
+                              value={dispatcherData.phone}
+                            // value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                               // readOnly
                               id="phone"
@@ -280,9 +280,9 @@ const handleSubmit = async (e) => {
                             </label>
                             <input
                               name="email"
-                            //   value={dispatcherData.email}
+                              value={dispatcherData.email}
                               id="email"
-                              value={email}
+                              // value={email}
                               onChange={(e) => setEmail(e.target.value)}
                               placeholder="Enter Email Address"
                               type="email"

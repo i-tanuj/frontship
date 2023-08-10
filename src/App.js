@@ -7,6 +7,7 @@ import SettlementRecords from './component/Dashboard/SettlementRecords';
 import SettlementHistory from './component/Dashboard/SettlementHistory';
 // import AmountZero from './component/Dashboard/AmountZero';
 import Testdispatcher from './component/CreateShipment/Testdispatcher';
+import FormComponent from './component/Dashboard/FormComponent';
 
 const Login = React.lazy(() => import("./component/Login"));
 const VerifyOTP =  React.lazy(() => import("./component/VerifyOTP"))
@@ -26,6 +27,7 @@ const settlementHistory = React.lazy(() => import("./component/Dashboard/Settlem
 const ViewShipment = React.lazy(() => import("./component/Dashboard/ViewShipment"))
 const DelaydShip = React.lazy(() => import("./component/Dashboard/DelaydShip"))
 const PendingShip = React.lazy(() => import("./component/Dashboard/PendingShip"))
+const formcomponent = React.lazy(() => import("./component/Dashboard/FormComponent"))
 const PickupCreation = React.lazy(() => import("./component/CreateShipment/PickupCreation"))
 // const Testdispatcher = React.lazy(() => import("./component/CreateShipment/Testdispatcher"))
 // const AmountZero = React.lazy(() => import("./component/Dashboard/AmountZero"))
@@ -67,6 +69,7 @@ function App() {
             <Route  exact path="/driverdropdown" element={<DriverDropdown/>}/>
             <Route  exact path="/testdispatcher" element={<Testdispatcher/>}/>
             <Route  exact path="/pickupcreation" element={<PickupCreation/>}/>
+            <Route  exact path="/formcomponent" element={<FormComponent/>}/>
 
 
           </Routes>
