@@ -108,7 +108,7 @@ const DeliveryCreation = () => {
     const fetchCustomers = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/creatcustomer"
+          "https://shipment-backend.onrender.com/api/creatcustomer"
         );
         const customersData = response.data;
         setCustomers(customersData);
@@ -126,7 +126,7 @@ const DeliveryCreation = () => {
       if (selectedOptionValue) {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/customerdata/${selectedOptionValue}`
+            `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
           );
           const selectedCustomersData = response.data;
           setCustomersData(selectedCustomersData);
@@ -141,7 +141,7 @@ const DeliveryCreation = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:5000/api/createshipment', { customername, customernumber, selectshipdrop, dropdate, adddescriptiondrop, vehicleplate, helper1, helper2, assigndriver, setModalIsOpenEdit, setModalIsOpen });
+      const response = await axios.post('https://shipment-backend.onrender.com/api/createshipment', { customername, customernumber, selectshipdrop, dropdate, adddescriptiondrop, vehicleplate, helper1, helper2, assigndriver, setModalIsOpenEdit, setModalIsOpen });
       console.log(response.data.message);
       // Clear the form fields after successful submission
       setCustomername('');
