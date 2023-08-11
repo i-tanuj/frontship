@@ -84,7 +84,6 @@ function SettlementHistory() {
     const [defaultcontact, DefaultgetContact] = useState([]);
     const [ids, setIds] = useState('');
     const [search,setSearch] =useState('');
-  console.log(search)
   const [currentPage,setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
@@ -220,7 +219,7 @@ function SettlementHistory() {
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             <td>{item.full_name}</td>
             <td>{item.amount}</td>
-            <td>{item.DateAndTime}</td>
+            <td>{item.updateddatetime}</td>
             {/* <td className="dis-email text-left">{item.full_name}</td> */}
             {/* <td>{item.phone}</td> */}
             <td><div className='Successful-py-01'>Successful</div></td>

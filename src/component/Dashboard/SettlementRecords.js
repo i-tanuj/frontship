@@ -9,6 +9,8 @@ import {
   Modal,
   ModalBody,
 } from "reactstrap";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 async function ContactData(getContact){
 
@@ -63,6 +65,7 @@ function SettlementRecords() {
     const [contact, getContact] = useState([]);
     
     const [full_name, setName] = useState('');
+    // const [updateddatetime]
     const [id, setId] = useState('');
     const [amount, setAmount] = useState('');
     const [batchList,getBatchList] = useState([]);
@@ -88,8 +91,12 @@ function SettlementRecords() {
         setName(e.target.value)
   }
 
-
+  
   const handleUpdateClick = (id) => {
+    const updateddatetime = new Date().toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      hour12: true,
+    });
     axios.post(
       'https://shippingbackend-production.up.railway.app/api/updateAmount',
       {
@@ -97,6 +104,7 @@ function SettlementRecords() {
         id: id,
         full_name: full_name,
         amount: 0, // Set the wallet amount to 0
+        updateddatetime: updateddatetime,
       },
       {
         headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -112,6 +120,14 @@ function SettlementRecords() {
           };
         }
         return item;
+      });
+      toast.success('Amount Settled Successfully!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
       });
       getContact(updatedContacts); // Update the state
     })
@@ -306,6 +322,8 @@ function SettlementRecords() {
             </div>
         </div>
     </div>
+    <ToastContainer/>
+
    </section>
   )
 

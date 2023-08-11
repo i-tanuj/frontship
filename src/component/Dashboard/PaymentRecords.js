@@ -227,8 +227,9 @@ function PaymentRecords() {
             <td>{item.shipment_id}</td>
             
             <td>{item.amount}</td>
+            {/* <td>{"Success"}</td> */}
             <td>
-              <div className='Successful-py-01'>{item.status}</div></td>
+              <div className='Successful-py-01'>{"Success"}</div></td>
             <td>{item.DateAndTime}</td>
             
             <td>
