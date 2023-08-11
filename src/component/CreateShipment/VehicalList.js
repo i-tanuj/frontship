@@ -12,7 +12,7 @@ import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 async function ContactData(getContact) {
   await axios
     .get(
-      "https://shipment-backend.onrender.com/api/creatvehical",
+      "https://shippingbackend-production.up.railway.app/api/creatvehical",
       // { inst_hash: localStorage.getItem('inst_hash_manual') },
       {
         headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -32,7 +32,7 @@ const currentDate = new Date().toLocaleString("en-IN", {
 
 // async function updateBatch(id,name,vehicalplate,setModalIsOpenEdit,getBatchList){
 //   if (name != "" && vehicalplate != "") {
-//       await axios.post('https://shipment-backend.onrender.com/api/updatevehical',
+//       await axios.post('https://shippingbackend-production.up.railway.app/api/updatevehical',
 //       {inst_hash: localStorage.getItem('inst_hash'),
 //       id : id,
 //       name: name,
@@ -69,7 +69,7 @@ async function updateBatch(
 ) {
   if (name !== "" && vehicalplate !== "") {
     await axios.post(
-      "https://shipment-backend.onrender.com/api/updatevehical",
+      "https://shippingbackend-production.up.railway.app/api/updatevehical",
       {
         inst_hash: localStorage.getItem("inst_hash"),
         id: id,
@@ -106,7 +106,7 @@ async function updateBatch(
 //************************************************************** */
 async function deleteContact(ids, getContact, DefaultgetContact) {
   const results = await axios.post(
-    "https://shipment-backend.onrender.com/api/delvehical",
+    "https://shippingbackend-production.up.railway.app/api/delvehical",
     {
       id: ids,
     },

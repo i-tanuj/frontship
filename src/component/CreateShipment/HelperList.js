@@ -11,7 +11,7 @@ import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 
 async function ContactData(getContact) {
   await axios
-    .get("https://shipment-backend.onrender.com/api/createhelper", {
+    .get("https://shippingbackend-production.up.railway.app/api/createhelper", {
       headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
     })
     .then((res) => {
@@ -36,7 +36,7 @@ async function updateBatch(
   });
   if (name != "" && email != "" && phoneno != "" && address != "") {
     await axios.post(
-      "https://shipment-backend.onrender.com/api/updatehelper",
+      "https://shippingbackend-production.up.railway.app/api/updatehelper",
       {
         inst_hash: localStorage.getItem("inst_hash"),
         id: id,
@@ -68,7 +68,7 @@ async function updateBatch(
 //************************************************************** */
 async function deleteContact(ids, getContact, DefaultgetContact) {
   const results = await axios.post(
-    "https://shipment-backend.onrender.com/api/delhelper",
+    "https://shippingbackend-production.up.railway.app/api/delhelper",
     {
       id: ids,
     },

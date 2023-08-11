@@ -18,7 +18,7 @@ import {
 
 async function ContactData(getContact){
 
-  await axios.get('https://shipment-backend.onrender.com/api/getpayment',
+  await axios.get('https://shippingbackend-production.up.railway.app/api/getpayment',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -33,7 +33,7 @@ async function ContactData(getContact){
 
 async function updateBatch(id,name,email,phone,address,setModalIsOpenEdit,getBatchList){
   if (name != "" && email != "" && phone != "" && address != "") {
-      await axios.post('https://shipment-backend.onrender.com/api/updatehelper',
+      await axios.post('https://shippingbackend-production.up.railway.app/api/updatehelper',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       name: name,
@@ -54,7 +54,7 @@ async function updateBatch(id,name,email,phone,address,setModalIsOpenEdit,getBat
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shipment-backend.onrender.com/api/delhelper',
+  const results = await axios.post('https://shippingbackend-production.up.railway.app/api/delhelper',
       {
           id:ids
       },

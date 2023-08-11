@@ -7,7 +7,7 @@ import DeliveryCreation from "./DeliveryCreation";
 
 async function ContactData(getContact, id) {
   await axios
-    .get("https://shipment-backend.onrender.com/api/dispatcher", {
+    .get("https://shippingbackend-production.up.railway.app/api/dispatcher", {
       headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
     })
     .then((res) => {
@@ -20,7 +20,7 @@ async function ContactData(getContact, id) {
 
 // async function addBatch(name,email,phone,altphone,pickuplocation,pickupdate,selectshipment,adddescription,setModalIsOpen,getBatchList){
 //   if (name !== "" && email !== "" && phone !== "" && altphone!== "" ) {
-//     await axios.post('https://shipment-backend.onrender.com/api/addtotalshipmentrecord',
+//     await axios.post('https://shippingbackend-production.up.railway.app/api/addtotalshipmentrecord',
 //     {
 //         inst_hash: localStorage.getItem('name'),
 //         name: name,
@@ -66,7 +66,7 @@ function CreateShipment() {
   const fetchDispatchers = async () => {
     try {
       const response = await axios.get(
-        "https://shipment-backend.onrender.com/api/dispatcher"
+        "https://shippingbackend-production.up.railway.app/api/dispatcher"
       );
       const dispatcherData = response.data;
       setDispatchers(dispatcherData);
@@ -84,7 +84,7 @@ function CreateShipment() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/fetchData/${selectedOptionValue}`
+          `https://shippingbackend-production.up.railway.app/api/fetchData/${selectedOptionValue}`
         );
         const selectedDispatcherData = response.data;
         setDispatcherData(selectedDispatcherData);
@@ -127,7 +127,7 @@ const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('https://shipment-backend.onrender.com/api/addtotalshipmentrecord', {
+      const response = await fetch('https://shippingbackend-production.up.railway.app/api/addtotalshipmentrecord', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

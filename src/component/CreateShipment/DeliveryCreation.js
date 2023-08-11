@@ -4,75 +4,6 @@ import axios from "axios";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// async function ContactData(getContact, id) {
-//   await axios
-//     .get("https://shipment-backend.onrender.com/createcustomer/creatcustomer", {
-//       headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-//     })
-//     .then((res) => {
-//       console.log(res.data);
-//       getContact(res.data);
-//     });
-// }
-
-// async function VehicalData(getVehicle, id) {
-//   await axios
-//     .get("https://shipment-backend.onrender.com/vehical/creatvehical", {
-//       headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-//     })
-//     .then((res) => {
-//       console.log(res.data);
-//       getVehicle(res.data);
-//     });
-// }
-
-// async function helperData(getHelper, id) {
-//   await axios
-//     .get("https://shipment-backend.onrender.com/vehical/creatvehical", {
-//       headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-//     })
-//     .then((res) => {
-//       console.log(res.data);
-//       getHelper(res.data);
-//     });
-// }
-
-// async function assigndriverData(getAssigndrive, id) {
-//   await axios
-//     .get("https://shipment-backend.onrender.com/api/driver", {
-//       headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-//     })
-//     .then((res) => {
-//       console.log(res.data);
-//       getAssigndrive(res.data);
-//     });
-// }
-
-
-// async function updateBatch(id, customername, customernumber, selectshipdrop, adddescriptiondrop, vehicleplate, helper1, helper2){
-//   if (customername != "" && customernumber != "") {
-//       await axios.post('https://shipment-backend.onrender.com/api/updatedelivery',
-//       {inst_hash: localStorage.getItem('inst_hash'),
-//       id : id,
-//       customername: customername,
-//       customernumber: customernumber,
-//       selectshipdrop: selectshipdrop,
-//       adddescriptiondrop: adddescriptiondrop,
-//       vehicleplate: vehicleplate,
-//       helper1: helper1,
-//       helper2: helper2
-//       },
-//       {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
-//   )
-//   // ContactData(getBatchList)
-//   // setModalIsOpenEdit(false)
-// } else {
-//   document.getElementById("edit-validate-batch").innerHTML =
-//     "*Please fill required field!";
-//   console.log("Error :", "Please fill required field");
-// }    
-// }
-
 const DeliveryCreation = () => {
   const [customername, setCustomername] = useState('');
   const [customernumber, setCustomernumber] = useState('');
@@ -85,12 +16,12 @@ const DeliveryCreation = () => {
   const [assigndriver, setAssigndriver] = useState('');
 
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-  const [selectedDriver, setSelectedDriver] = useState('');
-  const [drivers, setDrivers] = useState([]);
+  // const [selectedDriver, setSelectedDriver] = useState('');
+  // const [drivers, setDrivers] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
   const [selectedCustomers, setSelectedCustomers] = useState("");
-
-
+  const [selectedVehicles, setSelectedVehicles] = useState("");
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
     
@@ -100,15 +31,24 @@ const DeliveryCreation = () => {
       email: "",
       phoneno: "",
     });
+    const [VehiclesData, setVehiclesData] = useState({
+      id: "",
+      // name: "",
+      vehicalplate: ""
+    });
     useEffect(() => {
       // Fetch dispatcher data from the server and populate the state
       fetchCustomers();
+    }, []);
+    useEffect(() => {
+      // Fetch dispatcher data from the server and populate the state
+      fetchVehicles();
     }, []);
   
     const fetchCustomers = async () => {
       try {
         const response = await axios.get(
-          "https://shipment-backend.onrender.com/api/creatcustomer"
+          "https://shippingbackend-production.up.railway.app/api/creatcustomer"
         );
         const customersData = response.data;
         setCustomers(customersData);
@@ -116,7 +56,36 @@ const DeliveryCreation = () => {
         console.error("Error fetching dispatchers:", error);
       }
     };
+    const fetchVehicles = async () => {
+      try {
+        const response = await axios.get(
+          "https://shippingbackend-production.up.railway.app/api/creatvehical"
+        );
+        const vehiclesData = response.data;
+        setVehicles(vehiclesData);
+      } catch (error) {
+        console.error("Error fetching dispatchers:", error);
+      }
+    };
   
+    const handleSelectVehicle = async (event) => {
+      const selectedVehiclesValue = event.target.value;
+      setSelectedVehicles(selectedVehiclesValue);
+      console.log(selectedVehiclesValue);
+  
+      // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
+      if (selectedVehiclesValue) {
+        try {
+          const response = await axios.get(
+            `http://localhost:5000/api/vehicledata/${selectedVehiclesValue}`
+          );
+          const selectedVehiclesData = response.data;
+          setVehiclesData(selectedVehiclesData);
+        } catch (error) {
+          console.error("Error fetching selected dispatcher:", error);
+        }
+      }
+    };
     const handleSelectChange = async (event) => {
       const selectedOptionValue = event.target.value;
       setSelectedCustomers(selectedOptionValue);
@@ -126,7 +95,7 @@ const DeliveryCreation = () => {
       if (selectedOptionValue) {
         try {
           const response = await axios.get(
-            `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
+            `https://shippingbackend-production.up.railway.app/api/customerdata/${selectedOptionValue}`
           );
           const selectedCustomersData = response.data;
           setCustomersData(selectedCustomersData);
@@ -139,9 +108,9 @@ const DeliveryCreation = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-
+const trynumber = CustomersData.phoneno;
     try {
-      const response = await axios.post('https://shipment-backend.onrender.com/api/createshipment', { customername, customernumber, selectshipdrop, dropdate, adddescriptiondrop, vehicleplate, helper1, helper2, assigndriver, setModalIsOpenEdit, setModalIsOpen });
+      const response = await axios.post('http://localhost:5000/api/createshipment', { customername, trynumber, selectshipdrop, dropdate, adddescriptiondrop, vehicleplate, helper1, helper2, assigndriver, setModalIsOpenEdit, setModalIsOpen });
       console.log(response.data.message);
       // Clear the form fields after successful submission
       setCustomername('');
@@ -170,111 +139,6 @@ const DeliveryCreation = () => {
     }
   };
 
-
-  // const [modalIsOpen, setModalIsOpen] = useState(false);
-
-  // const [custoname, setCustoname] = useState("");
-  // const [custonum, setCustonum] = useState("");
-  // const [droplocation, setDroplocation] = useState("");
-  // const [dropdate, setDropdate] = useState("");
-  // // const [selectshipment, setSelectshipment] = useState("");
-  // const [adddesc, setAdddesc] = useState("");
-  // const [helper, setHelper] = useState("");
-  // const [assigndriver, setAssigndriver] = useState("");
-  // const [selectedCustomer, setSelectedCustomer] = useState('');
-  // const [customer, setCustomer] = useState([]);
-  // // const [helper2, setHelper2] = useState('');
-
-  // const [contact, getContact] = useState([]);
-  // const [vehicle, getVehicle] = useState([]);
-  // const [assidrive, getAssigndrive] = useState([]);
-  // const [address, setAddress] = useState("");
-  // const [defaultcontact, DefaultgetContact] = useState([]);
-  // const [id, setId] = useState('');
-  // const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
-
-
-  // const [error, setError] = useState(false);
-  // const [succbtn, setSuccbtn] = useState();
-
-  // const handleCustomerChange = (event) => {
-    
-  //     setId(customer.id);
-  //     setName(customer.customername);
-  //     setCustomernumber(customer.customernumber);
-  //     setSelectshipdrop(customer.selectshipdrop);
-  //     setDropdate(customer.selectshipdrop);
-  //     setAdddescriptiondrop(customer.adddescriptiondrop);
-  //     setVehicleplate(customer.vehicleplate);
-  //     setHelper1(customer.helper1);
-  //     setHelper2(customer.helper2);
-  //     setAssigndriver(customer.assigndriver);
-
-  //     setModalIsOpenEdit(true);
-    
-  //   setSelectedCustomer(event.target.value);
-  // };
-
-//   useEffect(() => {
-//     // Fetch the data from the API
-//     axios.get('https://shipment-backend.onrender.com/api/creatcustomer')
-//       .then(response => {
-//         setCustomer(response.data);
-//       })
-//       .catch(error => {
-//         console.error('Error fetching data:', error);
-//       });
-//   }, []);
-
-//   useEffect(() => {
-//     ContactData(getContact, DefaultgetContact);
-//   }, []);
-
-//   useEffect(() => {
-//     VehicalData(getVehicle, DefaultgetContact);
-//   }, []);
-
-//   // useEffect(() => {
-//   //   helperData(getHelper, DefaultgetContact);
-//   // }, []);
-
-//   useEffect(() => {
-//     assigndriverData(getAssigndrive, DefaultgetContact);
-//   }, []);
-
-
-  
-// const [customername, setCustomername] = useState('');
-// const [customernumber, setCustomernumber] = useState('');
-// const [selectshipdrop, setSelectshipdrop] = useState('');
-// const [adddescriptiondrop, setAdddescriptiondrop] = useState('');
-// const [vehicleplate, setVehicleplate] = useState('');
-// const [helper1, setHelper1] = useState('');
-// const [helper2, setHelper2] = useState('');
-
-
-// const handleSubmit = async (e) => {
-//   e.preventDefault();
-
-//   try {
-//     const response = await fetch('https://shipment-backend.onrender.com/api/updatedelivery', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({ customername, customernumber, selectshipdrop, adddescriptiondrop, vehicleplate, helper1, helper2 }),
-//     });
-
-//     if (response.ok) {
-//       console.log('Data submitted successfully');
-//       // You can reset the form here
-//     } else {
-//       console.error('Data submission failed');
-//     }
-//   } catch (error) {
-//     console.error('Error submitting data:', error);
-//   }
-// };
 
 
 
@@ -424,22 +288,23 @@ const DeliveryCreation = () => {
                     </label>
           {/* <input type="text" value={vehicleplate} onChange={e => setVehicleplate(e.target.value)} /> */}
           <select
-                              value={selectedCustomers}
-                              onChange={handleSelectChange}
+                              value={selectedVehicles}
+                              
+                              onChange={handleSelectVehicle}
                             // value={customername}
                             // onChange={(e) => setCustomername(e.target.value)}
-                              name="name"
-                              id="name"
+                              name="vehicleplate"
+                              id="vehicleplate"
                             >
-                              <option value="">Select Vehical Plate</option>
-                              {customers.map((customers) => (
+                              <option value="">Select Vehicle Plate</option>
+                              {vehicles.map((vehicles) => (
                                 <option
-                                  key={customers.id}
-                                  value={customers.id}
-                                  name="name"
-                              id="name"
+                                  key={vehicles.id}
+                                  value={vehicles.id}
+                                  name="vehicleplate"
+                              id="vehicleplate"
                                 >
-                                  {customers.name}
+                                  {vehicles.name}
                                 </option>
                               ))}
                             </select>

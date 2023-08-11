@@ -19,7 +19,7 @@ function Testdispatcher() {
   const fetchDispatchers = async () => {
     try {
       const response = await axios.get(
-        "https://shipment-backend.onrender.com/api/dispatcher"
+        "https://shippingbackend-production.up.railway.app/api/dispatcher"
       );
       const dispatcherData = response.data;
       setDispatchers(dispatcherData);
@@ -37,7 +37,7 @@ function Testdispatcher() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/fetchData/${selectedOptionValue}`
+          `https://shippingbackend-production.up.railway.app/api/fetchData/${selectedOptionValue}`
         );
         const selectedDispatcherData = response.data;
         setDispatcherData(selectedDispatcherData);

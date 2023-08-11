@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
-  await axios.get('https://shipment-backend.onrender.com/api/getshipmentrecords',
+  await axios.get('https://shippingbackend-production.up.railway.app/api/getshipmentrecords',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -33,7 +33,7 @@ async function ContactData(getContact){
 //************************************************************** */
 async function updateBatch(id,name,email,phone,setModalIsOpenEdit,getBatchList){
   if (name != "" && email != "" && phone != "") {
-      await axios.post('https://shipment-backend.onrender.com/api/updatedispatcher',
+      await axios.post('https://shippingbackend-production.up.railway.app/api/updatedispatcher',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       name: name,
@@ -54,7 +54,7 @@ async function updateBatch(id,name,email,phone,setModalIsOpenEdit,getBatchList){
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shipment-backend.onrender.com/api/delcreatshipment',
+  const results = await axios.post('https://shippingbackend-production.up.railway.app/api/delcreatshipment',
       {
           id:ids
       },

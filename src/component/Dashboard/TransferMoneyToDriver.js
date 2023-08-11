@@ -18,7 +18,7 @@ function TransferMoneyToDriver() {
 
   useEffect(() => {
     // Fetch the data from the API
-    axios.get('https://shipment-backend.onrender.com/api/driver')
+    axios.get('https://shippingbackend-production.up.railway.app/api/driver')
       .then(response => {
         setDrivers(response.data);
       })
@@ -51,7 +51,7 @@ function TransferMoneyToDriver() {
     } else {
       setError(false);
       setSuccbtn('');
-      axios.post('https://shipment-backend.onrender.com/api/payment', dataToSubmit)
+      axios.post('https://shippingbackend-production.up.railway.app/api/payment', dataToSubmit)
         .then((response) => {
           console.log(response.data);
           setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);

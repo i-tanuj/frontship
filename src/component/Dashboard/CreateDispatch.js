@@ -38,7 +38,7 @@ function CreateDispatch() {
       setSuccbtn("");
       axios
         .post(
-          "https://shipment-backend.onrender.com/api/addispatcher",
+          "https://shippingbackend-production.up.railway.app/api/addispatcher",
           dataToSubmit
         )
         .then((response) => {

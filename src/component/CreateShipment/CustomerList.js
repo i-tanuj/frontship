@@ -20,7 +20,7 @@ import CreateCustomer from './CreateCustomer';
 
 async function ContactData(getContact){
 
-  await axios.get('https://shipment-backend.onrender.com/api/creatcustomer',
+  await axios.get('https://shippingbackend-production.up.railway.app/api/creatcustomer',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -35,7 +35,7 @@ async function ContactData(getContact){
 
 async function updateBatch(id,name,email,phoneno,altphone,address,setModalIsOpenEdit,getBatchList){
   if (name != "" && email != "" && phoneno != "" && altphone != "") {
-      await axios.post('https://shipment-backend.onrender.com/api/updatecustomer',
+      await axios.post('https://shippingbackend-production.up.railway.app/api/updatecustomer',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       name: name,
@@ -65,7 +65,7 @@ async function updateBatch(id,name,email,phoneno,altphone,address,setModalIsOpen
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shipment-backend.onrender.com/api/delcustomer',
+  const results = await axios.post('https://shippingbackend-production.up.railway.app/api/delcustomer',
       {
           id:ids
       },

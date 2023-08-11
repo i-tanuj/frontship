@@ -12,7 +12,7 @@ import {
 
 async function ContactData(getContact){
 
-  await axios.get('https://shipment-backend.onrender.com/api/sattlementrecord',
+  await axios.get('https://shippingbackend-production.up.railway.app/api/sattlementrecord',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -27,7 +27,7 @@ async function ContactData(getContact){
 
 async function updateRecord(id,full_name,amount,DateAndTime,getBatchList,setModalIsOpenEdit){
   if (amount) {
-      await axios.post('https://shipment-backend.onrender.com/api/updaterecord',
+      await axios.post('https://shippingbackend-production.up.railway.app/api/updaterecord',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : id,
       full_name: full_name,
@@ -45,7 +45,7 @@ async function updateRecord(id,full_name,amount,DateAndTime,getBatchList,setModa
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact, ){
-  const results = await axios.post('https://shipment-backend.onrender.com/api/delhelper',
+  const results = await axios.post('https://shippingbackend-production.up.railway.app/api/delhelper',
       {
           id:ids
       },
@@ -91,7 +91,7 @@ function SettlementRecords() {
 
   const handleUpdateClick = (id) => {
     axios.post(
-      'https://shipment-backend.onrender.com/api/updateAmount',
+      'https://shippingbackend-production.up.railway.app/api/updateAmount',
       {
         inst_hash: localStorage.getItem('inst_hash'),
         id: id,
@@ -158,7 +158,7 @@ function SettlementRecords() {
   
 // async function handleUpdateClick(id,full_name,amount,setModalIsOpenEdit,getBatchList){
 //   if () {
-//       await axios.post('https://shipment-backend.onrender.com/api/updateAmount',
+//       await axios.post('https://shippingbackend-production.up.railway.app/api/updateAmount',
 //       {inst_hash: localStorage.getItem('inst_hash'),
 //       id : id,
 //       full_namename: full_name,

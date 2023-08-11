@@ -16,7 +16,7 @@ import {
 
 async function ContactData(getContact){
 
-  await axios.get('https://shipment-backend.onrender.com/api/dispatcher',
+  await axios.get('https://shippingbackend-production.up.railway.app/api/dispatcher',
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
   }
@@ -30,7 +30,7 @@ async function ContactData(getContact){
 
 async function addBatch(name,email,phoneno,address,setModalIsOpen,getBatchList){
   if (name !== "" && email !== "" && phoneno !== "" && address!== "" ) {
-    await axios.post('https://shipment-backend.onrender.com/api/addhelper',
+    await axios.post('https://shippingbackend-production.up.railway.app/api/addhelper',
     {
         inst_hash: localStorage.getItem('name'),
         name: name,
@@ -63,7 +63,7 @@ console.log("Error :", "Please fill required field");
 //************************************************************** */
 async function updateBatch(id,vehicalplate,helper1, helper2,assigndriver,setModalIsOpenEdit,getBatchList){
   if (vehicalplate != "" && helper1 != "" && helper2 != "" && assigndriver != "") {
-      await axios.post('https://shipment-backend.onrender.com/api/updatecreatshipment',
+      await axios.post('https://shippingbackend-production.up.railway.app/api/updatecreatshipment',
       {inst_hash: localStorage.getItem('inst_hash'),
       id : 3,
       vehicalplate:  vehicalplate,
@@ -84,7 +84,7 @@ async function updateBatch(id,vehicalplate,helper1, helper2,assigndriver,setModa
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shipment-backend.onrender.com/api/deldispatcher',
+  const results = await axios.post('https://shippingbackend-production.up.railway.app/api/deldispatcher',
       {
           id:ids
       },
