@@ -77,7 +77,7 @@ const DeliveryCreation = () => {
       if (selectedVehiclesValue) {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/vehicledata/${selectedVehiclesValue}`
+            `https://shippingbackend-production.up.railway.app/api/vehicledata/${selectedVehiclesValue}`
           );
           const selectedVehiclesData = response.data;
           setVehiclesData(selectedVehiclesData);
@@ -110,7 +110,7 @@ const DeliveryCreation = () => {
     e.preventDefault();
 const trynumber = CustomersData.phoneno;
     try {
-      const response = await axios.post('http://localhost:5000/api/createshipment', { customername, trynumber, selectshipdrop, dropdate, adddescriptiondrop, vehicleplate, helper1, helper2, assigndriver, setModalIsOpenEdit, setModalIsOpen });
+      const response = await axios.post('https://shippingbackend-production.up.railway.app/api/createshipment', { customername, trynumber, selectshipdrop, dropdate, adddescriptiondrop, vehicleplate, helper1, helper2, assigndriver, setModalIsOpenEdit, setModalIsOpen });
       console.log(response.data.message);
       // Clear the form fields after successful submission
       setCustomername('');
@@ -259,26 +259,31 @@ const trynumber = CustomersData.phoneno;
                       ""
                     )} */}
                   </div>
+               
                   <div className="mb-4 w-50">
                     <label className="form-label">
-                      Drop date<span className="stra-icon">*</span>{" "}
+                      Add Description<span className="stra-icon">*</span>{" "}
                     </label>
-          <input type="date" value={dropdate} onChange={e => setDropdate(e.target.value)} />
+          <input type="text" value={adddescriptiondrop} onChange={e => setAdddescriptiondrop(e.target.value)} />
+
                     {/* <input
-                      name="date"
-                      onChange={(e)  => { setDropdate(e.target.value);}}
-                      id="date"
-                      placeholder="Date"
-                      type="date"
+                      name="description"
+                      onChange={(e) =>{ setAdddescriptiondrop(e.target.value);}}
+                      id="description"
+                      value={adddescriptiondrop}
+                      placeholder="Add description"
+                      type="text"
                     />
-                    {error && dropdate.length <= 0 ? (
+                    {error && adddesc.length <= 0 ? (
                       <span className="valid-form" style={{ color: "red" }}>
-                        Please Enter the 10 Digit number*
+                        Please Enter drop location*
                       </span>
                     ) : (
                       ""
                     )} */}
                   </div>
+
+
                 </div>
                
                 <div className="row">
@@ -335,8 +340,8 @@ const trynumber = CustomersData.phoneno;
                     </label>
           {/* <input type="text" value={helper1} onChange={e => setHelper1(e.target.value)} /> */}
           <select
-                              value={selectedCustomers}
-                              onChange={handleSelectChange}
+                              // value={selectedCustomers}
+                              // onChange={handleSelectChange}
                             // value={customername}
                             // onChange={(e) => setCustomername(e.target.value)}
                               name="name"
@@ -350,7 +355,7 @@ const trynumber = CustomersData.phoneno;
                                   name="name"
                               id="name"
                                 >
-                                  {customers.name}
+                                  {/* {customers.name} */}
                                 </option>
                               ))}
                             </select>
@@ -385,8 +390,8 @@ const trynumber = CustomersData.phoneno;
           {/* <input type="text" value={helper2} onChange={e => setHelper2(e.target.value)} /> */}
 
           <select
-                              value={selectedCustomers}
-                              onChange={handleSelectChange}
+                              // value={selectedCustomers}
+                              // onChange={handleSelectChange}
                             // value={customername}
                             // onChange={(e) => setCustomername(e.target.value)}
                               name="name"
@@ -395,12 +400,12 @@ const trynumber = CustomersData.phoneno;
                               <option value="">Select Helper2</option>
                               {customers.map((customers) => (
                                 <option
-                                  key={customers.id}
-                                  value={customers.id}
+                                  // key={customers.id}
+                                  // value={customers.id}
                                   name="name"
                               id="name"
                                 >
-                                  {customers.name}
+                                  {/* {customers.name} */}
                                 </option>
                               ))}
                             </select>
@@ -442,12 +447,12 @@ const trynumber = CustomersData.phoneno;
                               <option value="">Select Driver Name</option>
                               {customers.map((customers) => (
                                 <option
-                                  key={customers.id}
-                                  value={customers.id}
+                                  // key={customers.id}
+                                  // value={customers.id}
                                   name="name"
                               id="name"
                                 >
-                                  {customers.name}
+                                  {/* {customers.name} */}
                                 </option>
                               ))}
                             </select>
@@ -492,28 +497,7 @@ const trynumber = CustomersData.phoneno;
                       ""
                     )} 
                   </div> */}
-                  <div className="mb-4 w-100">
-                    <label className="form-label">
-                      Add Description<span className="stra-icon">*</span>{" "}
-                    </label>
-          <input type="text" value={adddescriptiondrop} onChange={e => setAdddescriptiondrop(e.target.value)} />
-
-                    {/* <input
-                      name="description"
-                      onChange={(e) =>{ setAdddescriptiondrop(e.target.value);}}
-                      id="description"
-                      value={adddescriptiondrop}
-                      placeholder="Add description"
-                      type="text"
-                    />
-                    {error && adddesc.length <= 0 ? (
-                      <span className="valid-form" style={{ color: "red" }}>
-                        Please Enter drop location*
-                      </span>
-                    ) : (
-                      ""
-                    )} */}
-                  </div>
+                
                 </div>
                 </div>
 

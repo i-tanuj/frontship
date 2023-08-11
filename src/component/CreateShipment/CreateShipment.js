@@ -7,7 +7,7 @@ import DeliveryCreation from "./DeliveryCreation";
 
 async function ContactData(getContact, id) {
   await axios
-    .get("https://shippingbackend-production.up.railway.app/api/dispatcher", {
+    .get("https://shippingbackend-production.up.railway.app/api/creatcustomer", {
       headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
     })
     .then((res) => {
@@ -56,7 +56,7 @@ function CreateShipment() {
     id: "",
     name: "",
     email: "",
-    phone: "",
+    phoneno: "",
   });
   useEffect(() => {
     // Fetch dispatcher data from the server and populate the state
@@ -66,7 +66,7 @@ function CreateShipment() {
   const fetchDispatchers = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/dispatcher"
+        "https://shippingbackend-production.up.railway.app/api/creatcustomer"
       );
       const dispatcherData = response.data;
       setDispatchers(dispatcherData);
@@ -84,7 +84,7 @@ function CreateShipment() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/fetchData/${selectedOptionValue}`
+          `https://shippingbackend-production.up.railway.app/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData = response.data;
         setDispatcherData(selectedDispatcherData);
@@ -220,7 +220,7 @@ const handleSubmit = async (e) => {
                               name="name"
                               id="name"
                             >
-                              <option value="">Select Dispatcher</option>
+                              <option value="">Select Customer</option>
                               {dispatchers.map((dispatcher) => (
                                 <option
                                   key={dispatcher.id}
@@ -252,7 +252,7 @@ const handleSubmit = async (e) => {
                             </label>
                             <input
                               name="phone"
-                              value={dispatcherData.phone}
+                              value={dispatcherData.phoneno}
                             // value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                               // readOnly
@@ -365,8 +365,9 @@ const handleSubmit = async (e) => {
                             onChange={(e) => setPickupdate(e.target.value)}
                               id="pickupdate"
                               placeholder="Drop Location"
-                              type="date"
+                              type="datetime-local"
                             />
+                            
                             {/* {error && pickupbeforedate.length <= 0 ? (
                               <span
                                 className="valid-form"
