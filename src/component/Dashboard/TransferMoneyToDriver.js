@@ -34,7 +34,7 @@ function TransferMoneyToDriver() {
     const fetchCustomers = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/driver"
+          "https://shippingbackend-production.up.railway.app/api/driver"
         );
         const customersData = response.data;
         setCustomers(customersData);
@@ -50,7 +50,7 @@ function TransferMoneyToDriver() {
       if (selectedOptionValue) {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/users/${selectedOptionValue}`
+            `https://shippingbackend-production.up.railway.app/api/users/${selectedOptionValue}`
           );
           const selectedCustomersData = response.data;
           setCustomersData(selectedCustomersData);
@@ -81,7 +81,7 @@ function TransferMoneyToDriver() {
     } else {
       setError(false);
       setSuccbtn('');
-      axios.post('http://localhost:5000/api/payment', dataToSubmit)
+      axios.post('https://shippingbackend-production.up.railway.app/api/payment', dataToSubmit)
       .then((response) => {
         console.log(response.data);
         setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);

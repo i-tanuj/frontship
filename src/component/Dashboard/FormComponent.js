@@ -16,7 +16,7 @@ const FormComponent = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:5000/api/createshipment', { customername, customernumber, selectshipdrop, dropdate, adddescriptiondrop, vehicleplate, helper1, helper2, assigndriver });
+      const response = await axios.post('https://shippingbackend-production.up.railway.app/api/createshipment', { customername, customernumber, selectshipdrop, dropdate, adddescriptiondrop, vehicleplate, helper1, helper2, assigndriver });
       console.log(response.data.message);
       // Clear the form fields after successful submission
       setName('');
