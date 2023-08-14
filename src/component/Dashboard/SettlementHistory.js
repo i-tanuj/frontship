@@ -21,7 +21,7 @@ import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
 
-  await axios.get('https://shippingbackend-production.up.railway.app/api/getpayment',
+  await axios.get('http://localhost:5000/api/summoney',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -204,7 +204,7 @@ function SettlementHistory() {
                           <tr>
                             <th scope="col" class="borderre">No.</th>
                             <th scope="col">Driver Name</th>
-                            <th scope="col">Amount</th>
+                            <th scope="col">Settled Amount</th>
                             <th scope="col">Payment Details</th>
                             <th scope="col">Settlement Status</th>
                           </tr>
@@ -218,7 +218,7 @@ function SettlementHistory() {
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             <td>{item.full_name}</td>
-            <td>{item.amount}</td>
+            <td>{item.total_amount}</td>
             <td>{item.updateddatetime}</td>
             {/* <td className="dis-email text-left">{item.full_name}</td> */}
             {/* <td>{item.phone}</td> */}

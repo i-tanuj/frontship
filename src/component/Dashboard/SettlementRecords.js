@@ -1,20 +1,13 @@
 import React,{useState,useEffect} from 'react'
-import { AiOutlineClose } from "react-icons/ai";
 import axios from 'axios';
 import '../../css/dispatchlist.css'
 import Navbar from '../Navbar'
-import {
-  Form,
-  Button,
-  Modal,
-  ModalBody,
-} from "reactstrap";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 async function ContactData(getContact){
 
-  await axios.get('https://shippingbackend-production.up.railway.app/api/sattlementrecord',
+  await axios.get('http://localhost:5000/api/sattlementrecord',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -27,37 +20,7 @@ async function ContactData(getContact){
 }
 //************************************************************** */
 
-async function updateRecord(id,full_name,amount,DateAndTime,getBatchList,setModalIsOpenEdit){
-  if (amount) {
-      await axios.post('https://shippingbackend-production.up.railway.app/api/updaterecord',
-      {inst_hash: localStorage.getItem('inst_hash'),
-      id : id,
-      full_name: full_name,
-      amount: amount,
-      DateAndTime: DateAndTime
-      },
-      {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
-  )
-  ContactData(getBatchList)
-  setModalIsOpenEdit(false)
-} else {
-  console.log("Error :", "Please fill required field");
-}    
-}
 
-//************************************************************** */
-async function deleteContact(ids,getContact,DefaultgetContact, ){
-  const results = await axios.post('https://shippingbackend-production.up.railway.app/api/delhelper',
-      {
-          id:ids
-      },
-      {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
-  )
-  console.log(results);
-      if(results.status == 200){
-          ContactData(getContact,DefaultgetContact);
-      }
-  }
 
 
 function SettlementRecords() {
@@ -65,7 +28,7 @@ function SettlementRecords() {
     const [contact, getContact] = useState([]);
     
     const [full_name, setName] = useState('');
-    // const [updateddatetime]
+    const [driver_id, setDriver_id] = useState('');
     const [id, setId] = useState('');
     const [amount, setAmount] = useState('');
     const [batchList,getBatchList] = useState([]);
@@ -73,7 +36,6 @@ function SettlementRecords() {
     const [defaultcontact, DefaultgetContact] = useState([]);
     const [ids, setIds] = useState('');
     const [search,setSearch] =useState('');
-  console.log(search)
   const [currentPage,setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
@@ -92,18 +54,21 @@ function SettlementRecords() {
   }
 
   
-  const handleUpdateClick = (id) => {
+  const handleUpdateClick = (driver_id) => {
     const updateddatetime = new Date().toLocaleString('en-IN', {
       timeZone: 'Asia/Kolkata',
       hour12: true,
     });
+    console.log("dr"+driver_id);
     axios.post(
-      'https://shippingbackend-production.up.railway.app/api/updateAmount',
+      'http://localhost:5000/api/updateAmount',
       {
         inst_hash: localStorage.getItem('inst_hash'),
         id: id,
+        driver_id: driver_id,
         full_name: full_name,
-        amount: 0, // Set the wallet amount to 0
+        settlement_amount: 0, // Set the wallet amount to 0
+        status: 2,
         updateddatetime: updateddatetime,
       },
       {
@@ -113,10 +78,11 @@ function SettlementRecords() {
     .then((response) => {
       // Update the 'contact' state to reflect the changes
       const updatedContacts = contact.map(item => {
-        if (item.id === id) {
+        if (item.driver_id === driver_id) {
           return {
             ...item,
-            amount: 0, // Update the wallet amount to 0
+            settlement_amount: 0, // Update the wallet amount to 0
+            status: 2,
           };
         }
         return item;
@@ -135,103 +101,10 @@ function SettlementRecords() {
       console.error('Error updating data:', error);
     });
   };
-
-  <Modal isOpen={modalIsOpenDelete} className="modal_body-delete">
-  <ModalBody className="dispatcher-list-form">
-    <AiOutlineClose
-      className="main_AiOutlineClose close-icon"
-      onClick={() => setModalIsOpenDelete(false)}
-      color="black"
-    />
-  </ModalBody>
-  <Form className="">
-    <h3 style={{ color: "grey", textAlign: "center" }}>
-      Do you really want to delete?
-    </h3>
-    <div
-      className="d-flex justify-content-center"
-      style={{ marginBottom: "50px" }}
-    >
-      <Button
-        outline
-        onClick={() => {
-          deleteContact(ids, getContact, DefaultgetContact);
-          setModalIsOpenDelete(false);
-        }}
-      >
-        Yes
-      </Button>
-      &nbsp;
-      <Button outline onClick={() => setModalIsOpenDelete(false)}>
-        Cancel
-      </Button>
-    </div>
-  </Form>
-</Modal>
-  
-
-
-  
-// async function handleUpdateClick(id,full_name,amount,setModalIsOpenEdit,getBatchList){
-//   if () {
-//       await axios.post('https://shippingbackend-production.up.railway.app/api/updateAmount',
-//       {inst_hash: localStorage.getItem('inst_hash'),
-//       id : id,
-//       full_namename: full_name,
-//       amount: amount
-  
-//       },
-//       {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
-//   )
-//   ContactData(getBatchList)
-//   setModalIsOpenEdit(false)
-// } else {
-//   document.getElementById("edit-validate-batch").innerHTML =
-//     "*Please fill required field!";
-//   console.log("Error :", "Please fill required field");
-// }    
-// }
-
   
   return (
     <section class="homedive ">
 
- <Modal isOpen={modalIsOpenDelete} className="modal_body-delete">
-          <ModalBody className="dispatcher-list-form">
-            <AiOutlineClose
-              className="main_AiOutlineClose close-icon"
-              onClick={() => setModalIsOpenDelete(false)}
-              color="black"
-            />
-          </ModalBody>
-          <Form className="">
-            <h3 style={{ color: "grey", textAlign: "center" }}>
-              Do you really want to delete?
-            </h3>
-            <div
-              className="d-flex justify-content-center"
-              style={{ marginBottom: "50px" }}
-            >
-              <Button
-                outline
-                onClick={() => {
-                    deleteContact(ids, getContact, DefaultgetContact)
-                  setModalIsOpenDelete(false);
-                }}
-              >
-                Yes
-              </Button>
-              &nbsp;
-              <Button outline onClick={() => setModalIsOpenDelete(false)}>
-              Cancel
-              </Button>
-            </div>
-          </Form>
-        </Modal>
-     
-    
-  
-  
     <div class="rightdiv px-3 py-5">
         <div class="container-fluid">
             <div class="row">
@@ -291,9 +164,12 @@ function SettlementRecords() {
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             <td>{item.full_name}</td>
-            <td>{item.amount}</td>
+            {/* <td>{console.log(item.driver_id)}</td> */}
+            <td>{item.settlement_amount}</td>
             <td>
-            <button className='Settle-amount  '  onClick={() => handleUpdateClick(item.id)} id={item.id}>Settled Amount</button>
+            <button className='Settle-amount  '  onClick={() => handleUpdateClick(item.driver_id)} id={item.driver_id}>Settled Amount</button>
+            {/* console.log(item.id); */}
+            {/* console.log("ids"+item.id); */}
             </td>
           </tr>
           )

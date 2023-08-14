@@ -123,7 +123,7 @@ function ShipmentList() {
 								<div class="card-body text-center p-2">
 									<Link to="/settlementRecord">
 									<img src="/Assets/gif/delivery-01.gif"/>	
-										<p class="card-text">Settlement Record</p>
+										<p class="card-text">Settlement Amount</p>
 									</Link>
 								</div>
 							</div>

@@ -16,8 +16,6 @@ const DeliveryCreation = () => {
   const [assigndriver, setAssigndriver] = useState('');
 
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-  // const [selectedDriver, setSelectedDriver] = useState('');
-  // const [drivers, setDrivers] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [selectedCustomers, setSelectedCustomers] = useState("");
@@ -516,12 +514,12 @@ const trynumber = CustomersData.phoneno;
 
                 <div className="d-flex Another-Location"></div>
               </form>
-              {/* <div className="plus-icon Another-Location ">
+              <div className="plus-icon Another-Location ">
                 <button type="submit" onClick={() => setModalIsOpen(true)}>
                   <img src="/Assets/dash/plus.png" />
                   Add Another Location
                 </button>
-              </div> */}
+              </div>
             </div>
           </div>
         </div>

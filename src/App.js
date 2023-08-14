@@ -30,7 +30,7 @@ const PendingShip = React.lazy(() => import("./component/Dashboard/PendingShip")
 const formcomponent = React.lazy(() => import("./component/Dashboard/FormComponent"))
 const PickupCreation = React.lazy(() => import("./component/CreateShipment/PickupCreation"))
 // const Testdispatcher = React.lazy(() => import("./component/CreateShipment/Testdispatcher"))
-// const AmountZero = React.lazy(() => import("./component/Dashboard/AmountZero"))
+const Try = React.lazy(() => import("./component/Dashboard/Try"))
 
 
 
@@ -60,7 +60,7 @@ function App() {
             <Route  exact path="/paymentRecords" element={<PaymentRecords/>}/>
             <Route  exact path="/settlementRecord" element={<SettlementRecords/>}/>
             <Route  exact path="/settlementhistory" element={<SettlementHistory/>}/>
-            {/* <Route  exact path="/amountzero" element={<AmountZero/>}/> */}
+            <Route  exact path="/try" element={<Try/>}/>
 
             <Route  exact path="/view" element={<ViewShipment />}/>
             <Route  exact path="/delayd" element={<DelaydShip/>}/>
