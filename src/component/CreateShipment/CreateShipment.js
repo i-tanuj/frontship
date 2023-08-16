@@ -3,57 +3,101 @@ import { AiOutlineClose } from "react-icons/ai";
 import "../../css/shippment.css";
 import axios from "axios";
 import { Modal, ModalBody } from "reactstrap";
-import DeliveryCreation from "./DeliveryCreation";
 
 async function ContactData(getContact, id) {
   await axios
-    .get("https://shippingbackend-production.up.railway.app/api/creatcustomer", {
-      headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-    })
+    .get(
+      "https://shippingbackend-production.up.railway.app/api/creatcustomer",
+      {
+        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+      }
+    )
     .then((res) => {
       // console.log(res.data);
       getContact(res.data);
     });
 }
-async function VehicleData(getVehicle, id) {
-  await axios
-    .get("https://shippingbackend-production.up.railway.app/api/driver", {
-      headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-    })
-    .then((res) => {
-      // console.log(res.data);
-      getVehicle(res.data);
-    });
-}
-
 
 function CreateShipment() {
+  // Vehicle Dropdown login start here
 
-  const [customername, setCustomername] = useState('');
-  const [customernumber, setCustomernumber] = useState('');
-  const [selectshipdrop, setSelectshipdrop] = useState('');
-  const [dropdate, setDropdate] = useState('');
-  const [adddescriptiondrop, setAdddescriptiondrop] = useState('');
-  const [vehicleplate, setVehicleplate] = useState('');
-  const [helper1, setHelper1] = useState('');
-  const [helper2, setHelper2] = useState('');
-  const [assigndriver, setAssigndriver] = useState('');
-
-  // const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-  const [customers, setCustomers] = useState([]);
-  const [vehicles, setVehicle] = useState([]);
-  const [selectedCustomers, setSelectedCustomers] = useState("");
+  const [vehicleDetails, setVehicleDetails] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState("");
 
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  const [vehicleData, setVehicleData] = useState({
-    id: "",
-    name: "",
-    vehicalplate: "",
-  });
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://shippingbackend-production.up.railway.app/api/vehicledetails"
+      );
+      setVehicleDetails(response.data); // Assuming the API returns an array of vehicle details
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleVehicleChange = (event) => {
+    setSelectedVehicle(event.target.value);
+  };
+
+  // Vehicle Dropdown end here
+
+  // Helper Dropdown login start here
+
+  const [helpers, setHelpers] = useState([]);
+  const [selectedHelper1, setSelectedHelper1] = useState("");
+  const [selectedHelper2, setSelectedHelper2] = useState("");
 
 
-  
+  useEffect(() => {
+    async function fetchHelpers() {
+      try {
+        const response = await axios.get(
+          "https://shippingbackend-production.up.railway.app/api/createhelper"
+        );
+        setHelpers(response.data);
+      } catch (error) {
+        console.error("Error fetching helpers:", error);
+      }
+    }
+    fetchHelpers();
+  }, []);
+
+  // Helper Dropdown end here
+
+  // Driver Dropdown start here
+
+  const [drivers, setDrivers] = useState([]);
+  const [selectedDriver, setSelectedDriver] = useState("");
+
+
+  useEffect(() => {
+    // Fetch driver data from the API and populate the state
+    fetchDrivers();
+  }, []);
+
+  const fetchDrivers = async () => {
+    try {
+      const response = await axios.get("https://shippingbackend-production.up.railway.app/api/driver");
+      const driversData = response.data;
+      setDrivers(driversData);
+    } catch (error) {
+      console.error("Error fetching drivers:", error);
+    }
+  };
+
+  // Driver Dropdown end here
+
+  const [selectshipdrop, setSelectshipdrop] = useState("");
+  const [adddescriptiondrop, setAdddescriptiondrop] = useState("");
+
+  const [vehicles, setVehicle] = useState([]);
+
+
+
   const handleSelectChange = async (event) => {
     const selectedOptionValue = event.target.value;
     setSelectedDispatcher(selectedOptionValue);
@@ -94,18 +138,11 @@ function CreateShipment() {
 
   const [dispatchers, setDispatchers] = useState([]);
   const [selectedDispatcher, setSelectedDispatcher] = useState("");
-  const [dispatcherData, setDispatcherData] = useState({
-    id: "",
-    name: "",
-    email: "",
-    phoneno: "",
-  });
-  
+ 
+
   useEffect(() => {
     fetchDispatchers();
   }, []);
- 
-  
 
   const fetchDispatchers = async () => {
     try {
@@ -119,14 +156,14 @@ function CreateShipment() {
     }
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     fetchVehicle();
   }, []);
 
   const fetchVehicle = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/creatcustomer"
+        "https://shippingbackend-production.up.railway.app/api/vehicledetails"
       );
       const vehicleData = response.data;
       setVehicle(vehicleData);
@@ -134,7 +171,6 @@ function CreateShipment() {
       console.error("Error fetching dispatchers:", error);
     }
   };
-
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [contact, getContact] = useState([]);
@@ -151,47 +187,125 @@ function CreateShipment() {
   useEffect(() => {
     ContactData(getContact, DefaultgetContact);
   }, []);
-  
-  useEffect(() => {
-    VehicleData(getVehicle, DefaultgetVehicle);
-  }, []);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [altphone, setAltphone] = useState("");
+  const [phone, setPhone] = useState("");
+  const [pickuplocation, setPickuplocation] = useState("");
+  const [pickupdate, setPickupdate] = useState("");
+  const [adddescription, setAdddescription] = useState("");
+  const [selectshipment, setSelectshipment] = useState("");
+
+  const [dispatcherData, setDispatcherData] = useState({
+    id: "",
+    name: "",
+    email: "",
+    phoneno: "",
+    altphone: ""
+  });
+  const [vehicleData, setVehicleData] = useState({
+    id: "",
+    name: "",
+    email: "",
+    vehicalplate: ""
+  });
 
 
-
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [altphone, setAltphone] = useState('');
-  const [phone, setPhone] = useState('');
-  const [pickuplocation, setPickuplocation] = useState('');
-  const [pickupdate, setPickupdate] = useState('');
-  const [adddescription, setAdddescription] = useState('');
-  const [selectshipment, setSelectshipment] = useState('');
-
-
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const response = await fetch('https://shippingbackend-production.up.railway.app/api/addtotalshipmentrecord', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await axios.post(
+        "https://shippingbackend-production.up.railway.app/api/createshipment",
+        {
+          customer_name: dispatcherData.name,
+          customer_contact: dispatcherData.phoneno,
+          customer_email: dispatcherData.email,
+          customer_alt_num: dispatcherData.altphone,
+          pick_up_location: pickuplocation,
+          pick_up_before: pickupdate,
+          shipment_type: selectshipment,
+          description: adddescription,
+          customer_name2: dispatcherData.name,
+          customer_contact2: dispatcherData.phoneno,
+          drop_location: selectshipdrop,
+          drop_description: adddescriptiondrop,
+          vehicleplate: selectedVehicle,
+          helper1: selectedHelper1,
+          helper2: selectedHelper2,
+          driver_id: selectedDriver,
         },
-        body: JSON.stringify({ name, email, phone, altphone, pickuplocation, pickupdate, selectshipment, adddescription }),
-      });
-
-      if (response.ok) {
-        console.log('Data submitted successfully');
-        // You can reset the form here
-      } else {
-        console.error('Data submission failed');
-      }
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+  
+      console.log("Data successfully submitted:", response.data);
+      // You can display a success message or perform any other actions here
+  
+      // Clear form fields after successful submission
+      setName("");
+      setPhone("");
+      setEmail("");
+      setAltphone("");
+      setPickuplocation("");
+      setPickupdate("");
+      setSelectshipment("");
+      setAdddescription("");
+      setDispatchName("");
+      setDiscontactnum("");
+      setSelectshipdrop("");
+      setAdddescriptiondrop("");
+      setSelectedVehicle("");
+      setSelectedHelper1("");
+      setSelectedHelper2("");
+      setSelectedDriver("");
     } catch (error) {
-      console.error('Error submitting data:', error);
+      console.error("Error submitting data:", error);
+      // You can display an error message or perform any other error handling here
     }
   };
+  
 
 
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     const response = await fetch(
+  //       "https://shippingbackend-production.up.railway.app/api/addtotalshipmentrecord",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           name,
+  //           email,
+  //           phone,
+  //           altphone,
+  //           pickuplocation,
+  //           pickupdate,
+  //           selectshipment,
+  //           adddescription,
+  //         }),
+  //       }
+  //     );
+
+  //     if (response.ok) {
+  //       console.log("Data submitted successfully");
+  //       // You can reset the form here
+  //     } else {
+  //       console.error("Data submission failed");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting data:", error);
+  //   }
+  // };
 
   return (
     <div>
@@ -207,39 +321,8 @@ const handleSubmit = async (e) => {
             </ModalBody>
             <div className="">
               <div className="admin-dashboard">
-                {/* <ul class="nav nav-tabs" id="myTab" role="tablist">
-                  <li class="nav-item" role="presentation">
-                    <button
-                      class="nav-link active card-header-01 text-center"
-                      id="home-tab"
-                      data-bs-toggle="tab"
-                      data-bs-target="#home-tab-pane"
-                      type="button"
-                      role="tab"
-                      aria-controls="home-tab-pane"
-                      aria-selected="true"
-                    >
-                    </button>
-                  </li> */}
-                  <h2 className="py-3 text-center">
-                      Shipment Creation
+                <h2 className="py-3 text-center">Shipment Creation</h2>
 
-                  </h2>
-                  {/* <li class="nav-item" role="presentation">
-                    <button
-                      class="nav-link card-header-01 text-center"
-                      id="profile-tab"
-                      data-bs-toggle="tab"
-                      data-bs-target="#profile-tab-pane"
-                      type="button"
-                      role="tab"
-                      aria-controls="profile-tab-pane"
-                      aria-selected="false"
-                    >
-                      Delivery Creation
-                    </button>
-                  </li> */}
-                {/* </ul> */}
                 <div class="tab-content" id="myTabContent">
                   <div
                     class="tab-pane fade show active"
@@ -249,11 +332,13 @@ const handleSubmit = async (e) => {
                     tabindex="0"
                   >
                     <div className="row card-holder">
-                    <form
+                      <form
                         className="form-control-holder"
                         onSubmit={handleSubmit}
                       >
-                      <h3 className="text-center pt-2 pb-4">Pickup Details</h3>
+                        <h3 className="text-center pt-2 pb-4">
+                          Pickup Details
+                        </h3>
                         <div className="row">
                           <div className="mb-4 w-50">
                             <label className="form-label">
@@ -264,18 +349,16 @@ const handleSubmit = async (e) => {
                             <select
                               value={selectedDispatcher}
                               onChange={handleSelectChange}
-                            // value={name}
-                            // onChange={(e) => setName(e.target.value)}
-                              name="name"
-                              id="name"
+                              name="customer_name"
+                              id="customer_name"
                             >
                               <option value="">Select Customer</option>
                               {dispatchers.map((dispatcher) => (
                                 <option
                                   key={dispatcher.id}
                                   value={dispatcher.id}
-                                  name="name"
-                              id="name"
+                                  name="customer_name"
+                                  id="customer_name"
                                 >
                                   {dispatcher.name}
                                 </option>
@@ -300,12 +383,11 @@ const handleSubmit = async (e) => {
                               <span className="stra-icon"></span>
                             </label>
                             <input
-                              name="phone"
+                              name="phoneno"
                               value={dispatcherData.phoneno}
-                            // value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
+                              onChange={(e) => setPhone(e.target.value)}
                               // readOnly
-                              id="phone"
+                              id="phoneno"
                               placeholder="Enter Contact Number"
                               type="number"
                             />
@@ -354,24 +436,13 @@ const handleSubmit = async (e) => {
                             </label>
                             <input
                               name="altphone"
-                            //   onChange={(e) => setAltphone(e.target.value)}
                               id="altphone"
-                              // value={altphone}
                               value={dispatcherData.altphone}
-
                               onChange={(e) => setAltphone(e.target.value)}
                               placeholder="Enter Alternate Number"
                               type="number"
                             />
-                            {/* <input
-                              name="email"
-                              value={dispatcherData.email}
-                              id="email"
-                              // value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              placeholder="Enter Email Address"
-                              type="email"
-                            /> */}
+
                             {/* {error && disaltnum.length <= 0 ? (
                               <span
                                 className="valid-form"
@@ -392,11 +463,10 @@ const handleSubmit = async (e) => {
                             </label>
                             <input
                               name="pickuplocation"
-                            //   onChange={(e) =>
-                            //     setPickuplocation(e.target.value)
-                            //   }
-                            value={pickuplocation}
-                            onChange={(e) => setPickuplocation(e.target.value)}
+                              value={pickuplocation}
+                              onChange={(e) =>
+                                setPickuplocation(e.target.value)
+                              }
                               id="pickuplocation"
                               placeholder="Enter Pickup Location"
                               type="text"
@@ -418,16 +488,13 @@ const handleSubmit = async (e) => {
                             </label>
                             <input
                               name="pickupdate"
-                            //   onChange={(e) =>
-                            //     setPickupdate(e.target.value)
-                            //   }
-                            value={pickupdate}
-                            onChange={(e) => setPickupdate(e.target.value)}
+                              value={pickupdate}
+                              onChange={(e) => setPickupdate(e.target.value)}
                               id="pickupdate"
                               placeholder="Drop Location"
                               type="datetime-local"
                             />
-                            
+
                             {/* {error && pickupbeforedate.length <= 0 ? (
                               <span
                                 className="valid-form"
@@ -446,8 +513,8 @@ const handleSubmit = async (e) => {
                               Please Select<span className="stra-icon">*</span>
                             </label>
                             <select
-                            name="selectshipment"
-                            id="selectshipment"
+                              name="selectshipment"
+                              id="selectshipment"
                               class=""
                               aria-label="Default select example"
                               onChange={(e) =>
@@ -496,23 +563,24 @@ const handleSubmit = async (e) => {
                             )} */}
                           </div>
                         </div>
-                      <h3 className="text-center pt-3 pb-4">Delivery Details</h3>
+                        <h3 className="text-center pt-3 pb-4">
+                          Delivery Details
+                        </h3>
 
+                        <div className="row">
+                          <div className="mb-4 w-50">
+                            <label
+                              for="exampleInputEmail1"
+                              className="form-label"
+                            >
+                              Customers Name<span className="stra-icon">*</span>
+                            </label>
 
-                      <div className="row">
-                  <div className="mb-4 w-50">
-                    <label for="exampleInputEmail1" className="form-label">
-                      Customers Name<span className="stra-icon">*</span>
-                    </label>
-          {/* <input type="text" value={customername} 
-          onChange={e => setName(e.target.value)} 
-
-          /> */}
-          <select
+                            <select
                               value={selectedDispatcher}
                               onChange={handleSelectChange}
-                            // value={name}
-                            // onChange={(e) => setName(e.target.value)}
+                              // value={name}
+                              // onChange={(e) => setName(e.target.value)}
                               name="name"
                               id="name"
                             >
@@ -522,282 +590,207 @@ const handleSubmit = async (e) => {
                                   key={dispatcher.id}
                                   value={dispatcher.id}
                                   name="name"
-                              id="name"
+                                  id="name"
                                 >
                                   {dispatcher.name}
                                 </option>
                               ))}
                             </select>
 
-       
-
-                    {/* {error && custoname.length <= 0 ? (
+                            {/* {error && custoname.length <= 0 ? (
                       <span className="valid-form" style={{ color: "red" }}>
                         Please Select Customer*
                       </span>
                     ) : (
                       ""
                     )} */}
-                  </div>
-                  <div className="mb-4 w-50">
-                    <label className="form-label">
-                      Customer Contact Number
-                      <span className="stra-icon">*</span>
-                    </label>
-          {/* <input type="number" value={customernumber} onChange={e => setNumber(e.target.value)} /> */}
+                          </div>
+                          <div className="mb-4 w-50">
+                            <label className="form-label">
+                              Customer Contact Number
+                              <span className="stra-icon">*</span>
+                            </label>
 
-          <input
+                            <input
                               name="phone"
                               value={dispatcherData.phoneno}
-                            // value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
+                              // value={phone}
+                              onChange={(e) => setPhone(e.target.value)}
                               // readOnly
                               id="phone"
                               placeholder="Enter Contact Number"
                               type="number"
                             />
-                    {/* {error && custonum.length <= 0 ? (
+                            {/* {error && custonum.length <= 0 ? (
                       <span className="valid-form" style={{ color: "red" }}>
                         Please Enter the valid Email*
                       </span>
                     ) : (
                       ""
                     )} */}
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="mb-4 w-50">
-                    <label className="form-label">
-                      Address (Drop Location)
-                      <span className="stra-icon">*</span>
-                    </label>
-          <input type="text" value={selectshipdrop} onChange={e => setSelectshipdrop(e.target.value)} />
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="mb-4 w-50">
+                            <label className="form-label">
+                              Address (Drop Location)
+                              <span className="stra-icon">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={selectshipdrop}
+                              onChange={(e) =>
+                                setSelectshipdrop(e.target.value)
+                              }
+                            />
 
-                    {/* <input
-                      name="droplocation"
-                      onChange={(e) => {setSelectshipdrop(e.target.value);}}
-                      id="droplocation"
-                      value={selectshipdrop}
-                      placeholder="Enter your drop location"
-                      type="text"
-                    />
+                            {/*                   
                     {error && droplocation.length <= 0 ? (
                       <span className="valid-form" style={{ color: "red" }}>
                         Please Enter the 10 Digit number*
                       </span>
                     ) : (
                       ""
-                    )} */}
-                  </div>
-               
-                  <div className="mb-4 w-50">
-                    <label className="form-label">
-                      Add Description<span className="stra-icon">*</span>{" "}
-                    </label>
-          <input type="text" value={adddescriptiondrop} onChange={e => setAdddescriptiondrop(e.target.value)} />
+                    )}  */}
+                          </div>
 
-                    {/* <input
-                      name="description"
-                      onChange={(e) =>{ setAdddescriptiondrop(e.target.value);}}
-                      id="description"
-                      value={adddescriptiondrop}
-                      placeholder="Add description"
-                      type="text"
-                    />
+                          <div className="mb-4 w-50">
+                            <label className="form-label">
+                              Add Description
+                              <span className="stra-icon">*</span>{" "}
+                            </label>
+                            <input
+                              type="text"
+                              value={adddescriptiondrop}
+                              onChange={(e) =>
+                                setAdddescriptiondrop(e.target.value)
+                              }
+                            />
+
+                            {/*                    
                     {error && adddesc.length <= 0 ? (
                       <span className="valid-form" style={{ color: "red" }}>
                         Please Enter drop location*
                       </span>
                     ) : (
                       ""
-                    )} */}
-                  </div>
+                    )}  */}
+                          </div>
+                        </div>
+                        <div className="plus-icon Another-Location ">
+                          <button
+                            type="submit"
+                            onClick={() => setModalIsOpen(true)}
+                          >
+                            <img src="/Assets/dash/plus.png" />
+                            Add Another Location
+                          </button>
+                        </div>
 
-                </div>
-                <div className="plus-icon Another-Location ">
-                <button type="submit" onClick={() => setModalIsOpen(true)}>
-                  <img src="/Assets/dash/plus.png" />
-                  Add Another Location
-                </button>
-              </div>
-               
-                <div className="row pt-5">
-                  <div className="mb-4 w-50">
-                    <label className="form-label">
-                      vehicle plate<span className="stra-icon">*</span>
-                    </label>
-          <select
-                              value={selectedVehicle}
-                              onChange={handleSelectVehicle}
-                              name="vehicalplate"
-                              id="vehicalplate"
+                        <div className="row pt-5">
+                          <div className="mb-4 w-50">
+                            <label className="form-label">
+                              vehicle plate<span className="stra-icon">*</span>
+                            </label>
+
+
+
+                            <select
+                              id="vehicleDropdown"
+                           value={selectedVehicle}
+  onChange={(e) => setSelectedVehicle(e.target.value)}
                             >
-                              <option value="">Select Customer</option>
-                              {vehicles.map((vehicle) => (
-                                <option
-                                  key={vehicle.id}
-                                  value={vehicle.id}
-                                  name="vehicalplate"
-                              id="vehicalplate"
-                                >
-                                  {vehicle.vehicalplate}
+                              <option value="">Select a Vehicle</option>
+                              {vehicleDetails.map((vehicle) => (
+                                <option key={vehicle.id} value={vehicle.id}>
+                                  {vehicle.name} - {vehicle.model}
                                 </option>
                               ))}
                             </select>
-                 
-                  </div>
-                  <div className="mb-4 w-50">
-                    <label className="form-label">
-                      Helper 1<span className="stra-icon">*</span>{" "}
-                    </label>
-          {/* <input type="text" value={helper1} onChange={e => setHelper1(e.target.value)} /> */}
-          <select
-                              value={selectedCustomers}
-                              onChange={handleSelectChange}
-                            // value={customername}
-                            // onChange={(e) => setCustomername(e.target.value)}
-                              name="name"
-                              id="name"
+                          </div>
+                          <div className="mb-4 w-50">
+                            <label className="form-label">
+                              Helper 1<span className="stra-icon">*</span>{" "}
+                            </label>
+                            <select
+                              value={selectedHelper1}
+  onChange={(e) => setSelectedHelper1(e.target.value)}
                             >
-                              <option value="">Select Helper1</option>
-                              {customers.map((customers) => (
-                                <option
-                                  key={customers.id}
-                                  value={customers.id}
-                                  name="name"
-                              id="name"
-                                >
-                                  {customers.name}
+                              <option value="">Select a Helper</option>
+                              {helpers.map((helper) => (
+                                <option key={helper.id} value={helper.name}>
+                                  {helper.name}
                                 </option>
                               ))}
                             </select>
-                    {/* <select
-                      class=""
-                      aria-label="Default select example"
-                      value={helper1}
-                      onChange={(e) => { setHelper1(e.target.value);}}
-                    >
-                      <option selected>Select Helper</option>
-                      {
-                        helper1.map((item, i) => (
-                        <option key={i}>
-                          <option value={item.id}>{item.name}</option>
-                        </option>
-                      ))}
-                    </select>
+                            {/*                    
                     {error && helper.length <= 0 ? (
                       <span className="valid-form" style={{ color: "red" }}>
                         Enter Description*
                       </span>
                     ) : (
                       ""
-                    )} */}
-                  </div>
-                </div>
-                <div className="row">
-                <div className="mb-4 w-50">
-                    <label className="form-label">
-                      Helper 2<span className="stra-icon">*</span>{" "}
-                    </label>
-          {/* <input type="text" value={helper2} onChange={e => setHelper2(e.target.value)} /> */}
+                    )}  */}
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="mb-4 w-50">
+                            <label className="form-label">
+                              Helper 2<span className="stra-icon">*</span>{" "}
+                            </label>
 
-          <select
-                              // value={selectedCustomers}
-                              // onChange={handleSelectChange}
-                            // value={customername}
-                            // onChange={(e) => setCustomername(e.target.value)}
-                              name="name"
-                              id="name"
+                            <select
+                              value={selectedHelper2}
+  onChange={(e) => setSelectedHelper2(e.target.value)}
                             >
-                              <option value="">Select Helper2</option>
-                              {customers.map((customers) => (
-                                <option
-                                  // key={customers.id}
-                                  // value={customers.id}
-                                  name="name"
-                              id="name"
-                                >
-                                  {/* {customers.name} */}
+                              <option value="">Select a Helper</option>
+                              {helpers.map((helper) => (
+                                <option key={helper.id} value={helper.name}>
+                                  {helper.name}
                                 </option>
                               ))}
                             </select>
-                    {/* <select
-                      class=""
-                      aria-label="Default select example"
-                      value={helper2}
-                      onChange={(e) => { setHelper2(e.target.value); }}
-                    >
-                      <option selected>Select Helper</option>
-                      {helper1.map((item, i) => (
-                        <option key={i}>
-                          <option value={item.id}>{item.name}</option>
-                        </option>
-                      ))}
-                    </select>
+                            {/*                    
                     {error && helper.length <= 0 ? (
                       <span className="valid-form" style={{ color: "red" }}>
                         Enter Description*
                       </span>
                     ) : (
                       ""
-                    )} */}
-                  </div>
-                  <div className="mb-4 w-50">
-                    <label className="form-label">
-                      Assign driver<span className="stra-icon">*</span>
-                    </label>
-          {/* <input type="text" value={assigndriver} onChange={e => setAssigndriver(e.target.value)} /> */}
+                    )}  */}
+                          </div>
+                          <div className="mb-4 w-50">
+                            <label className="form-label">
+                              Assign driver<span className="stra-icon">*</span>
+                            </label>
 
-          <select
-                              value={selectedCustomers}
-                              onChange={handleSelectChange}
-                            // value={customername}
-                            // onChange={(e) => setCustomername(e.target.value)}
-                              name="name"
-                              id="name"
-                            >
-                              <option value="">Select Driver Name</option>
-                              {customers.map((customers) => (
-                                <option
-                                  // key={customers.id}
-                                  // value={customers.id}
-                                  name="name"
-                              id="name"
-                                >
-                                  {/* {customers.name} */}
-                                </option>
-                              ))}
-                            </select>
-                    {/* <select
-                      class=""
-                      aria-label="Default select example"
-                      onChange={(e) => {setAssigndriver(e.target.value);}}
-                    >
-                      <option>Select Driver</option>
-                      {assidrive.map((item, i) => (
-                        <option key={i}>
-                          <option value={item.id}>{item.full_name}</option>
-                        </option>
-                      ))}
-                    </select>
+                            <select
+  value={selectedDriver}
+  onChange={(e) => setSelectedDriver(e.target.value)}
+>
+  <option value="">Select Driver</option>
+  {drivers.map((driver) => (
+    <option key={driver.id} value={driver.id}>
+      {driver.full_name}
+    </option>
+  ))}
+</select>
+
+                            {/*                    
                     {error && assigndriver.length <= 0 ? (
                       <span className="valid-form" style={{ color: "red" }}>
                         Enter Description*
                       </span>
                     ) : (
                       ""
-                    )} */}
-                  </div>
-                  </div>
-
-
-
+                    )}  */}
+                          </div>
+                        </div>
 
                         <button
                           type="submit"
                           className="submit-btn"
                           value="Send Message"
-                        //   onClick={() => addBatch(name,email,phone,altphone,pickuplocation,pickupdate,selectshipment,adddescription)}
                         >
                           Create Task
                         </button>
@@ -814,9 +807,7 @@ const handleSubmit = async (e) => {
                     aria-labelledby="profile-tab"
                     tabindex="0"
                   >
-                    <div>
-                      {/* <DeliveryCreation /> */}
-                    </div>
+                    <div></div>
                   </div>
                 </div>
               </div>

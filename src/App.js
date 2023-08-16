@@ -29,6 +29,7 @@ const DelaydShip = React.lazy(() => import("./component/Dashboard/DelaydShip"))
 const PendingShip = React.lazy(() => import("./component/Dashboard/PendingShip"))
 const formcomponent = React.lazy(() => import("./component/Dashboard/FormComponent"))
 const PickupCreation = React.lazy(() => import("./component/CreateShipment/PickupCreation"))
+const DropdownComponent = React.lazy(() => import("./component/CreateShipment/DropdownComponent"))
 // const Testdispatcher = React.lazy(() => import("./component/CreateShipment/Testdispatcher"))
 // const Try = React.lazy(() => import("./component/Dashboard/Try"))
 
@@ -70,6 +71,7 @@ function App() {
             <Route  exact path="/testdispatcher" element={<Testdispatcher/>}/>
             <Route  exact path="/pickupcreation" element={<PickupCreation/>}/>
             <Route  exact path="/formcomponent" element={<FormComponent/>}/>
+            <Route  exact path="/dropdowncomponent" element={<DropdownComponent/>}/>
 
 
           </Routes>
