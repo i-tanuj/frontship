@@ -3,6 +3,9 @@ import { AiOutlineClose } from "react-icons/ai";
 import "../../css/shippment.css";
 import axios from "axios";
 import { Modal, ModalBody } from "reactstrap";
+import Accordion from 'react-bootstrap/Accordion';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 async function ContactData(getContact, id) {
   await axios
@@ -242,6 +245,17 @@ function CreateShipment() {
           },
         }
       );
+    setModalIsOpen(false);
+
+          // Show Toastify notification for success
+          toast.success('Helper successfully created!', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+          });
   
       console.log("Data successfully submitted:", response.data);
       // You can display a success message or perform any other actions here
@@ -678,14 +692,22 @@ function CreateShipment() {
                           </div>
                         </div>
                         <div className="plus-icon Another-Location ">
-                          <button
+                          {/* <button
                             type="submit"
                             onClick={() => setModalIsOpen(true)}
                           >
                             <img src="/Assets/dash/plus.png" />
                             Add Another Location
-                          </button>
+                          </button> */}
                         </div>
+
+                     {/* accordian start here */}
+
+
+                     {/* accordian end here */}
+
+
+                        
 
                         <div className="row pt-5">
                           <div className="mb-4 w-50">
@@ -800,6 +822,7 @@ function CreateShipment() {
                       </form>
                     </div>
                   </div>
+
                   <div
                     class="tab-pane fade"
                     id="profile-tab-pane"
@@ -823,6 +846,8 @@ function CreateShipment() {
           </button>
         </div>
       </div>
+<ToastContainer/>
+
     </div>
   );
 }
