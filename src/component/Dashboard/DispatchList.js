@@ -4,6 +4,8 @@ import axios from "axios";
 import "../../css/dispatchlist.css";
 import Navbar from "../Navbar";
 import CreateDispatch from "./CreateDispatch";
+import DatePicker from "react-datepicker";
+
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -33,7 +35,7 @@ async function updateBatch(
   setModalIsOpenEdit,
   getBatchList
 ) {
-  if (name != "" && email != "" && phone != "" && password != "") {
+  if (name !== "" && email !== "" && phone !== "" && password !== "") {
     await axios.post(
       "https://shippingbackend-production.up.railway.app/api/updatedispatcher",
       {
@@ -86,6 +88,9 @@ async function deleteContact(ids, getContact, DefaultgetContact) {
 }
 
 function DispatchList() {
+  const [data, setData] = useState([]);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [contact, getContact] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -98,7 +103,7 @@ function DispatchList() {
   const [defaultcontact, DefaultgetContact] = useState([]);
   const [ids, setIds] = useState("");
   const [search, setSearch] = useState("");
-  console.log(search);
+  // console.log(search);
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
@@ -124,6 +129,37 @@ function DispatchList() {
     setPassword(dispatcher.password);
     setModalIsOpenEdit(true);
   }
+
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+  };
+  
+  const filteredData = data.filter((item) => {
+    if (startDate && endDate) {
+      const itemDate = new Date(item.DateAndTime);
+      return itemDate >= startDate && itemDate <= endDate;
+    }
+    return true;
+  });
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://shippingbackend-production.up.railway.app/api/createhelper"
+      );
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
 
   return (
     <section class="homedive ">
@@ -276,7 +312,35 @@ function DispatchList() {
                 <div className="">
                   <h2>All Dispatcher List</h2>
                 </div>
-                <div class="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+                <div  className='datepicker-date-comm'>
+                <span className="calender-icon">
+                        <DatePicker
+                          selected={startDate}
+                          onChange={handleStartDateChange}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="Start Date"
+                        />
+                        <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" />
+                      </span>
+                      <span className="calender-icon">
+                        <DatePicker
+                          selected={endDate}
+                          onChange={handleEndDateChange}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="End Date"
+                        />
+                        <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" />
+                      </span>
+									</div>
+                <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+                 
+                 
+                 
+                 
                   <div class="input-group input-group-lg">
                     <span
                       style={{ backgroundColor: "#fff" }}
@@ -296,6 +360,9 @@ function DispatchList() {
                   </div>
                 </div>
                 <div className="d-flex">
+                <div className="add-new-form-btn">
+                    <CreateDispatch />
+                  </div>
                   <div className="Back-btn-01">
                     <a href="/">Back</a>
                   </div>

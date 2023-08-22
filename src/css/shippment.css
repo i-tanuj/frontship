@@ -126,6 +126,29 @@ form.form-control-holder {
     padding: 32px 32px;
     border-radius: 16px;
 }
+.admin-section-admin-01 form.form-control-holder {
+    box-shadow: 0px 4px 25px 0px #1B264424;
+    width: 100%;
+    margin: auto;
+    padding: 32px 32px;
+    border-radius: 16px;
+}
+.admin-section-admin-01 {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+}
+.admin-section-map-modal  .admin-dashboard h2 {
+    background-color: #1b26441f;
+}
+.admin-section-map-modal {
+    max-width: 80% !important;
+}
+
+.form-map-section {
+    width: 41%;
+    padding: 63px 30px 50px 0px;
+}
 
 
 .form-control-holder button.submit-btn, .form-control-holder-hpr button.submit-btn {

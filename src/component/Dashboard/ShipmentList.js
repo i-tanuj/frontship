@@ -13,8 +13,11 @@ function ShipmentList() {
 						<div class="row card-holder-py">
 							<div class="col-md-6 border-right p-2">
 								<div class="card-body text-center p-2">
+								<Link to='/shipment-list'>
+
 							    	<img src="/Assets/gif/delivery-01.gif"/>
 								    <p class="card-text">Shipment List</p>
+								</Link>
 								</div>
 							</div>
 							<div class="col-md-6 border-left p-2">
@@ -37,7 +40,7 @@ function ShipmentList() {
 							</div>
 							<div class="col-md-6 border-top">
 								<div class="card-body text-center p-2 mb-2">
-								<Link to='/cancel'>
+								<Link to='/cancel-shipment'>
 							    	<img src="/Assets/gif/Canceled.gif"/>
 								    <p class="card-text">Canceled Shipment</p>
 									</Link>

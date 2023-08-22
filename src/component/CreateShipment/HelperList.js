@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 import "../../css/dispatchlist.css";
+import DatePicker from "react-datepicker";
+
 import Navbar from "../Navbar";
 import CreateHelper from "../CreateShipment/CreateHelper";
 import { toast, ToastContainer } from 'react-toastify';
@@ -88,6 +90,9 @@ async function deleteContact(ids, getContact, DefaultgetContact) {
 }
 
 function HelperList() {
+  const [data, setData] = useState([]);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [contact, getContact] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -111,11 +116,39 @@ function HelperList() {
   useEffect(() => {
     ContactData(getContact, DefaultgetContact);
   }, []);
-  console.warn(contact);
+  // console.warn(contact);
 
   function handleInput(e) {
     setName(e.target.value);
   }
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+  };
+  
+  const filteredData = data.filter((item) => {
+    if (startDate && endDate) {
+      const itemDate = new Date(item.DateAndTime);
+      return itemDate >= startDate && itemDate <= endDate;
+    }
+    return true;
+  });
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://shippingbackend-production.up.railway.app/api/createhelper"
+      );
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   function handleEditClick(helper) {
     setIds(helper.id);
@@ -261,6 +294,7 @@ function HelperList() {
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
+             
             </div>
           </div>
 
@@ -270,10 +304,37 @@ function HelperList() {
             </div>
             <div class="col view-table-new">
               <div className="driver-view-list">
-                <div className="">
+                <div className="col-sm-12 col-md-12 col-lg-2 col-xl-2 col-xxl-2 ">
                   <h2>All Helper List</h2>
                 </div>
-                <div class="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+                <div className="w-250 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+                <div  className='datepicker-date-comm'>
+                <span className="calender-icon">
+                        <DatePicker
+                          selected={startDate}
+                          onChange={handleStartDateChange}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="Start Date"
+                        />
+                        <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" />
+                      </span>
+                      <span className="calender-icon">
+                        <DatePicker
+                          selected={endDate}
+                          onChange={handleEndDateChange}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="End Date"
+                        />
+                        <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" />
+                      </span>
+									</div>
+                  </div>
+                
+                <div class="w-200 col-sm-12 col-md-12 col-lg-3 col-xl-3 col-xxl-3">
                   <div class="input-group input-group-lg">
                     <span
                       style={{ backgroundColor: "#fff" }}
@@ -305,6 +366,7 @@ function HelperList() {
                 class="table align-middle bg-white rounded m-0"
                 id="table-to-xls"
               >
+               
                 <thead class="tableheading">
                   <tr>
                     <th scope="col" class="borderre">
@@ -321,8 +383,7 @@ function HelperList() {
                   </tr>
                 </thead>
                 <tbody class="tbody">
-                  {records
-                    .filter((item) => {
+                  {filteredData.filter((item) => {
                       return search.toLowerCase() === ""
                         ? item
                         : item.name.toLowerCase().includes(search);
@@ -357,6 +418,15 @@ function HelperList() {
                       </tr>
                     ))}
                 </tbody>
+                <tbody>
+          {/* {filteredData.map((item, index) => (
+            <tr key={index}>
+              <td>{item.name}</td>
+              <td>{item.email}</td>
+              <td>{item.DateAndTime}</td>
+            </tr>
+          ))} */}
+        </tbody>
               </table>
               <nav>
                 <ul className="pagination">

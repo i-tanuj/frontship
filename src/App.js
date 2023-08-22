@@ -8,6 +8,8 @@ import SettlementHistory from './component/Dashboard/SettlementHistory';
 // import AmountZero from './component/Dashboard/AmountZero';
 import Testdispatcher from './component/CreateShipment/Testdispatcher';
 import FormComponent from './component/Dashboard/FormComponent';
+import ShipmentDetails from './component/Dashboard/ShipmentDetails';
+import CancelShip from './component/Dashboard/CancelShip';
 
 const Login = React.lazy(() => import("./component/Login"));
 const VerifyOTP =  React.lazy(() => import("./component/VerifyOTP"))
@@ -30,9 +32,6 @@ const PendingShip = React.lazy(() => import("./component/Dashboard/PendingShip")
 const formcomponent = React.lazy(() => import("./component/Dashboard/FormComponent"))
 const PickupCreation = React.lazy(() => import("./component/CreateShipment/PickupCreation"))
 const DropdownComponent = React.lazy(() => import("./component/CreateShipment/DropdownComponent"))
-// const Testdispatcher = React.lazy(() => import("./component/CreateShipment/Testdispatcher"))
-// const Try = React.lazy(() => import("./component/Dashboard/Try"))
-
 
 
 
@@ -66,6 +65,8 @@ function App() {
             <Route  exact path="/view" element={<ViewShipment />}/>
             <Route  exact path="/delayd" element={<DelaydShip/>}/>
             <Route  exact path="/pending" element={<PendingShip/>}/>
+            <Route  exact path="/shipment-list" element={<ShipmentDetails/>}/>
+            <Route  exact path="/cancel-shipment" element={<CancelShip/>}/>
 
             <Route  exact path="/driverdropdown" element={<DriverDropdown/>}/>
             <Route  exact path="/testdispatcher" element={<Testdispatcher/>}/>

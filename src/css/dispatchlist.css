@@ -67,7 +67,7 @@ form.form_main {
     background-color: #1b2644 !important;
 }
 table#table-to-xls {
-    z-index: 9;
+    z-index: 7;
     position: relative;
 }
 thead.tableheading{
@@ -365,4 +365,26 @@ span#basic-addon1 {
 .bi-search::before {
     content: "\f52a";
     font-weight: 800 !important;
+}
+.datepicker-date-comm {
+    display: flex;
+    gap: 20px;
+}
+.datepicker-date-comm input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+}
+.datepicker-date-comm input:focus-visible {
+    outline: none;
+}
+img.calender-icon {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+    height: 27px;
+}
+span.calender-icon {
+    position: relative;
 }

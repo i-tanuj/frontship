@@ -4,7 +4,6 @@ import axios from 'axios';
 import '../../css/dispatchlist.css'
 import Navbar from '../Navbar';
 
-
 import {
   Nav,
   NavItem,
@@ -16,12 +15,10 @@ import {
   ModalBody,
 } from "reactstrap";
 
-import { Link } from "react-router-dom";
-import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
 
-  await axios.get('https://shippingbackend-production.up.railway.app/api/dispatcher',
+  await axios.get('https://shippingbackend-production.up.railway.app/api/shipmentdata',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -177,8 +174,8 @@ function CancelShip() {
           
             <div className="row pt-0">
               <div className='col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 '>
-             <Navbar/>
-            
+              <Navbar/>
+
                     </div>
                 <div class="col p-0 shipment-view-pending-cencal">
                 <div className='driver-view-list'>
@@ -196,7 +193,7 @@ function CancelShip() {
                   <div className='Back-btn-01'><a href='#'>Back</a></div>
                 </div>
               </div>
-                <table class="table align-middle bg-white rounded m-0" id="table-to-xls">
+                    <table class="table align-middle bg-white rounded m-0" id="table-to-xls">
                         <thead class="tableheading">
                           <tr>
                             <th scope="col" class="borderre">No.</th>
@@ -217,12 +214,13 @@ function CancelShip() {
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             {/* <td>{item.id}</td> */}
-            <td>{item.name}</td>
-            <td><span className='ship-cancel'>Cancel</span></td>
-            <td className="dis-email text-left">{item.email}</td>
+            <td>{item.customer_name}</td>
+            <td><span className='ship-pending'>Cancel</span></td>
+            <td>{item.customer_contact}</td>
+            {/* <td className="dis-email text-left">{item.customer_email}</td> */}
             
-            <td>{item.phone}</td>
-            <td>{item.phone}</td>
+            <td>{item.pick_up_location}</td>
+            <td>{item.drop_location}</td>
             <td>
             {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
             <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>

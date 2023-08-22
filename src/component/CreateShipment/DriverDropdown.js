@@ -1,45 +1,85 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-const DriverDropdown = () => {
-  const [drivers, setDrivers] = useState([]);
-  const [selectedDriver, setSelectedDriver] = useState('');
+function DriverDropdown() {
+  const [data, setData] = useState([]);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
-  useEffect(() => {
-    // Fetch the data from the API
-    axios.get('https://shippingbackend-production.up.railway.app/api/driver')
-      .then(response => {
-        setDrivers(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
-
-  const handleDriverChange = (event) => {
-    setSelectedDriver(event.target.value);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://shippingbackend-production.up.railway.app/api/createhelper"
+      );
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+  };
+
+  const filteredData = data.filter((item) => {
+    if (startDate && endDate) {
+      const itemDate = new Date(item.DateAndTime);
+      return itemDate >= startDate && itemDate <= endDate;
+    }
+    return true;
+  });
+
   return (
-    <div>
-      <h2>Driver Dropdown</h2>
-      <select onChange={handleDriverChange} value={selectedDriver}>
-        <option value="">Select a driver</option>
-        {drivers.map((driver) => (
-          <option key={driver.id} value={driver.full_name}>
-            {driver.full_name}
-          </option>
-        ))}
-      </select>
-      {selectedDriver && (
-        <div>
-          {/* <h3>Selected Driver:</h3> */}
-          <p>{selectedDriver}</p>
-        </div>
-      )}
-          <p>{selectedDriver}</p>
+    <div className="App">
+      <h1>Date Filter and Data Display</h1>
+      <div>
+        <DatePicker
+          selected={startDate}
+          onChange={handleStartDateChange}
+          selectsStart
+          startDate={startDate}
+          endDate={endDate}
+          placeholderText="Start Date"
+        />
+        <DatePicker
+          selected={endDate}
+          onChange={handleEndDateChange}
+          selectsEnd
+          startDate={startDate}
+          endDate={endDate}
+          placeholderText="End Date"
+        />
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Date and Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData.map((item, index) => (
+            <tr key={index}>
+              <td>{item.name}</td>
+              <td>{item.email}</td>
+              <td>{item.DateAndTime}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
-};
+}
 
 export default DriverDropdown;

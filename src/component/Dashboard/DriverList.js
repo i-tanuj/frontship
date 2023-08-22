@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
+
 import "../../css/dispatchlist.css";
 import Navbar from "../Navbar";
 import CreateDriver from "./CreateDriver";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DatePicker from "react-datepicker";
+
 
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 
@@ -46,18 +49,18 @@ async function updateBatch(
   id,
   full_name,
   email,
-  password,
   phone,
   address,
+  password,
   setModalIsOpenEdit,
   getBatchList
 ) {
   if (
-    full_name != "" &&
-    email != "" &&
-    phone != "" &&
-    address != "" &&
-    password != ""
+    full_name !== "" &&
+    email !== "" &&
+    phone !== "" &&
+    address !== "" &&
+    password !== ""
   ) {
     await axios.post(
       "https://shippingbackend-production.up.railway.app/api/updatedriver",
@@ -67,8 +70,8 @@ async function updateBatch(
         full_name: full_name,
         email: email,
         phone: phone,
-        password: password,
         address: address,
+        password: password,
       },
       { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
@@ -89,7 +92,11 @@ async function updateBatch(
   }
 }
 
+
 function DriverList() {
+  // const [data, setData] = useState([]);
+  // const [startDate, setStartDate] = useState(null);
+  // const [endDate, setEndDate] = useState(null);
   const [contact, getContact] = useState([]);
   const [full_name, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -97,7 +104,9 @@ function DriverList() {
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [batchList, getBatchList] = useState([]);
-
+  const [data, setData] = useState([]);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
   const [defaultcontact, DefaultgetContact] = useState([]);
@@ -114,7 +123,6 @@ function DriverList() {
   useEffect(() => {
     ContactData(getContact, DefaultgetContact);
   }, []);
-  console.warn(contact);
 
   function handleInput(e) {
     setFullName(e.target.value);
@@ -129,6 +137,36 @@ function DriverList() {
     setPassword(driver.password);
     setModalIsOpenEdit(true);
   }
+
+  
+const handleStartDateChange = (date) => {
+  setStartDate(date);
+};
+
+const handleEndDateChange = (date) => {
+  setEndDate(date);
+};
+
+const filteredData = data.filter((item) => {
+  if (startDate && endDate) {
+    const itemDate = new Date(item.DateAndTime);
+    return itemDate >= startDate && itemDate <= endDate;
+  }
+  return true;
+});
+useEffect(() => {
+  fetchData();
+}, []);
+const fetchData = async () => {
+  try {
+    const response = await axios.get(
+      "https://shippingbackend-production.up.railway.app/api/driver"
+    );
+    setData(response.data);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
 
   return (
     <section class="homedive ">
@@ -256,7 +294,13 @@ function DriverList() {
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser">
               <h1>All Driver List</h1>
             </div>
+        
             <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+             
+             
+
+         
+
               <div class="input-group input-group-lg">
                 <span
                   style={{ backgroundColor: "#fff" }}
@@ -286,7 +330,35 @@ function DriverList() {
                 <div className="">
                   <h2>All Driver List</h2>
                 </div>
-                <div class="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+                <div className='datepicker-date-comm'>
+                <span className="calender-icon">
+                        <DatePicker
+                          selected={startDate}
+                          onChange={handleStartDateChange}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="Start Date"
+                        />
+                        <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" />
+                      </span>
+                      <span className="calender-icon">
+                        <DatePicker
+                          selected={endDate}
+                          onChange={handleEndDateChange}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="End Date"
+                        />
+                        <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" />
+                      </span>
+									</div>
+
+                <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+                
+                
+
                   <div class="input-group input-group-lg">
                     <span
                       style={{ backgroundColor: "#fff" }}
@@ -339,8 +411,7 @@ function DriverList() {
                   </tr>
                 </thead>
                 <tbody class="tbody">
-                  {records
-                    .filter((item) => {
+                  {filteredData.filter((item) => {
                       return search.toLowerCase() === ""
                         ? item
                         : item.full_name.toLowerCase().includes(search);
@@ -358,7 +429,7 @@ function DriverList() {
                         <td>{item.address}</td>
                         <td>{item.password}</td>
 
-                        <td>12</td>
+                        <td>10</td>
                         <td>
                           <button
                             className="btn btn1"

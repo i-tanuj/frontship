@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react'
 import { AiOutlineClose } from "react-icons/ai";
 import axios from 'axios';
 import '../../css/dispatchlist.css'
-
+import Navbar from '../Navbar';
 
 import {
   Nav,
@@ -15,9 +15,12 @@ import {
   ModalBody,
 } from "reactstrap";
 
+import { Link } from "react-router-dom";
+import { AiTwotoneDelete } from "react-icons/ai";
 
 async function ContactData(getContact){
-  await axios.get('https://shippingbackend-production.up.railway.app/api/getshipmentrecords',
+
+  await axios.get('https://shippingbackend-production.up.railway.app/api/shipmentdata',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -29,6 +32,7 @@ async function ContactData(getContact){
   })
 }
 //************************************************************** */
+
 async function updateBatch(id,name,email,phone,setModalIsOpenEdit,getBatchList){
   if (name != "" && email != "" && phone != "") {
       await axios.post('https://shippingbackend-production.up.railway.app/api/updatedispatcher',
@@ -52,7 +56,7 @@ async function updateBatch(id,name,email,phone,setModalIsOpenEdit,getBatchList){
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippingbackend-production.up.railway.app/api/delcreatshipment',
+  const results = await axios.post('https://shippingbackend-production.up.railway.app/api/deldispatcher',
       {
           id:ids
       },
@@ -65,7 +69,7 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
   }
 
 
-function DispatchList() {
+function ShipmentDetails() {
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -78,6 +82,7 @@ function DispatchList() {
     const [defaultcontact, DefaultgetContact] = useState([]);
     const [ids, setIds] = useState('');
     const [search,setSearch] =useState('');
+  console.log(search)
   const [currentPage,setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
@@ -145,7 +150,7 @@ function DispatchList() {
               </Button>
               &nbsp;
               <Button outline onClick={() => setModalIsOpenDelete(false)}>
-              Cancel
+                Cancle
               </Button>
             </div>
           </Form>
@@ -158,7 +163,7 @@ function DispatchList() {
         <div class="container-fluid table-header-title">
             <div class="row">
               <div class="w-50 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser">
-                <h2>Shipment List</h2>
+                <h2>Shipment Record</h2>
               </div>
               <div class="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                   <div class="input-group input-group-lg">
@@ -171,21 +176,34 @@ function DispatchList() {
           
             <div className="row pt-0">
               <div className='col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 '>
-            
+              <Navbar/>
+
                     </div>
-                <div class="col p-0">
+                <div class="col p-0 shipment-view-pending-cencal">
+                <div className='driver-view-list'>
+                
+                <div className=''>
+                  <h2>Shipment List</h2>
+                </div>
+                <div class="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+                    <div class="input-group input-group-lg">
+                      <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
+                      <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search Here" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
+                    </div>
+                </div>
+                <div className='d-flex'>
+                  <div className='Back-btn-01'><a href='/'>Back</a></div>
+                </div>
+              </div>
                     <table class="table align-middle bg-white rounded m-0" id="table-to-xls">
                         <thead class="tableheading">
                           <tr>
-                             <th scope="col" class="borderre">S.No</th>
-                             <th scope="col" class="borderre">Task Id</th>
-                             <th scope="col" class="borderre">Driver Details</th>
-                            <th scope="col">Delivery Details</th>
-                            <th scope="col">Vehicle</th>
-                            <th scope="col">Helper</th>
-                            <th scope="col">Task Status</th>
-                            <th scope="col">Creation Date & Time</th>
-                            <th scope="col">Created By</th>
+                            <th scope="col" class="borderre">No.</th>
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">Phone no.</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Pickup Location</th>
+                            <th scope="col">Drop Location</th>
                             <th scope="col" class="borderre1">Action</th>
                           </tr>
                         </thead>
@@ -197,17 +215,14 @@ function DispatchList() {
           }).map((item,i)=>
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
-            <td>{item.id}</td>
-            <td>{item.assigndriver}</td>
-            <td>{item.phone}</td>
-            <td>{item.vehicleplate}</td>
-            <td>{item.helper1}</td>
-            <td>{"pending"}</td>
-            <td>{"12/03/2023"}</td>
-            {/* <td className="dis-email text-left">{item.droplocation}<br></br>{item.dropdate}<br></br></td> */}
-            <td>{"Manager Dashboard"}</td>
-
+            {/* <td>{item.id}</td> */}
+            <td>{item.customer_name}</td>
+            <td>{item.customer_contact}</td>
+            <td>{item.customer_email}</td>
+            <td>{item.pick_up_location}</td>
+            <td>{item.drop_location}</td>
             <td>
+            {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
             <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>
             <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button>
             <a href='/view'><button className='btn bt' ><i class="bi bi-eye"></i></button></a>
@@ -260,6 +275,6 @@ function DispatchList() {
   }
 }
 
-export default DispatchList
+export default ShipmentDetails;
 
 
