@@ -20,9 +20,24 @@ import {
 import { Link } from "react-router-dom";
 import { AiTwotoneDelete } from "react-icons/ai";
 
+
+async function ShippingData(getContact){
+
+    await axios.get('https://shippingbackend-production.up.railway.app/api/shipmentdata',
+    // { inst_hash: localStorage.getItem('inst_hash_manual') },
+    {
+        headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
+    }
+    )
+    .then((res)=>{
+        console.log(res.data);
+        getContact(res.data);
+    })
+  }
+
 async function ContactData(getContact){
 
-  await axios.get('https://shippment-dfx.onrender.com/api/driver',
+  await axios.get('https://shippingbackend-production.up.railway.app/api/shipmentdata',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -35,43 +50,11 @@ async function ContactData(getContact){
 }
 //************************************************************** */
 
-async function updateBatch(id,full_name,email,phone,address,setModalIsOpenEdit,getBatchList){
-  if (full_name != "" && email != "" && phone != "" && address != "") {
-      await axios.post('https://shippment-dfx.onrender.com/driver/updatedriver',
-      {inst_hash: localStorage.getItem('inst_hash'),
-      id : id,
-      full_name: full_name,
-      email: email,
-      phone: phone,
-      address: address
-      },
-      {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
-  )
-  ContactData(getBatchList)
-  setModalIsOpenEdit(false)
-} else {
-  document.getElementById("edit-validate-batch").innerHTML =
-    "*Please fill required field!";
-  console.log("Error :", "Please fill required field");
-}    
-}
 
-//************************************************************** */
-async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippment-dfx.onrender.com/driver/deldriver',
-      {
-          id:ids
-      },
-      {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
-  )
-  console.log(results);
-      if(results.status == 200){
-          ContactData(getContact,DefaultgetContact);
-      }
-  }
 
 
 function DriverList() {
+    const [contactData, setContactData] = useState({});
     const [rowCount, setRowCount] = useState(0);
     const [inquiries, setInquiries] = useState( );
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -88,7 +71,7 @@ function DriverList() {
     const [defaultcontact, DefaultgetContact] = useState([]);
     const [ids, setIds] = useState('');
     const [search,setSearch] =useState('');
-  console.log(search)
+//   console.log(search)
   const [currentPage,setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
@@ -100,7 +83,8 @@ function DriverList() {
     useEffect(() => {
       ContactData(getContact,DefaultgetContact)   
    }, [])
-    console.warn(contact)
+   
+    // console.warn(contact)
 
     function handleInput(e){
         setFullName(e.target.value)
@@ -115,8 +99,9 @@ function DriverList() {
               <Navbar/>
 
                     </div>
+                    
                 <div class="col view-table-shipment">
-                    <div className='Back-btn'><a href='#'>Back</a></div>
+                    <div className='Back-btn py-4'><a href='/'>Back</a></div>
                   <div className='view-table-shipment-header'>
                         <div className=''>
                         <h2>All Driver List</h2>
@@ -133,7 +118,33 @@ function DriverList() {
                         <div className='column-one'>
                             <div>
                                 <p className='shiping-label'>Customers Name <span>*</span></p>
-                                <p className='shiping-input'>Wade Warren</p>
+                                <p className='shiping-input'>{contactData.customer_name}</p>
+           
+
+
+
+                                {
+          records.filter((item)=>{
+            return search.toLowerCase() === '' ? item : item.name.toLowerCase().includes(search)
+          }).map((item,i)=>
+            <tr key={i}>
+            <td>{item.customer_name}</td>
+            <td>{item.customer_contact}</td>
+            <td>{item.customer_email}</td>
+            <td>{item.pick_up_location}</td>
+            <td>{item.drop_location}</td>
+            <td>
+
+            </td>
+            
+          </tr>
+          )
+        }
+
+
+
+
+
                             </div>
                             <div>
                                 <p className='shiping-label'>Pick up Location <span>*</span></p>

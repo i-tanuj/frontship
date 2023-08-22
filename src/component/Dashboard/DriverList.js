@@ -51,6 +51,7 @@ async function updateBatch(
   email,
   phone,
   address,
+  altpassword,
   password,
   setModalIsOpenEdit,
   getBatchList
@@ -60,10 +61,10 @@ async function updateBatch(
     email !== "" &&
     phone !== "" &&
     address !== "" &&
-    password !== ""
+    altpassword !== ""
   ) {
     await axios.post(
-      "https://shippingbackend-production.up.railway.app/api/updatedriver",
+      "https://shippingbackend-production.up.railway.app/api/updatedriverapi",
       {
         inst_hash: localStorage.getItem("inst_hash"),
         id: id,
@@ -71,7 +72,8 @@ async function updateBatch(
         email: email,
         phone: phone,
         address: address,
-        password: password,
+        altpassword: altpassword,
+        password: altpassword,
       },
       { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
@@ -94,15 +96,13 @@ async function updateBatch(
 
 
 function DriverList() {
-  // const [data, setData] = useState([]);
-  // const [startDate, setStartDate] = useState(null);
-  // const [endDate, setEndDate] = useState(null);
   const [contact, getContact] = useState([]);
   const [full_name, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
+  const [altpassword, setaltPassword] = useState("");
   const [batchList, getBatchList] = useState([]);
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState(null);
@@ -134,7 +134,7 @@ function DriverList() {
     setEmail(driver.email);
     setPhone(driver.phone);
     setAddress(driver.address);
-    setPassword(driver.password);
+    setaltPassword(driver.altpassword);
     setModalIsOpenEdit(true);
   }
 
@@ -228,8 +228,8 @@ const fetchData = async () => {
               name="password"
               id="password"
               placeholder="Edit Password"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
+              onChange={(e) => setaltPassword(e.target.value)}
+              value={altpassword}
             />
           </FormGroup>
           <p id="edit-validate-batch" style={{ color: "red" }}></p>
@@ -244,7 +244,7 @@ const fetchData = async () => {
                 email,
                 phone,
                 address,
-                password,
+                altpassword,
                 setModalIsOpenEdit,
                 getBatchList
               )
@@ -427,7 +427,7 @@ const fetchData = async () => {
                         <td className="dis-email text-left">{item.email}</td>
                         <td>{item.phone}</td>
                         <td>{item.address}</td>
-                        <td>{item.password}</td>
+                        <td>{item.altpassword}</td>
 
                         <td>10</td>
                         <td>

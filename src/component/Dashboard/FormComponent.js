@@ -1,92 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const FormComponent = () => {
-  const [customername, setName] = useState('');
-  const [customernumber, setNumber] = useState('');
-  const [selectshipdrop, setSelectshipdrop] = useState('');
-  const [dropdate, setDropdate] = useState('');
-  const [adddescriptiondrop, setAdddescriptiondrop] = useState('');
-  const [vehicleplate, setVehicleplate] = useState('');
-  const [helper1, setHelper1] = useState('');
-  const [helper2, setHelper2] = useState('');
-  const [assigndriver, setAssigndriver] = useState('');
+function FormComponent() {
+  const [contactData, setContactData] = useState({});
+  
+  useEffect(() => {
+    fetchContactData();
+  }, []);
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-
+  const fetchContactData = async () => {
     try {
-      const response = await axios.post('https://shippingbackend-production.up.railway.app/api/createshipment', { customername, customernumber, selectshipdrop, dropdate, adddescriptiondrop, vehicleplate, helper1, helper2, assigndriver });
-      console.log(response.data.message);
-      // Clear the form fields after successful submission
-      setName('');
-      setNumber('');
-      setSelectshipdrop('');
-      setDropdate('');
-      setAdddescriptiondrop('');
-      setVehicleplate('');
-      setHelper1('');
-      setHelper2('');
-      setAssigndriver('');
-
+      const response = await axios.get('https://shippingbackend-production.up.railway.app/api/shipmentdata', {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      setContactData(response.data);
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Error fetching data:', error);
     }
   };
 
   return (
     <div>
-      <h1>Submit Form</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Customer Name:
-          <input type="text" value={customername} onChange={e => setName(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Customer Number
-          <input type="number" value={customernumber} onChange={e => setNumber(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Drop Location
-          <input type="text" value={selectshipdrop} onChange={e => setSelectshipdrop(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Drop Date
-          <input type="date" value={dropdate} onChange={e => setDropdate(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Add Description
-          <input type="text" value={adddescriptiondrop} onChange={e => setAdddescriptiondrop(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Vehical Number
-          <input type="text" value={vehicleplate} onChange={e => setVehicleplate(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Helper 1
-          <input type="text" value={helper1} onChange={e => setHelper1(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Helper 2
-          <input type="text" value={helper2} onChange={e => setHelper2(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Assign Driver Name
-          <input type="text" value={assigndriver} onChange={e => setAssigndriver(e.target.value)} />
-        </label>
-        <br />
-        <button type="submit">Submit</button>
-      </form>
+      <h1>Contact Data</h1>
+      <p>Customer Name: {fetchContactData.customer_name}</p>
+      <p>Customer Email: {setContactData.customer_email}</p>
+      {/* Display other fields here */}
     </div>
   );
-};
+}
 
 export default FormComponent;

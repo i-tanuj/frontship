@@ -17,7 +17,8 @@ import {
 
 
 async function ContactData(getContact){
-  await axios.get('https://shippingbackend-production.up.railway.app/api/getshipmentrecords',
+
+  await axios.get('https://shippingbackend-production.up.railway.app/api/shipmentdata',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -198,12 +199,12 @@ function DispatchList() {
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             <td>{item.id}</td>
-            <td>{item.assigndriver}</td>
-            <td>{item.phone}</td>
+            <td>{item.driver_id}</td>
+            <td>{item.pick_up_location+ " , " +   item.drop_location}</td>
             <td>{item.vehicleplate}</td>
             <td>{item.helper1}</td>
             <td>{"pending"}</td>
-            <td>{"12/03/2023"}</td>
+            <td>{item.created_at}</td>
             {/* <td className="dis-email text-left">{item.droplocation}<br></br>{item.dropdate}<br></br></td> */}
             <td>{"Manager Dashboard"}</td>
 

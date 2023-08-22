@@ -40,7 +40,7 @@ function CreateDriver() {
     } else {
       setError(false);
       setSuccbtn('');
-      axios.post('https://shippingbackend-production.up.railway.app/api/adddriver', dataToSubmit)
+      axios.post('https://shippingbackend-production.up.railway.app/api/adddriverapi', dataToSubmit)
         .then((response) => {
           console.log(response.data);
           setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);

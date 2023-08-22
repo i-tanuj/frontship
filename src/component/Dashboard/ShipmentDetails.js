@@ -104,7 +104,7 @@ function ShipmentDetails() {
     <section class="homedive ">
 
 <Modal isOpen={modalIsOpenEdit} className='main_modal_body dispatcher-list-form'>
-                <ModalBody className='modal_body'>
+                <ModalBody className='modal_body'>  
                 <AiOutlineClose className='main_AiOutlineClose close-icon' onClick={()=>setModalIsOpenEdit(false)}/>
                    <h5 className='main_h5'>Edit Dispatcher List</h5>
                 </ModalBody>

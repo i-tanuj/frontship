@@ -1,34 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const DropdownExample = () => {
-  const [driverDetails, setDriverDetails] = useState([]);
+function DropdownComponent() {
+    const [users, setUsers] = useState([]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+    useEffect(() => {
+        async function fetchUsers() {
+            try {
+                const response = await axios.get('https://shippingbackend-production.up.railway.app/api/driverdetails'); // Replace with your backend API endpoint
+                setUsers(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        }
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get('https://shippingbackend-production.up.railway.app/api/driverdetails');
-      setDriverDetails(response.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+        fetchUsers();
+    }, []);
 
-  return (
-    <div>
-      <select>
-        <option value="">Select Driver</option>
-        {driverDetails.map(driver => (
-          <option key={driver.id} value={driver.id}>
-            {driver.full_name}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
+    return (
+        <div>
+            <h1>User Details</h1>
+            <ul>
+                {users.map((user) => (
+                    <li key={user.id}>
+                        <p>Name: {user.full_name}</p>
+                        <p>Email: {user.email}</p>
+                        <p>Phone: {user.phone}</p>
+                        <p>Address: {user.address}</p>
+                        <p>Encrypted Password: {user.password}</p>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
 
-export default DropdownExample;
+export default DropdownComponent;
