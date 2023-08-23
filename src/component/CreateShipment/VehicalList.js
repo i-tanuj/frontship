@@ -6,7 +6,8 @@ import Navbar from "../Navbar";
 import CreateVehical from "../CreateShipment/CreateVehical";
 import { toast, ToastContainer } from "react-toastify";
 import DatePicker from "react-datepicker";
-
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 import "react-toastify/dist/ReactToastify.css";
 
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
@@ -140,7 +141,6 @@ function VehicalList() {
   const [defaultcontact, DefaultgetContact] = useState([]);
   const [ids, setIds] = useState("");
   const [search, setSearch] = useState("");
-  console.log(search);
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
@@ -153,7 +153,6 @@ function VehicalList() {
   useEffect(() => {
     ContactData(getContact, DefaultgetContact);
   }, []);
-  console.warn(contact);
 
   const handleStartDateChange = (date) => {
     setStartDate(date);
@@ -197,6 +196,41 @@ function VehicalList() {
     setVehicalplate(helper.vehicalplate);
     setModalIsOpenEdit(true);
   }
+
+
+  
+  function exportToExcel() {
+    const data = contact.map((item) => [
+      item.name,
+      item.vehicalplate,
+      item.DateAndTime,
+    ]);
+  
+    const ws = XLSX.utils.aoa_to_sheet([
+      ['Vehicle Name', 'Vehicle Plate', 'Registration Date'],
+      ...data,
+    ]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Vehicle Records');
+  
+    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
+      type: 'application/octet-stream',
+    });
+  
+    FileSaver.saveAs(blob, 'VehicleRecords.xlsx');
+  }
+  
+  // Convert data to array buffer
+  function s2ab(s) {
+    const buf = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buf);
+    for (let i = 0; i < s.length; i++) {
+      view[i] = s.charCodeAt(i) & 0xff;
+    }
+    return buf;
+  }
+  
+  
 
   return (
     <section class="homedive ">
@@ -371,6 +405,9 @@ function VehicalList() {
                   <div className="add-new-form-btn">
                     <CreateVehical />
                   </div>
+                  <div className="export-btn">
+            <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
+          </div>
                   <div className="Back-btn-01">
                     <a href="/">Back</a>
                   </div>

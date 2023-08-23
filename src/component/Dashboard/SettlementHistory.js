@@ -4,6 +4,9 @@ import axios from 'axios';
 import '../../css/dispatchlist.css'
 import Navbar from '../Navbar'
 import CreateHelper from '../CreateShipment/CreateHelper'
+import DatePicker from "react-datepicker";
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 
 import {
   Nav,
@@ -86,6 +89,9 @@ function SettlementHistory() {
     const [search,setSearch] =useState('');
   const [currentPage,setCurrentPage] = useState(1);
   const recordsPerPage = 10;
+  const [data, setData] = useState([]);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const lastIndex = currentPage * recordsPerPage;
   const firstIndex= lastIndex - recordsPerPage;
   const records = contact.slice(firstIndex, lastIndex);
@@ -100,6 +106,72 @@ function SettlementHistory() {
     function handleInput(e){
         setName(e.target.value)
   }
+
+
+
+  
+  function exportToExcel() {
+    const data = contact.map((item) => [
+      item.full_name,
+      item.total_amount,
+      item.updateddatetime,
+      'Success',
+    ]);
+  
+    const ws = XLSX.utils.aoa_to_sheet([
+      ['Driver Name', 'Settled Amount', 'Payment Details', 'Settlemenet Status'],
+      ...data,
+    ]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Settlemenet Records');
+  
+    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
+      type: 'application/octet-stream',
+    });
+  
+    FileSaver.saveAs(blob, 'SettlemenetRecords.xlsx');
+  }
+  
+  // Convert data to array buffer
+  function s2ab(s) {
+    const buf = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buf);
+    for (let i = 0; i < s.length; i++) {
+      view[i] = s.charCodeAt(i) & 0xff;
+    }
+    return buf;
+  }
+  
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+  };
+  
+  const filteredData = data.filter((item) => {
+    if (startDate && endDate) {
+      const itemDate = new Date(item.DateAndTime);
+      return itemDate >= startDate && itemDate <= endDate;
+    }
+    return true;
+  });
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://shippingbackend-production.up.railway.app/api/summoney"
+      );
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
 
   return (
     <section class="homedive ">
@@ -189,13 +261,45 @@ function SettlementHistory() {
                       <div className=''>
                         <h2>Settlement History</h2>
                       </div>
-                      <div class="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+
+
+                      <div  className='datepicker-date-comm'>
+                <span className="calender-icon">
+                        <DatePicker
+                          selected={startDate}
+                          onChange={handleStartDateChange}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="Start Date"
+                        />
+                        <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" />
+                      </span>
+                      <span className="calender-icon">
+                        <DatePicker
+                          selected={endDate}
+                          onChange={handleEndDateChange}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="End Date"
+                        />
+                        <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" />
+                      </span>
+									</div>
+
+
+
+                      <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                           <div class="input-group input-group-lg">
                             <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
                             <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search Here" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
                           </div>
                       </div>
                       <div className='d-flex'>
+                      <div className="export-btn">
+            <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
+          </div>
                         <div className='Back-btn-01'><a href='#'>Back</a></div>
                       </div>
                     </div>
@@ -212,7 +316,7 @@ function SettlementHistory() {
                       <tbody class="tbody">
   
         {
-          records.filter((item)=>{
+          filteredData.filter((item)=>{
             return search.toLowerCase() === '' ? item : item.name.toLowerCase().includes(search)
           }).map((item,i)=>
             <tr key={i}>

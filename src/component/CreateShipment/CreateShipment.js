@@ -37,7 +37,7 @@ function CreateShipment() {
         "https://shippingbackend-production.up.railway.app/api/vehicledetails"
       );
       setVehicleDetails(response.data); // Assuming the API returns an array of vehicle details
-    } catch (error) {
+    } catch (error) { 
       console.error("Error fetching data:", error);
     }
   };

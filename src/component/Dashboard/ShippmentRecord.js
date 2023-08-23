@@ -3,10 +3,11 @@ import { AiOutlineClose } from "react-icons/ai";
 import axios from 'axios';
 import '../../css/dispatchlist.css'
 
+import DatePicker from "react-datepicker";
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 
 import {
-  Nav,
-  NavItem,
   Form,
   FormGroup,
   Input,
@@ -67,6 +68,9 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function DispatchList() {
+  const [data, setData] = useState([]);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -95,6 +99,80 @@ function DispatchList() {
     function handleInput(e){
       setName(e.target.value)
   }
+
+
+  
+  function exportToExcel() {
+    const data = contact.map((item) => [
+      item.id,
+      item.driver_id,
+      item.pick_up_location,
+      item.drop_location,
+      item.vehicleplate,
+      item.helper1,
+      'Success',
+      item.created_at,
+    ]);
+  
+    const ws = XLSX.utils.aoa_to_sheet([
+      ['Task ID', 'Driver ID', 'Pickup Location', 'Drop Location', 'Vehicle Number', 'Helper Name', 'Status', 'Date And Time'],
+      ...data,
+    ]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Payment Records');
+  
+    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
+      type: 'application/octet-stream',
+    });
+  
+    FileSaver.saveAs(blob, 'PaymentRecords.xlsx');
+  }
+  
+  // Convert data to array buffer
+  function s2ab(s) {
+    const buf = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buf);
+    for (let i = 0; i < s.length; i++) {
+      view[i] = s.charCodeAt(i) & 0xff;
+    }
+    return buf;
+  }
+  
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+  };
+  
+  const filteredData = data.filter((item) => {
+    if (startDate && endDate) {
+      const itemDate = new Date(item.DateAndTime);
+      return itemDate >= startDate && itemDate <= endDate;
+    }
+    return true;
+  });
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://shippingbackend-production.up.railway.app/api/shipmentdata"
+      );
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  
+  
+  
+  
+
 
   return (
     <section class="homedive ">
@@ -157,15 +235,47 @@ function DispatchList() {
   
     <div class="rightdiv px-3 py-2">
         <div class="container-fluid table-header-title">
-            <div class="row">
-              <div class="w-50 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser">
+            <div class="row justify-content-between">
+              <div class="w-30 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser w-auto">
                 <h2>Shipment List</h2>
               </div>
-              <div class="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+
+              <div  className='datepicker-date-comm w-auto'>
+                <span className="calender-icon">
+                        <DatePicker
+                          selected={startDate}
+                          onChange={handleStartDateChange}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="Start Date"
+                        />
+                        <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" />
+                      </span>
+                      <span className="calender-icon">
+                        <DatePicker
+                          selected={endDate}
+                          onChange={handleEndDateChange}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="End Date"
+                        />
+                        <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" />
+                      </span>
+									</div>
+
+
+
+              <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                   <div class="input-group input-group-lg">
                     <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
-                    <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search Here" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
+                    <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search By Helper Name" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
+                    <div className="export-btn">
+            <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
+          </div>
                   </div>
+                  
               </div>
              
             </div>
@@ -193,8 +303,8 @@ function DispatchList() {
                       <tbody class="tbody">
   
         {
-          records.filter((item)=>{
-            return search.toLowerCase() === '' ? item : item.name.toLowerCase().includes(search)
+          filteredData.filter((item)=>{
+            return search.toLowerCase() === '' ? item : item.helper1.toLowerCase().includes(search)
           }).map((item,i)=>
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>

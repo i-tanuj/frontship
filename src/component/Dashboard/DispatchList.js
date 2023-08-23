@@ -5,6 +5,8 @@ import "../../css/dispatchlist.css";
 import Navbar from "../Navbar";
 import CreateDispatch from "./CreateDispatch";
 import DatePicker from "react-datepicker";
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -152,13 +154,48 @@ function DispatchList() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/createhelper"
+        "https://shippingbackend-production.up.railway.app/api/dispatcher"
       );
       setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+
+
+  
+  function exportToExcel() {
+    const data = contact.map((item) => [
+      item.name,
+      item.email,
+      item.password,
+      item.phone,
+    ]);
+  
+    const ws = XLSX.utils.aoa_to_sheet([
+      ['Dispatcher Name', 'Email', 'Password', 'Phone No'],
+      ...data,
+    ]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Driver Records');
+  
+    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
+      type: 'application/octet-stream',
+    });
+  
+    FileSaver.saveAs(blob, 'DriverRecords.xlsx');
+  }
+  
+  // Convert data to array buffer
+  function s2ab(s) {
+    const buf = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buf);
+    for (let i = 0; i < s.length; i++) {
+      view[i] = s.charCodeAt(i) & 0xff;
+    }
+    return buf;
+  }
+  
 
 
   return (
@@ -336,7 +373,7 @@ function DispatchList() {
                         <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" />
                       </span>
 									</div>
-                <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+                <div class="w-20 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                  
                  
                  
@@ -363,6 +400,9 @@ function DispatchList() {
                 <div className="add-new-form-btn">
                     <CreateDispatch />
                   </div>
+                  <div className="export-btn">
+            <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
+          </div>
                   <div className="Back-btn-01">
                     <a href="/">Back</a>
                   </div>
@@ -389,7 +429,7 @@ function DispatchList() {
                   </tr>
                 </thead>
                 <tbody class="tbody">
-                  {records
+                  {filteredData
                     .filter((item) => {
                       return search.toLowerCase() === ""
                         ? item

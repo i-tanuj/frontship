@@ -8,7 +8,8 @@ import Navbar from "../Navbar";
 import CreateHelper from "../CreateShipment/CreateHelper";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 
 async function ContactData(getContact) {
@@ -158,6 +159,45 @@ function HelperList() {
     setAddress(helper.address);
     setModalIsOpenEdit(true);
   }
+
+
+  
+  function exportToExcel() {
+    const data = contact.map((item) => [
+      item.name,
+      item.address,
+      item.email,
+      item.phoneno,
+      item.DateAndTime,
+    ]);
+  
+    const ws = XLSX.utils.aoa_to_sheet([
+      ['Helper Name', 'Helper Address', 'Helper Email', 'Helper Phone number', 'Registration Date'],
+      ...data,
+    ]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Helper Records');
+  
+    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
+      type: 'application/octet-stream',
+    });
+  
+    FileSaver.saveAs(blob, 'HelperRecords.xlsx');
+  }
+  
+  // Convert data to array buffer
+  function s2ab(s) {
+    const buf = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buf);
+    for (let i = 0; i < s.length; i++) {
+      view[i] = s.charCodeAt(i) & 0xff;
+    }
+    return buf;
+  }
+  
+  
+  
+  
 
   return (
     <section class="homedive ">
@@ -357,6 +397,9 @@ function HelperList() {
                   <div className="add-new-form-btn">
                     <CreateHelper />
                   </div>
+                  <div className="export-btn">
+            <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
+          </div>
                   <div className="Back-btn-01">
                     <a href="/">Back</a>
                   </div>

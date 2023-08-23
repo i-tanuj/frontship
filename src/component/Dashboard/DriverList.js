@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
-
 import "../../css/dispatchlist.css";
 import Navbar from "../Navbar";
 import CreateDriver from "./CreateDriver";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DatePicker from "react-datepicker";
-
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 
@@ -167,6 +167,43 @@ const fetchData = async () => {
     console.error("Error fetching data:", error);
   }
 };
+
+
+
+  function exportToExcel() {
+    const data = contact.map((item) => [
+      item.full_name,
+      item.email,
+      item.phone,
+      item.address,
+      item.altpassword,
+    ]);
+  
+    const ws = XLSX.utils.aoa_to_sheet([
+      ['Driver Name', 'Email', 'Phone Number', 'Address', 'Password'],
+      ...data,
+    ]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Driver Records');
+  
+    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
+      type: 'application/octet-stream',
+    });
+  
+    FileSaver.saveAs(blob, 'DriverRecords.xlsx');
+  }
+  
+  // Convert data to array buffer
+  function s2ab(s) {
+    const buf = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buf);
+    for (let i = 0; i < s.length; i++) {
+      view[i] = s.charCodeAt(i) & 0xff;
+    }
+    return buf;
+  }
+  
+  
 
   return (
     <section class="homedive ">
@@ -381,6 +418,9 @@ const fetchData = async () => {
                   <div className="add-new-form-btn">
                     <CreateDriver />
                   </div>
+                       <div className="export-btn">
+            <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
+          </div>
                   <div className="Back-btn-01">
                     <a href="/">Back</a>
                   </div>

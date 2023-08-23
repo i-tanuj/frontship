@@ -2,6 +2,7 @@ import React,{useState} from 'react'
 import { AiOutlineClose } from "react-icons/ai";
 import "../css/navbar.css"
 import ChangePass from './ChangePass';
+import EditProfile from './EditProfile';
 import Tooltip from './CreateShipment/DriverDropdown.js';
 
 import {
@@ -65,9 +66,11 @@ function Navbar() {
           
 				    <div class="" id="navbarScroll">
 				    	<div class="d-flex menu-container">
+              
+				    			{/* <img src="/Assets/Navbar/avtar.png"/> */}
 					    	<div class="avtar">
-				    			<img src="/Assets/Navbar/avtar.png"/>
-					    		<a class="nav-link" href="#">Admin</a>
+                  <EditProfile/>
+					    		<a class="nav-link">Admin</a>
 					    	</div>
 
 
@@ -77,6 +80,7 @@ function Navbar() {
                   <img className='Notification-img' src="/Assets/Navbar/bell.png"/>
 				    			   
                   </span>
+
                   
 				    			<ChangePass/>
                 

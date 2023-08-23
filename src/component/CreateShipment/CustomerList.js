@@ -6,6 +6,8 @@ import Navbar from '../Navbar'
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DatePicker from "react-datepicker";
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 
 import {
   Form,
@@ -162,6 +164,43 @@ function CustomerList() {
   };
 
 
+  
+  
+  function exportToExcel() {
+    const data = contact.map((item) => [
+      item.name,
+      item.phoneno,
+      item.email,
+      item.address,
+      item.DateAndTime,
+    ]);
+  
+    const ws = XLSX.utils.aoa_to_sheet([
+      ['Customer Name', 'Phone No.', 'Email', 'Address', 'Date And Time'],
+      ...data,
+    ]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Customer Records');
+  
+    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
+      type: 'application/octet-stream',
+    });
+  
+    FileSaver.saveAs(blob, 'CustomerRecords.xlsx');
+  }
+  
+  // Convert data to array buffer
+  function s2ab(s) {
+    const buf = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buf);
+    for (let i = 0; i < s.length; i++) {
+      view[i] = s.charCodeAt(i) & 0xff;
+    }
+    return buf;
+  }
+  
+
+
   return (
     <section class="homedive ">
 
@@ -283,6 +322,9 @@ function CustomerList() {
                         <div className='add-new-form-btn'>
                         <CreateCustomer/>  
                         </div>
+                        <div className="export-btn">
+            <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
+          </div>
                         <div className='Back-btn-01'><a href='/'>Back</a></div>
                       </div>
                     </div>

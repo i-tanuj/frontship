@@ -14,6 +14,7 @@ import CancelShip from './component/Dashboard/CancelShip';
 const Login = React.lazy(() => import("./component/Login"));
 const VerifyOTP =  React.lazy(() => import("./component/VerifyOTP"))
 const ForgetPassword =  React.lazy(() => import("./component/ForgetPassword"))
+const EditProfile =  React.lazy(() => import("./component/EditProfile"))
 const HomePage = React.lazy(() => import("./component/HomePage"));
 const DispatchList = React.lazy(() => import("./component/Dashboard/DispatchList"));
 const DriverList = React.lazy(() => import("./component/Dashboard/DriverList"));
@@ -51,6 +52,7 @@ function App() {
             <Route exact path="/" element={tokendata ?  <HomePage /> :<Login/>}/>
             <Route exact path="/verifyOTP" element={<VerifyOTP/>}/>
             <Route exact path="/ForgetPassword" element={<ForgetPassword/>}/>
+            <Route exact path="/EditProfile" element={<EditProfile/>}/>
             <Route exact path="/dispatchList" element={<DispatchList/>}/>
             <Route exact path="/driverList" element={<DriverList/>}/>
             {/* <Route exact path="/vehical" element={<VehicalForm/>}/> */}

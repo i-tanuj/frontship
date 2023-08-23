@@ -2,11 +2,12 @@ import React,{useState,useEffect} from 'react'
 import { AiOutlineClose } from "react-icons/ai";
 import axios from 'axios';
 import '../../css/dispatchlist.css'
-import Navbar from '../Navbar';
+import Navbar from '../Navbar'
+import DatePicker from "react-datepicker";
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 
 import {
-  Nav,
-  NavItem,
   Form,
   FormGroup,
   Input,
@@ -60,7 +61,6 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
       },
       {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
   )
-  console.log(results);
       if(results.status == 200){
           ContactData(getContact,DefaultgetContact);
       }
@@ -68,6 +68,13 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function CancelShip() {
+  
+  const [data, setData] = useState([]);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+    const [rowCount, setRowCount] = useState(0);
+    const [inquiries, setInquiries] = useState( );
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -80,7 +87,6 @@ function CancelShip() {
     const [defaultcontact, DefaultgetContact] = useState([]);
     const [ids, setIds] = useState('');
     const [search,setSearch] =useState('');
-  console.log(search)
   const [currentPage,setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
@@ -97,6 +103,74 @@ function CancelShip() {
     function handleInput(e){
       setName(e.target.value)
   }
+
+
+    
+  function exportToExcel() {
+    const data = contact.map((item) => [
+      item.customer_name,
+      'cancel',
+      item.customer_contact,
+      item.pick_up_location,
+      item.drop_location,
+ 
+    ]);
+  
+    const ws = XLSX.utils.aoa_to_sheet([
+      ['Customer Name', 'Order status', 'Phone No.', 'Pickup Location', 'Drop Location'],
+      ...data,
+    ]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Cancel Shipment Records');
+  
+    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
+      type: 'application/octet-stream',
+    });
+  
+    FileSaver.saveAs(blob, 'CancelShipmentRecords.xlsx');
+  }
+  
+  // Convert data to array buffer
+  function s2ab(s) {
+    const buf = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buf);
+    for (let i = 0; i < s.length; i++) {
+      view[i] = s.charCodeAt(i) & 0xff;
+    }
+    return buf;
+  }
+  
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+  };
+  
+  const filteredData = data.filter((item) => {
+    if (startDate && endDate) {
+      const itemDate = new Date(item.DateAndTime);
+      return itemDate >= startDate && itemDate <= endDate;
+    }
+    return true;
+  });
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://shippingbackend-production.up.railway.app/api/shipmentdata"
+        );
+        setData(response.data);
+        console.log("data fetch" + response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
 
   return (
     <section class="homedive ">
@@ -175,25 +249,54 @@ function CancelShip() {
             <div className="row pt-0">
               <div className='col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 '>
               <Navbar/>
-
                     </div>
-                <div class="col p-0 shipment-view-pending-cencal">
+                <div class="col p-0 shipment-view-table">
                 <div className='driver-view-list'>
                 
                 <div className=''>
-                  <h2> Pending Shipment List</h2>
+                  <h2> Cancel Shipment List</h2>
                 </div>
-                <div class="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+
+
+                <div  className='datepicker-date-comm'>
+                <span className="calender-icon">
+                        <DatePicker
+                          selected={startDate}
+                          onChange={handleStartDateChange}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="Start Date"
+                        />
+                        <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" />
+                      </span>
+                      <span className="calender-icon">
+                        <DatePicker
+                          selected={endDate}
+                          onChange={handleEndDateChange}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="End Date"
+                        />
+                        <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" />
+                      </span>
+									</div>
+
+                <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                     <div class="input-group input-group-lg">
                       <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
                       <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search Here" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
                     </div>
                 </div>
                 <div className='d-flex'>
+                <div className="export-btn">
+            <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
+          </div>
                   <div className='Back-btn-01'><a href='#'>Back</a></div>
                 </div>
               </div>
-                    <table class="table align-middle bg-white rounded m-0" id="table-to-xls">
+              <table class="table align-middle bg-white rounded m-0" id="table-to-xls">
                         <thead class="tableheading">
                           <tr>
                             <th scope="col" class="borderre">No.</th>
@@ -208,16 +311,15 @@ function CancelShip() {
                       <tbody class="tbody">
   
         {
-          records.filter((item)=>{
-            return search.toLowerCase() === '' ? item : item.name.toLowerCase().includes(search)
+          filteredData.filter((item)=>{
+            return search.toLowerCase() === '' ? item : item.customer_name.toLowerCase().includes(search)
           }).map((item,i)=>
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             {/* <td>{item.id}</td> */}
             <td>{item.customer_name}</td>
-            <td><span className='ship-pending'>Cancel</span></td>
-            <td>{item.customer_contact}</td>
-            {/* <td className="dis-email text-left">{item.customer_email}</td> */}
+            <td><span className='ship-cancel'>Cancel</span></td>
+            <td className="dis-email text-left">{item.customer_contact}</td>
             
             <td>{item.pick_up_location}</td>
             <td>{item.drop_location}</td>

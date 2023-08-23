@@ -47,7 +47,7 @@ function AdminDash() {
 								<div class="title-header datepicker-admin">
 									<h5 class="title-header-admin">Admin Dashboard</h5>
 									<div  className='datepicker-date'>
-									<span className="calender-icon">
+									{/* <span className="calender-icon">
                         <DatePicker
                           selected={startDate}
                           onChange={handleStartDateChange}
@@ -57,9 +57,9 @@ function AdminDash() {
                           placeholderText="Start Date"
                         />
                         <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" />
-                      </span>
+                      </span> */}
 
-					  <span className="calender-icon">
+					  {/* <span className="calender-icon">
                         <DatePicker
                           selected={endDate}
                           onChange={handleEndDateChange}
@@ -69,7 +69,7 @@ function AdminDash() {
                           placeholderText="End Date"
                         />
                         <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" />
-                      </span>
+                      </span> */}
 										{/* <input className='' type="date" name="from" id="from" /> */}
 										{/* <input className='' type="date" name="to" id="to" /> */}
 									</div>
