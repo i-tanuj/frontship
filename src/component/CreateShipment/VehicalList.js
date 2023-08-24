@@ -243,7 +243,7 @@ function VehicalList() {
             className="main_AiOutlineClose close-icon"
             onClick={() => setModalIsOpenEdit(false)}
           />
-          <h5 className="main_h5">Edit Vehical List</h5>
+          <h5 className="main_h5">Edit Vehicle List</h5>
         </ModalBody>
         <Form className="form_main ">
           <FormGroup>
@@ -284,7 +284,7 @@ function VehicalList() {
               )
             }
           >
-            Update Vehical List
+            Update Vehicle List
           </Button>
         </Form>
       </Modal>
@@ -326,7 +326,7 @@ function VehicalList() {
         <div class="container-fluid">
           <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser">
-              <h2>All Vehical List</h2>
+              <h2>All Vehicle List</h2>
             </div>
             <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
               <div class="input-group input-group-lg">
@@ -356,7 +356,7 @@ function VehicalList() {
             <div class="col view-table-new">
               <div className="driver-view-list">
                 <div className="">
-                  <h2>All Vehical List</h2>
+                  <h2>All Vehicle List</h2>
                 </div>
                 <div  className='datepicker-date-comm'>
                 <span className="calender-icon">
@@ -422,10 +422,10 @@ function VehicalList() {
                     <th scope="col" class="borderre">
                       No.
                     </th>
-                    <th scope="col">Vehical Name</th>
+                    <th scope="col">vehicle Name</th>
                     {/* <th scope="col">Vehical Email</th> */}
                     {/* <th scope="col">Vehical Phone number</th> */}
-                    <th scope="col">Vehical plate</th>
+                    <th scope="col">vehicle plate</th>
                     <th scope="col">Registration Date</th>
 
                     <th scope="col" class="borderre1">

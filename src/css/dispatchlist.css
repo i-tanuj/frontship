@@ -388,3 +388,18 @@ img.calender-icon {
 span.calender-icon {
     position: relative;
 }
+.dwf-shipment-rec {
+    z-index: 0 !important;
+}
+.btn:hover {
+    color: #fff;
+    background-color:#1b2644;
+    border-color: #1b2644;
+}
+td.Pickup-Location-table {
+    width: 250px !important;
+    word-break: break-word;
+}
+.tbody .btn.bt:hover  .delete::before {
+    color: #ffffff;
+}

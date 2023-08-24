@@ -10,3 +10,6 @@
 input::placeholder{
     color: #6B7DB1;
 }
+.Transfer-form div {
+    width: 50%;
+}

@@ -22,19 +22,20 @@ function Navbar() {
   return (
     <div>
           <Modal isOpen={modalIsOpen} className="modal_body">
-          <ModalBody className="">
+          
+          <Form className="">
+            <h3  className="card-header-01 text-center" style={{ color: "rgba(27, 38, 68, 1)", textAlign: "center" }}>
+              Do you really want to logout?
+            </h3>
+            <ModalBody className="close-icon">
             <AiOutlineClose
               className="main_AiOutlineClose"
               onClick={() => setModalIsOpen(false)}
               color="rgba(27, 38, 68, 1)"
             />
           </ModalBody>
-          <Form className="">
-            <h3 style={{ color: "rgba(27, 38, 68, 1)", textAlign: "center" }}>
-              Do you really want to logout?
-            </h3>
             <div
-              className="d-flex justify-content-center"
+              className="mt-4 d-flex justify-content-center logout-btn"
               style={{ marginBottom: "50px" }}
             >
               <Button
@@ -53,6 +54,9 @@ function Navbar() {
             </div>
           </Form>
         </Modal>
+
+
+
      <hrader>
 	    <nav class="navbar navbar-expand-lg px-4 bg-color align-items-center">
 			<div class="container-fluid p-0">

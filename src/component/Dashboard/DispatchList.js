@@ -315,7 +315,7 @@ function DispatchList() {
         <div class="container-fluid">
           <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser">
-              <h1>All Dispatcher List</h1>
+              <h1>All Dispatchers List</h1>
 
               {/* <p>May 22, 2023</p>  */}
             </div>
@@ -347,7 +347,7 @@ function DispatchList() {
             <div class="col view-table-new">
               <div className="driver-view-list">
                 <div className="">
-                  <h2>All Dispatcher List</h2>
+                  <h2>All Dispatchers List</h2>
                 </div>
                 <div  className='datepicker-date-comm'>
                 <span className="calender-icon">
@@ -373,7 +373,7 @@ function DispatchList() {
                         <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" />
                       </span>
 									</div>
-                <div class="w-20 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+                <div class="w-20 col-sm-12 col-md-12 col-lg-3 col-xl-3 col-xxl-3">
                  
                  
                  

@@ -148,7 +148,7 @@ function Createvehical() {
 <Modal isOpen={modalIsOpen} className='main_modal_body pop-up-hpr'>
                 <div className='title-header'>
                     <AiOutlineClose className='main_AiOutlineClose close-icon-hpr' onClick={()=>setModalIsOpen(false)}/>
-                    <h5 className='card-header-01 text-center'>Create Vehical</h5>
+                    <h5 className='card-header-01 text-center'>Create Vehicle</h5>
                 </div>
                 <Form className='form-control-holder-hpr'>
                   <div className='row'>
@@ -174,7 +174,7 @@ function Createvehical() {
         <div className="plus-icon">
           <button type="submit" onClick={() => setModalIsOpen(true)}>
             <img src="/Assets/dash/plus.png" />
-            Vehical
+            Vehicle
           </button>
         </div>
       </div>

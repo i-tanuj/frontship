@@ -179,8 +179,12 @@ function DispatchList() {
 
 <Modal isOpen={modalIsOpenEdit} className='main_modal_body dispatcher-list-form'>
                 <ModalBody className='modal_body'>
-                <AiOutlineClose className='main_AiOutlineClose close-icon' onClick={()=>setModalIsOpenEdit(false)}/>
+                  
+                   <div className='title-header'>
                    <h5 className='main_h5'>Edit Dispatcher List</h5>
+                <AiOutlineClose className='main_AiOutlineClose close-icon' onClick={()=>setModalIsOpenEdit(false)}/>
+
+                   </div>
                 </ModalBody>
                 <Form className='form_main '>
                     <FormGroup>
@@ -285,13 +289,13 @@ function DispatchList() {
             
                     </div>
                 <div class="col p-0">
-                    <table class="table align-middle bg-white rounded m-0" id="table-to-xls">
+                    <table class="table align-middle bg-white rounded m-0 dwf-shipment-rec" id="table-to-xls">
                         <thead class="tableheading">
                           <tr>
                              <th scope="col" class="borderre">S.No</th>
                              <th scope="col" class="borderre">Task Id</th>
                              <th scope="col" class="borderre">Driver Details</th>
-                            <th scope="col">Delivery Details</th>
+                            <th scope="col" >Delivery Details</th>
                             <th scope="col">Vehicle</th>
                             <th scope="col">Helper</th>
                             <th scope="col">Task Status</th>
@@ -310,7 +314,7 @@ function DispatchList() {
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             <td>{item.id}</td>
             <td>{item.driver_id}</td>
-            <td>{item.pick_up_location+ " , " +   item.drop_location}</td>
+            <td className="Pickup-Location-table">{item.pick_up_location+ " , " +   item.drop_location}</td>
             <td>{item.vehicleplate}</td>
             <td>{item.helper1}</td>
             <td>{"pending"}</td>

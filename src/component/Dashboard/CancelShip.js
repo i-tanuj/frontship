@@ -222,7 +222,7 @@ function CancelShip() {
               </Button>
               &nbsp;
               <Button outline onClick={() => setModalIsOpenDelete(false)}>
-                Cancle
+              Cancel
               </Button>
             </div>
           </Form>
@@ -321,7 +321,7 @@ function CancelShip() {
             <td><span className='ship-cancel'>Cancel</span></td>
             <td className="dis-email text-left">{item.customer_contact}</td>
             
-            <td>{item.pick_up_location}</td>
+            <td className='Pickup-Location-table'>{item.pick_up_location}</td>
             <td>{item.drop_location}</td>
             <td>
             {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}

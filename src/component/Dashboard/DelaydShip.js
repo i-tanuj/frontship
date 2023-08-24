@@ -222,7 +222,7 @@ function DelaydShip() {
               </Button>
               &nbsp;
               <Button outline onClick={() => setModalIsOpenDelete(false)}>
-                Cancle
+              Cancel
               </Button>
             </div>
           </Form>
@@ -303,7 +303,7 @@ function DelaydShip() {
                             <th scope="col">Customer Name</th>
                             <th scope="col">Order status</th>
                             <th scope="col">Phone no.</th>
-                            <th scope="col">Pickup Location</th>
+                            <th  scope="col">Pickup Location</th>
                             <th scope="col">Drop Location</th>
                             <th scope="col" class="borderre1">Action</th>
                           </tr>
@@ -321,7 +321,7 @@ function DelaydShip() {
             <td><span className='ship-delayed'>Delayed</span></td>
             <td className="dis-email text-left">{item.customer_contact}</td>
             
-            <td>{item.pick_up_location}</td>
+            <td className="Pickup-Location-table">{item.pick_up_location}</td>
             <td>{item.drop_location}</td>
             <td>
             {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}

@@ -46,31 +46,41 @@ function ChangePass() {
   return (
     <div>
       <Modal isOpen={modalIsOpen} className="modal_body">
-        <ModalBody className="">
+        
+        
+          <div class="">
+	<div class="card-body">
+  <div class="title-header">
+		<h3 className="card-header-01 text-center">Change password</h3>
+    <ModalBody className="close-icon">
           <AiOutlineClose
             className="main_AiOutlineClose"
             onClick={() => setModalIsOpen(false)}
             color="rgba(27, 38, 68, 1)"
           />
         </ModalBody>
-        
-          <div class="card login-form">
-	<div class="card-body">
-		<h3 class="card-title text-center">Change password</h3>
-		<div class="card-text">
+        </div>
+        <div class="row card-holder">
+        <div className="form-control-holder">
 			<form className='mb-2'  onSubmit={handleSubmit}>
 				<div class="form-group">
-					<label for="exampleInputEmail1"  className='fontSize'>Your current password</label>
+					<label for="exampleInputEmail1"  className='fontSize'>Current password</label>
 					{/* <input type="password" class="form-control form-control-sm"/> */}
                 <input  type="password" name="oldPassword" value={oldPassword} onChange={handleChange} className='form-control form-control-sm'/>         
 				</div>
 				<div class="form-group mt-2">
-					<label for="exampleInputEmail1" className='fontSize'>Your new password</label>
+					<label for="exampleInputEmail1" className='fontSize'>New password</label>
+					{/* <input type="password" class="form-control form-control-sm"/> */}
+                   <input type="password" name="newPassword" value={newPassword} onChange={handleChange} className='form-control form-control-sm'/> 
+				</div>
+				<div class="form-group mt-2">
+					<label for="exampleInputEmail1" className='fontSize'>Confirm password</label>
 					{/* <input type="password" class="form-control form-control-sm"/> */}
                    <input type="password" name="newPassword" value={newPassword} onChange={handleChange} className='form-control form-control-sm'/> 
 				</div>
 				<button type="submit" class="btn submit-btn">Change Password</button>
 			</form>
+      </div>
            {message && <p>{message}</p>}
 		</div>
 	</div>
