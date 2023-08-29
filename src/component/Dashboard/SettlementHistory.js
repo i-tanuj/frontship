@@ -7,7 +7,7 @@ import CreateHelper from '../CreateShipment/CreateHelper'
 import DatePicker from "react-datepicker";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
-
+import "react-datepicker/dist/react-datepicker.css";
 import {
   Nav,
   NavItem,

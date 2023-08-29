@@ -6,6 +6,7 @@ import { Modal, ModalBody } from "reactstrap";
 import Accordion from "react-bootstrap/Accordion";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "react-datepicker/dist/react-datepicker.css";
 
 async function ContactData(getContact, id) {
   await axios
@@ -23,8 +24,11 @@ async function ContactData(getContact, id) {
 
 function CreateShipment() {
   const [link, setLink] = useState("");
+  const [link1, setLink1] = useState("");
   const [latitude, setLatitude] = useState("");
+  const [latitude1, setLatitude1] = useState("");
   const [longitude, setLongitude] = useState("");
+  const [longitude1, setLongitude1] = useState("");
 
   const [vehicleDetails, setVehicleDetails] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState("");
@@ -261,6 +265,8 @@ function CreateShipment() {
   const [pickuplocation, setPickuplocation] = useState("");
   const [pickuplocation1, setPickuplocation1] = useState("");
   const [pickupdate, setPickupdate] = useState("");
+  const [dropdate, setDropdate] = useState("");
+  const [dropdate1, setDropdate1] = useState("");
   const [pickupdate1, setPickupdate1] = useState("");
   const [adddescription, setAdddescription] = useState("");
   const [adddescription1, setAdddescription1] = useState("");
@@ -324,8 +330,12 @@ function CreateShipment() {
           customer_alt_num: dispatcherData.altphone,
           pick_up_location: pickuplocation,
           pick_up_before: pickupdate,
+          drop_date: dropdate,
+          drop_date1: dropdate1,
           latitude: latitude,
           longitude: longitude,
+          latitude1:latitude1,
+          longitude:longitude1,
           description: adddescription,
           customer_name2: dispatcherData1.name,
           customer_contact2: dispatcherData1.phoneno,
@@ -372,7 +382,9 @@ function CreateShipment() {
       setDispatcherData(initialDispatcherData);
       setName("");
       setPhone("");
+      setPhone1("");
       setEmail("");
+      setmaplink("");
       setAltphone("");
       setPickuplocation("");
       setPickupdate("");
@@ -384,12 +396,15 @@ function CreateShipment() {
       setAdddescriptiondrop("");
       setSelectedVehicle("");
       setSelectedHelper1("");
+      selectedHelper1("");
       setSelectedHelper2("");
       setSelectedDriver("");
       setSelectedDispatcher("");
       setSelectedDispatcher1("");
       setSelectedDispatcher2("");
       setSelectedDispatcher3("");
+      setDropdate("");
+      setDropdate1("");
       // phoneno("");
       dispatcherData("");
       phone("");
@@ -411,6 +426,20 @@ function CreateShipment() {
     } else {
       setLatitude("");
       setLongitude("");
+    }
+  };
+  const handleLinkChange1 = (event) => {
+    const newLink = event.target.value;
+    setLink1(newLink);
+
+    // Use regular expression to extract latitude and longitude
+    const match = newLink.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (match) {
+      setLatitude1(match[1]);
+      setLongitude1(match[2]);
+    } else {
+      setLatitude1("");
+      setLongitude1("");
     }
   };
 
@@ -749,10 +778,12 @@ function CreateShipment() {
                                 <span className="stra-icon"></span>
                               </label>
                               <input
+                                value={link1}
+                                onChange={handleLinkChange1}
                                 type="text"
                                 placeholder="Google Map link"
-                                value={maplink}
-                                onChange={(e) => setmaplink(e.target.value)}
+                                // value={maplink}
+                                // onChange={(e) => setmaplink(e.target.value)}
                                 // onChange={handleLinkChange}
                               />
                             </div>
@@ -763,13 +794,13 @@ function CreateShipment() {
         </div>
       )} */}
 
-                            <div className="mb-4 w-100">
+                            <div className="mb-4 w-50">
                               <label className="form-label">
                                 Add Description
                                 <span className="stra-icon"></span>{" "}
                               </label>
                               <input
-                              className="p-3"
+                              // className="p-3"
                               placeholder="Write Description"
                                 type="text"
                                 value={adddescriptiondrop}
@@ -786,6 +817,31 @@ function CreateShipment() {
                       ) : (
                         ""
                       )}  */}
+                            </div>
+                            <div className="mb-4 w-50">
+                              <label className="form-label">
+                                Drop Before
+                                <span className="stra-icon"></span>{" "}
+                              </label>
+                              <input
+                                name="dropdate"
+                                value={dropdate}
+                                onChange={(e) => setDropdate(e.target.value)}
+                                id="dropdate"
+                                placeholder="Drop Location"
+                                type="datetime-local"
+                              />
+
+                              {/* {error && pickupbeforedate.length <= 0 ? (
+                                <span
+                                  className="valid-form"
+                                  style={{ color: "red" }}
+                                >
+                                  Please Enter Pick Up location*
+                                </span>
+                              ) : (
+                                ""
+                              )} */}
                             </div>
                           </div>
 
@@ -1012,13 +1068,13 @@ function CreateShipment() {
                               />
                             </div>
 
-                                  <div className="mb-4 w-100">
+                                  <div className="mb-4 w-50">
                                     <label className="form-label">
                                       Add Description
                                       <span className="stra-icon"></span>{" "}
                                     </label>
                                     <input
-                                    className="p-3"
+                                    // className="p-3"
                                     placeholder="Write Description"
                                       type="text"
                                       value={adddescriptiondrop1}
@@ -1027,6 +1083,31 @@ function CreateShipment() {
                                       }
                                     />
                                   </div>
+                                  <div className="mb-4 w-50">
+                              <label className="form-label">
+                                Drop Before
+                                <span className="stra-icon"></span>{" "}
+                              </label>
+                              <input
+                                name="dropdate1"
+                                value={dropdate1}
+                                onChange={(e) => setDropdate1(e.target.value)}
+                                id="dropdate1"
+                                placeholder="Drop Location"
+                                type="datetime-local"
+                              />
+
+                              {/* {error && pickupbeforedate.length <= 0 ? (
+                                <span
+                                  className="valid-form"
+                                  style={{ color: "red" }}
+                                >
+                                  Please Enter Pick Up location*
+                                </span>
+                              ) : (
+                                ""
+                              )} */}
+                            </div>
                                 </div>
                               </Accordion.Body>
                             </Accordion.Item>

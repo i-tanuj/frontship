@@ -9,6 +9,7 @@ import DatePicker from "react-datepicker";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import "react-toastify/dist/ReactToastify.css";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 

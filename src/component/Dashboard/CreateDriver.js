@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Modal, ModalBody } from "reactstrap";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import "react-datepicker/dist/react-datepicker.css";
 function CreateDriver({ onDataCreated }) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
     const [full_name, setFullname] = useState("");

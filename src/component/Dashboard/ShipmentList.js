@@ -2,7 +2,7 @@ import React from 'react'
 import '../../css/shipmentlist.css'
 import { Link } from "react-router-dom";
 import TransferMoneyToDriver from '../Dashboard/TransferMoneyToDriver'
-
+import "react-datepicker/dist/react-datepicker.css";
 
 function ShipmentList() {
   return (

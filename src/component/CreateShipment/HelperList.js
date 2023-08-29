@@ -7,6 +7,7 @@ import Navbar from "../Navbar";
 import CreateHelper from "../CreateShipment/CreateHelper";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import "react-datepicker/dist/react-datepicker.css";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";

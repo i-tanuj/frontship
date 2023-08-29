@@ -3,7 +3,7 @@ import Navbar from './Navbar'
 import Shippment from './Dashboard/Shippment'
 import AdminDash from './Dashboard/AdminDash';
 import ShipmentList from './Dashboard/ShipmentList';
-
+import "react-datepicker/dist/react-datepicker.css";
 import {
     Col,
     Row

@@ -5,6 +5,7 @@ import CreateDriver from './CreateDriver'
 import CreateShipment from '../CreateShipment/CreateShipment'
 import CreateHelper from '../CreateShipment/CreateHelper'
 import CreateVehical from '../CreateShipment/CreateVehical'
+import "react-datepicker/dist/react-datepicker.css";
 import CreateCustomer from '../CreateShipment/CreateCustomer'
 function Shippment() {
   return (
