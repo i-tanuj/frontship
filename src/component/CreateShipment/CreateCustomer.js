@@ -7,7 +7,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-function CreateCustomer() {
+function CreateCustomer({ onDataCreated }) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const [name, setName] = useState("");
@@ -60,6 +60,7 @@ function CreateCustomer() {
       pauseOnHover: false,
       draggable: true,
     });
+    onDataCreated();
         })
         .catch((error) => {
           console.error('Error submitting data:', error);

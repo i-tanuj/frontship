@@ -369,6 +369,7 @@ span#basic-addon1 {
 .datepicker-date-comm {
     display: flex;
     gap: 20px;
+    width: 380px;
 }
 .datepicker-date-comm input {
     width: 100%;

@@ -3,7 +3,6 @@ import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 import "../../css/dispatchlist.css";
 import DatePicker from "react-datepicker";
-
 import Navbar from "../Navbar";
 import CreateHelper from "../CreateShipment/CreateHelper";
 import { toast, ToastContainer } from 'react-toastify';
@@ -12,98 +11,14 @@ import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 
-async function ContactData(getContact) {
-  await axios
-    .get("https://shippingbackend-production.up.railway.app/api/createhelper", {
-      headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-    })
-    .then((res) => {
-      console.log(res.data);
-      getContact(res.data);
-    });
-}
-//************************************************************** */
-
-async function updateBatch(
-  id,
-  name,
-  email,
-  phoneno,
-  address,
-  setModalIsOpenEdit,
-  getBatchList
-) {
-  const currentDate = new Date().toLocaleString("en-IN", {
-    timeZone: "Asia/Kolkata",
-    hour12: true,
-  });
-  if (name != "" && email != "" && phoneno != "" && address != "") {
-    await axios.post(
-      "https://shippingbackend-production.up.railway.app/api/updatehelper",
-      {
-        inst_hash: localStorage.getItem("inst_hash"),
-        id: id,
-        name: name,
-        email: email,
-        phoneno: phoneno,
-        address: address,
-        DateAndTime: currentDate, // Adding current date and time to the data object
-      },
-      { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
-    );
-    ContactData(getBatchList);
-    setModalIsOpenEdit(false);
-    toast.success('Helper Updated Successfully!', {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-    });
-  } else {
-    document.getElementById("edit-validate-batch").innerHTML =
-      "*Please fill required field!";
-    console.log("Error :", "Please fill required field");
-  }
-}
-
-//************************************************************** */
-async function deleteContact(ids, getContact, DefaultgetContact) {
-  const results = await axios.post(
-    "https://shippingbackend-production.up.railway.app/api/delhelper",
-    {
-      id: ids,
-    },
-    { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
-  );
-  toast.success('Helper Deleted Successfully!', {
-    position: "top-right",
-    autoClose: 3000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: false,
-    draggable: true,
-  });
-  if (results.status == 200) {
-    ContactData(getContact, DefaultgetContact);
-  }
-}
-
 function HelperList() {
+  const [selectedItemId, setSelectedItemId] = useState(null);
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [contact, getContact] = useState([]);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneno, setPhoneno] = useState("");
-  const [address, setAddress] = useState("");
-  const [batchList, getBatchList] = useState([]);
-
   const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-  const [defaultcontact, DefaultgetContact] = useState([]);
   const [ids, setIds] = useState("");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -114,14 +29,19 @@ function HelperList() {
   const npage = Math.ceil(contact.length / recordsPerPage);
   const numbers = [...Array(npage + 1).keys()].slice(1);
 
-  useEffect(() => {
-    ContactData(getContact, DefaultgetContact);
-  }, []);
-  // console.warn(contact);
+  const handleDataCreated = () => {
+    // Refresh data after a new driver is created
+    fetchData();
+  };
 
-  function handleInput(e) {
-    setName(e.target.value);
-  }
+  const [editData, setEditData] = useState({
+    id: null,
+    name: "",
+    email: "",
+    phoneno: "",
+    address: "",
+  });
+
   const handleStartDateChange = (date) => {
     setStartDate(date);
   };
@@ -137,9 +57,11 @@ function HelperList() {
     }
     return true;
   });
+
   useEffect(() => {
     fetchData();
   }, []);
+
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -150,15 +72,6 @@ function HelperList() {
       console.error("Error fetching data:", error);
     }
   };
-
-  function handleEditClick(helper) {
-    setIds(helper.id);
-    setName(helper.name);
-    setEmail(helper.email);
-    setPhoneno(helper.phoneno);
-    setAddress(helper.address);
-    setModalIsOpenEdit(true);
-  }
 
 
   
@@ -195,14 +108,74 @@ function HelperList() {
     return buf;
   }
   
-  
-  
-  
+
+  // const [data, setData] = useState([]);
+ 
+  async function deleteData(id) {
+    setSelectedItemId(id); // Store the selected item's ID
+    setModalIsOpenDelete(true); // Open the modal
+  }
+
+
+async function confirmDelete(id) {
+  try {
+    await axios.delete(`https://shippingbackend-production.up.railway.app/api/helperdelete/${selectedItemId}`);
+    // Remove the deleted item from the local state
+    const updatedData = data.filter((item) => item.id !== selectedItemId);
+    setData(updatedData);
+    setModalIsOpenDelete(false); // Close the modal
+    toast.success('Helper Deleted Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
+  } catch (error) {
+    console.error("Error deleting data:", error);
+  }
+}
+
+
+
+function editDataItem(item) {
+  setEditData(item );
+  setModalIsOpenEdit(true);
+}
+async function updateData() {
+  try {
+    await axios.put(
+      `https://shippingbackend-production.up.railway.app/api/updatehelperapi/${editData.id}`,
+      {
+        name: editData.name,
+        email: editData.email,
+        phoneno: editData.phoneno,
+        address: editData.address,
+      }
+    );
+    toast.success('Helper Updated Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
+    setModalIsOpenEdit(false);
+    fetchData(); // Refresh data after update
+  } catch (error) {
+    console.error("Error updating data:", error);
+  }
+}
+
+ 
 
   return (
     <section class="homedive ">
       <Modal
         isOpen={modalIsOpenEdit}
+        onRequestClose={() => setModalIsOpenEdit(false)}
         className="main_modal_body dispatcher-list-form"
       >
         <ModalBody className="modal_body">
@@ -219,8 +192,11 @@ function HelperList() {
               name="name"
               id="name"
               placeholder="Edit Helper Name"
-              onChange={(e) => handleInput(e)}
-              value={name}
+          value={editData.name}
+          onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+
+              // onChange={(e) => handleInput(e)}
+              // value={name}
             />
           </FormGroup>
           <FormGroup>
@@ -229,8 +205,9 @@ function HelperList() {
               name="email"
               id="email"
               placeholder="Edit Email"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
+              value={editData.email}
+          onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+
             />
           </FormGroup>
           <FormGroup>
@@ -239,8 +216,9 @@ function HelperList() {
               name="phoneno"
               id="phoneno"
               placeholder="Edit Phone Number "
-              onChange={(e) => setPhoneno(e.target.value)}
-              value={phoneno}
+              value={editData.phoneno}
+          onChange={(e) => setEditData({ ...editData, phoneno: e.target.value })}
+
             />
           </FormGroup>
           <FormGroup>
@@ -249,10 +227,9 @@ function HelperList() {
               name="address"
               id="address"
               placeholder="Edit Address "
-              onChange={(e) => {
-                setAddress(e.target.value);
-              }}
-              value={address}
+              value={editData.address}
+          onChange={(e) => setEditData({ ...editData, address: e.target.value })}
+
             />
           </FormGroup>
           <p id="edit-validate-batch" style={{ color: "red" }}></p>
@@ -260,24 +237,14 @@ function HelperList() {
             variant="contained"
             className="main_botton"
             style={{ backgroundColor: "#6A3187" }}
-            onClick={() =>
-              updateBatch(
-                ids,
-                name,
-                email,
-                phoneno,
-                address,
-                setModalIsOpenEdit,
-                getBatchList
-              )
-            }
+            onClick={updateData}
           >
             Upadate Helper List
           </Button>
         </Form>
       </Modal>
 
-      <Modal isOpen={modalIsOpenDelete} className="modal_body-delete">
+      <Modal isOpen={modalIsOpenDelete} onRequestClose={() => setModalIsOpenDelete(false)} className="modal_body-delete">
         <ModalBody className="dispatcher-list-form">
           <AiOutlineClose
             className="main_AiOutlineClose close-icon"
@@ -295,10 +262,7 @@ function HelperList() {
           >
             <Button
               outline
-              onClick={() => {
-                deleteContact(ids, getContact, DefaultgetContact);
-                setModalIsOpenDelete(false);
-              }}
+              onClick={confirmDelete}
             >
               Yes
             </Button>
@@ -347,7 +311,7 @@ function HelperList() {
                 <div className="col-sm-12 col-md-12 col-lg-2 col-xl-2 col-xxl-2 ">
                   <h2>All Helper List</h2>
                 </div>
-                <div className="w-250 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+                <div className="">
                 <div  className='datepicker-date-comm'>
                 <span className="calender-icon">
                         <DatePicker
@@ -395,7 +359,8 @@ function HelperList() {
                 </div>
                 <div className="d-flex">
                   <div className="add-new-form-btn">
-                    <CreateHelper />
+                    <CreateHelper onDataCreated={handleDataCreated}/>
+                    
                   </div>
                   <div className="export-btn">
             <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
@@ -444,15 +409,15 @@ function HelperList() {
                         <td>
                           <button
                             className="btn btn1"
-                            onClick={() => handleEditClick(item)}
+                            onClick={() => editDataItem(item)}
+                            // onClick={() => handleEditClick(item)}
                           >
                             <i class="bi bi-pen"></i>
                           </button>
                           <button
                             className="btn bt"
                             onClick={() => {
-                              setModalIsOpenDelete(true);
-                              setIds(item.id);
+                                 deleteData(item.id);
                             }}
                           >
                             <i class="bi bi-trash delete"></i>
@@ -462,13 +427,6 @@ function HelperList() {
                     ))}
                 </tbody>
                 <tbody>
-          {/* {filteredData.map((item, index) => (
-            <tr key={index}>
-              <td>{item.name}</td>
-              <td>{item.email}</td>
-              <td>{item.DateAndTime}</td>
-            </tr>
-          ))} */}
         </tbody>
               </table>
               <nav>

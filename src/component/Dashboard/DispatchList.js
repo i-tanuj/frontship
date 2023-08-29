@@ -67,28 +67,6 @@ async function updateBatch(
   }
 }
 
-//************************************************************** */
-async function deleteContact(ids, getContact, DefaultgetContact) {
-  const results = await axios.post(
-    "https://shippingbackend-production.up.railway.app/api/deldispatcher",
-    {
-      id: ids,
-    },
-    { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
-  );
-  toast.success('Dispatcher Deleted Successfully!', {
-    position: "top-right",
-    autoClose: 3000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: false,
-    draggable: true,
-  });
-  if (results.status == 200) {
-    ContactData(getContact, DefaultgetContact);
-  }
-}
-
 function DispatchList() {
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState(null);
@@ -99,13 +77,11 @@ function DispatchList() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [batchList, getBatchList] = useState([]);
-
   const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
   const [defaultcontact, DefaultgetContact] = useState([]);
   const [ids, setIds] = useState("");
   const [search, setSearch] = useState("");
-  // console.log(search);
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
@@ -114,23 +90,99 @@ function DispatchList() {
   const npage = Math.ceil(contact.length / recordsPerPage);
   const numbers = [...Array(npage + 1).keys()].slice(1);
 
+
+  
+  const [selectedItemId, setSelectedItemId] = useState(null);
+
+  const handleDataCreated = () => {
+    // Refresh data after a new driver is created
+    fetchData();
+  };
+  
+  const [editData, setEditData] = useState({
+    id: null,
+    full_name: "",
+    email: "",
+    phone: "",
+    address: "",
+    altpassword: "",
+  });
+
+
   useEffect(() => {
-    ContactData(getContact, DefaultgetContact);
+    fetchData();
   }, []);
-  console.warn(contact);
 
-  function handleInput(e) {
-    setName(e.target.value);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://shippingbackend-production.up.railway.app/api/dispatcher"
+      );
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  
+
+  
+  async function deleteData(id) {
+    setSelectedItemId(id); // Store the selected item's ID
+    setModalIsOpenDelete(true); // Open the modal
   }
 
-  function handleEditClick(dispatcher) {
-    setIds(dispatcher.id);
-    setName(dispatcher.name);
-    setEmail(dispatcher.email);
-    setPhone(dispatcher.phone);
-    setPassword(dispatcher.password);
-    setModalIsOpenEdit(true);
+
+async function confirmDelete(id) {
+  try {
+    await axios.delete(`https://shippingbackend-production.up.railway.app/api/dispatcherdelete/${selectedItemId}`);
+    // Remove the deleted item from the local state
+    const updatedData = data.filter((item) => item.id !== selectedItemId);
+    setData(updatedData);
+    setModalIsOpenDelete(false); // Close the modal
+    toast.success('Dispatcher Deleted Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
+  } catch (error) {
+    console.error("Error deleting data:", error);
   }
+}
+
+
+
+function editDataItem(item) {
+  setEditData(item );
+  setModalIsOpenEdit(true);
+}
+async function updateData() {
+  try {
+    await axios.put(
+      `https://shippingbackend-production.up.railway.app/api/updatedispatchersby/${editData.id}`,
+      {
+        name: editData.name,
+        email: editData.email,
+        phone: editData.phone,
+        password : editData.password,
+      }
+    );
+    toast.success('Dispatcher Updated Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
+    setModalIsOpenEdit(false);
+    fetchData(); // Refresh data after update
+  } catch (error) {
+    console.error("Error updating data:", error);
+  }
+}
 
 
   const handleStartDateChange = (date) => {
@@ -148,19 +200,7 @@ function DispatchList() {
     }
     return true;
   });
-  useEffect(() => {
-    fetchData();
-  }, []);
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/dispatcher"
-      );
-      setData(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+
 
 
   
@@ -218,8 +258,8 @@ function DispatchList() {
               name="name"
               id="name"
               placeholder="Edit Name"
-              onChange={(e) => setName(e.target.value)}
-              value={name}
+              value={editData.name}
+          onChange={(e) => setEditData({ ...editData, name: e.target.value })}
             />
           </FormGroup>
           <FormGroup>
@@ -228,8 +268,8 @@ function DispatchList() {
               name="email"
               id="email"
               placeholder="Edit Email"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
+              value={editData.email}
+          onChange={(e) => setEditData({ ...editData, email: e.target.value })}
             />
           </FormGroup>
           <FormGroup>
@@ -238,10 +278,8 @@ function DispatchList() {
               name="phone"
               id="phone"
               placeholder="Edit Phone Number "
-              onChange={(e) => {
-                setPhone(e.target.value);
-              }}
-              value={phone}
+              value={editData.phone}
+          onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
             />
           </FormGroup>
           <FormGroup>
@@ -250,10 +288,8 @@ function DispatchList() {
               name="password"
               id="password"
               placeholder="Edit Password "
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-              value={password}
+              value={editData.password}
+          onChange={(e) => setEditData({ ...editData, password: e.target.value })}
             />
           </FormGroup>
           <p id="edit-validate-batch" style={{ color: "red" }}></p>
@@ -261,17 +297,7 @@ function DispatchList() {
             variant="contained"
             className="main_botton"
             style={{ backgroundColor: "#6A3187" }}
-            onClick={() =>
-              updateBatch(
-                ids,
-                name,
-                email,
-                phone,
-                password,
-                setModalIsOpenEdit,
-                getBatchList
-              )
-            }
+            onClick={updateData}
           >
             Edit Dispatcher List
           </Button>
@@ -296,10 +322,8 @@ function DispatchList() {
           >
             <Button
               outline
-              onClick={() => {
-                deleteContact(ids, getContact, DefaultgetContact);
-                setModalIsOpenDelete(false);
-              }}
+              onClick={confirmDelete}
+
             >
               Yes
             </Button>
@@ -398,7 +422,7 @@ function DispatchList() {
                 </div>
                 <div className="d-flex">
                 <div className="add-new-form-btn">
-                    <CreateDispatch />
+                    <CreateDispatch onDataCreated={handleDataCreated}/>
                   </div>
                   <div className="export-btn">
             <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
@@ -450,15 +474,14 @@ function DispatchList() {
                           {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
                           <button
                             className="btn btn1"
-                            onClick={() => handleEditClick(item)}
+                            onClick={() => editDataItem(item)}
                           >
                             <i class="bi bi-pen"></i>
                           </button>
                           <button
                             className="btn bt"
                             onClick={() => {
-                              setModalIsOpenDelete(true);
-                              setIds(item.id);
+                                 deleteData(item.id);
                             }}
                           >
                             <i class="bi bi-trash delete"></i>

@@ -12,88 +12,6 @@ import * as FileSaver from 'file-saver';
 
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 
-async function ContactData(getContact) {
-  await axios
-    .get("https://shippingbackend-production.up.railway.app/api/driver", {
-      headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-    })
-    .then((res) => {
-      getContact(res.data);
-    });
-}
-//************************************************************** */
-
-//************************************************************** */
-async function deleteContact(ids, getContact, DefaultgetContact) {
-  const results = await axios.post(
-    "https://shippingbackend-production.up.railway.app/api/deldriver",
-    {
-      id: ids,
-    },
-    { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
-  );
-  toast.success('Driver Deleted Successfully!', {
-    position: "top-right",
-    autoClose: 3000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: false,
-    draggable: true,
-  });
-  if (results.status == 200) {
-    ContactData(getContact, DefaultgetContact);
-  }
-}
-
-async function updateBatch(
-  id,
-  full_name,
-  email,
-  phone,
-  address,
-  altpassword,
-  password,
-  setModalIsOpenEdit,
-  getBatchList
-) {
-  if (
-    full_name !== "" &&
-    email !== "" &&
-    phone !== "" &&
-    address !== "" &&
-    altpassword !== ""
-  ) {
-    await axios.post(
-      "https://shippingbackend-production.up.railway.app/api/updatedriverapi",
-      {
-        inst_hash: localStorage.getItem("inst_hash"),
-        id: id,
-        full_name: full_name,
-        email: email,
-        phone: phone,
-        address: address,
-        altpassword: altpassword,
-        password: altpassword,
-      },
-      { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
-    );
-    ContactData(getBatchList);
-    setModalIsOpenEdit(false);
-    toast.success('Driver Updated Successfully!', {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-    });
-  } else {
-    document.getElementById("edit-validate-batch").innerHTML =
-      "*Please fill required field!";
-    console.log("Error :", "Please fill required field");
-  }
-}
-
 
 function DriverList() {
   const [contact, getContact] = useState([]);
@@ -119,24 +37,110 @@ function DriverList() {
   const records = contact.slice(firstIndex, lastIndex);
   const npage = Math.ceil(contact.length / recordsPerPage);
   const numbers = [...Array(npage + 1).keys()].slice(1);
+  const [error, setError] = useState(false);
+  const [succbtn, setSuccbtn] = useState();
+  const [modalIsOpen,setModalIsOpen] = useState(false);
 
+  const [selectedItemId, setSelectedItemId] = useState(null);
+
+  const handleDataCreated = () => {
+    // Refresh data after a new driver is created
+    fetchData();
+  };
+
+
+
+
+
+  
+  const [editData, setEditData] = useState({
+    id: null,
+    full_name: "",
+    email: "",
+    phone: "",
+    address: "",
+    altpassword: "",
+  });
+
+
+  
   useEffect(() => {
-    ContactData(getContact, DefaultgetContact);
+    fetchData();
   }, []);
 
-  function handleInput(e) {
-    setFullName(e.target.value);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://shippingbackend-production.up.railway.app/api/driver"
+      );
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  
+
+  
+  async function deleteData(id) {
+    setSelectedItemId(id); // Store the selected item's ID
+    setModalIsOpenDelete(true); // Open the modal
   }
 
-  function handleEditClick(driver) {
-    setIds(driver.id);
-    setFullName(driver.full_name);
-    setEmail(driver.email);
-    setPhone(driver.phone);
-    setAddress(driver.address);
-    setaltPassword(driver.altpassword);
-    setModalIsOpenEdit(true);
+
+async function confirmDelete(id) {
+  try {
+    await axios.delete(`https://shippingbackend-production.up.railway.app/api/driverdelete/${selectedItemId}`);
+    // Remove the deleted item from the local state
+    const updatedData = data.filter((item) => item.id !== selectedItemId);
+    setData(updatedData);
+    setModalIsOpenDelete(false); // Close the modal
+    toast.success('Driver Deleted Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
+  } catch (error) {
+    console.error("Error deleting data:", error);
   }
+}
+
+
+
+function editDataItem(item) {
+  setEditData(item );
+  setModalIsOpenEdit(true);
+}
+async function updateData() {
+  try {
+    await axios.put(
+      `https://shippingbackend-production.up.railway.app/api/updatedriver/${editData.id}`,
+      {
+        full_name: editData.full_name,
+        email: editData.email,
+        phone: editData.phone,
+        address: editData.address,
+        altpassword : editData.altpassword,
+      }
+    );
+    toast.success('Driver Updated Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
+    setModalIsOpenEdit(false);
+    fetchData(); // Refresh data after update
+  } catch (error) {
+    console.error("Error updating data:", error);
+  }
+}
+
+
 
   
 const handleStartDateChange = (date) => {
@@ -154,19 +158,7 @@ const filteredData = data.filter((item) => {
   }
   return true;
 });
-useEffect(() => {
-  fetchData();
-}, []);
-const fetchData = async () => {
-  try {
-    const response = await axios.get(
-      "https://shippingbackend-production.up.railway.app/api/driver"
-    );
-    setData(response.data);
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-};
+
 
 
 
@@ -225,8 +217,8 @@ const fetchData = async () => {
               name="name"
               id="name"
               placeholder="Edit Name"
-              onChange={(e) => setFullName(e.target.value)}
-              value={full_name}
+              value={editData.full_name}
+          onChange={(e) => setEditData({ ...editData, full_name: e.target.value })}
             />
           </FormGroup>
           <FormGroup>
@@ -235,8 +227,8 @@ const fetchData = async () => {
               name="email"
               id="email"
               placeholder="Edit Email"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
+              value={editData.email}
+          onChange={(e) => setEditData({ ...editData, email: e.target.value })}
             />
           </FormGroup>
           <FormGroup>
@@ -245,8 +237,8 @@ const fetchData = async () => {
               name="phone"
               id="phone"
               placeholder="Edit Phone Number "
-              onChange={(e) => setPhone(e.target.value)}
-              value={phone}
+              value={editData.phone}
+          onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
             />
           </FormGroup>
           <FormGroup>
@@ -255,8 +247,8 @@ const fetchData = async () => {
               name="address"
               id="address"
               placeholder="Edit Address "
-              onChange={(e) => setAddress(e.target.value)}
-              value={address}
+              value={editData.address}
+          onChange={(e) => setEditData({ ...editData, address: e.target.value })}
             />
           </FormGroup>
           <FormGroup>
@@ -265,8 +257,9 @@ const fetchData = async () => {
               name="password"
               id="password"
               placeholder="Edit Password"
-              onChange={(e) => setaltPassword(e.target.value)}
-              value={altpassword}
+            
+              value={editData.altpassword}
+          onChange={(e) => setEditData({ ...editData, altpassword: e.target.value })}
             />
           </FormGroup>
           <p id="edit-validate-batch" style={{ color: "red" }}></p>
@@ -274,25 +267,14 @@ const fetchData = async () => {
             variant="contained"
             className="main_botton"
             style={{ backgroundColor: "#6A3187" }}
-            onClick={() =>
-              updateBatch(
-                ids,
-                full_name,
-                email,
-                phone,
-                address,
-                altpassword,
-                setModalIsOpenEdit,
-                getBatchList
-              )
-            }
+            onClick={updateData}
           >
             Edit Driver List
           </Button>
         </Form>
       </Modal>
 
-      <Modal isOpen={modalIsOpenDelete} className="modal_body-delete">
+      <Modal isOpen={modalIsOpenDelete} onRequestClose={() => setModalIsOpenDelete(false)} className="modal_body-delete">
         <ModalBody className="dispatcher-list-form">
           <AiOutlineClose
             className="main_AiOutlineClose close-icon"
@@ -310,10 +292,8 @@ const fetchData = async () => {
           >
             <Button
               outline
-              onClick={() => {
-                deleteContact(ids, getContact, DefaultgetContact);
-                setModalIsOpenDelete(false);
-              }}
+              onClick={confirmDelete}
+
             >
               Yes
             </Button>
@@ -416,7 +396,7 @@ const fetchData = async () => {
                 </div>
                 <div className="d-flex">
                   <div className="add-new-form-btn">
-                    <CreateDriver />
+                    <CreateDriver onDataCreated={handleDataCreated}/>
                   </div>
                        <div className="export-btn">
             <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
@@ -473,15 +453,15 @@ const fetchData = async () => {
                         <td>
                           <button
                             className="btn btn1"
-                            onClick={() => handleEditClick(item)}
+                            onClick={() => editDataItem(item)}
+
                           >
                             <i class="bi bi-pen"></i>
                           </button>
                           <button
                             className="btn bt"
                             onClick={() => {
-                              setModalIsOpenDelete(true);
-                              setIds(item.id);
+                                 deleteData(item.id);
                             }}
                           >
                             <i class="bi bi-trash delete"></i>

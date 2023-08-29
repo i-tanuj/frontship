@@ -22,7 +22,9 @@ async function ContactData(getContact, id) {
 }
 
 function CreateShipment() {
-  // Vehicle Dropdown login start here
+  const [link, setLink] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
 
   const [vehicleDetails, setVehicleDetails] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState("");
@@ -37,7 +39,7 @@ function CreateShipment() {
         "https://shippingbackend-production.up.railway.app/api/vehicledetails"
       );
       setVehicleDetails(response.data); // Assuming the API returns an array of vehicle details
-    } catch (error) { 
+    } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
@@ -198,6 +200,7 @@ function CreateShipment() {
   const [selectedDispatcher1, setSelectedDispatcher1] = useState("");
   const [selectedDispatcher2, setSelectedDispatcher2] = useState("");
   const [selectedDispatcher3, setSelectedDispatcher3] = useState("");
+  const [selectedDispatcherIds, setSelectedDispatcherIds] = useState([]);
 
   useEffect(() => {
     fetchDispatchers();
@@ -263,6 +266,7 @@ function CreateShipment() {
   const [adddescription1, setAdddescription1] = useState("");
   const [selectshipment, setSelectshipment] = useState("");
   const [selectshipment1, setSelectshipment1] = useState("");
+  const [maplink, setmaplink] = useState("");
 
   const [dispatcherData, setDispatcherData] = useState({
     id: "",
@@ -320,28 +324,29 @@ function CreateShipment() {
           customer_alt_num: dispatcherData.altphone,
           pick_up_location: pickuplocation,
           pick_up_before: pickupdate,
-          shipment_type: selectshipment,
+          latitude: latitude,
+          longitude: longitude,
           description: adddescription,
           customer_name2: dispatcherData1.name,
           customer_contact2: dispatcherData1.phoneno,
           drop_location: selectshipdrop,
           drop_description: adddescriptiondrop,
           vehicleplate: selectedVehicle,
-          helper1: selectedHelper1,
-          helper2: selectedHelper2,
+          helper1: helperData.name,
+          helper2: helperData1.name,
           driver_id: selectedDriver,
-          customer_name1:dispatcherData2.name,
-          customer_contact1:dispatcherData2.phoneno,
-          customer_email1:dispatcherData2.email,
-          customer_alt_num1:dispatcherData2.altphone,
-          pick_up_location1:pickuplocation1,
-          pick_up_before1:pickupdate1,
-          shipment_type1:selectshipment1,
-          description1:adddescription1,
-          customer_name21:dispatcherData3.name,
-          customer_contact21:dispatcherData3.phoneno,
-          drop_location1:selectshipdrop1,
-          drop_description1:adddescriptiondrop1,
+          customer_name1: dispatcherData2.name,
+          customer_contact1: dispatcherData2.phoneno,
+          customer_email1: dispatcherData2.email,
+          customer_alt_num1: dispatcherData2.altphone,
+          pick_up_location1: pickuplocation1,
+          pick_up_before1: pickupdate1,
+          shipment_type1: selectshipment1,
+          description1: adddescription1,
+          customer_name21: dispatcherData3.name,
+          customer_contact21: dispatcherData3.phoneno,
+          drop_location1: selectshipdrop1,
+          drop_description1: adddescriptiondrop1,
         },
         {
           headers: {
@@ -361,9 +366,6 @@ function CreateShipment() {
         draggable: true,
       });
 
-      console.log("Data successfully submitted:", response.data);
-      console.log("customer id:", dispatcherData.id);
-      console.log("customer id 2:", dispatcherData.id);
       // You can display a success message or perform any other actions here
 
       // Clear form fields after successful submission
@@ -397,9 +399,100 @@ function CreateShipment() {
     }
   };
 
+  const handleLinkChange = (event) => {
+    const newLink = event.target.value;
+    setLink(newLink);
+
+    // Use regular expression to extract latitude and longitude
+    const match = newLink.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (match) {
+      setLatitude(match[1]);
+      setLongitude(match[2]);
+    } else {
+      setLatitude("");
+      setLongitude("");
+    }
+  };
+
+
+    const availableDispatchersForSelectedDispatcher1 = dispatchers.filter(
+      dispatcher => !selectedDispatcher.includes(dispatcher.id)
+    );
+    const availableDispatchersForSelectedDispatcher2 = dispatchers.filter(
+      dispatcher => !selectedDispatcher.includes(dispatcher.id) && !selectedDispatcher1.includes(dispatcher.id)
+    );
+    const availableDispatchersForSelectedDispatcher3 = dispatchers.filter(
+      dispatcher => !selectedDispatcher.includes(dispatcher.id) && !selectedDispatcher1.includes(dispatcher.id) && !selectedDispatcher2.includes(dispatcher.id)
+    );
+    // const availableHelperForSelectedHelper = helpers.filter(
+    //   helper => !selectedHelper1.includes(helper.id)
+    // );
+    const [selectedHelper, setSelectedHelper] = useState("");
+
+
+    const availableHelpersForSelectedHelper1 = helpers.filter(
+      helper => !selectedHelper.includes(helper.id)
+      );
+
+    const [helperData, setHelperData] = useState({
+      id: "",
+      name: "",
+      email: "",
+      phoneno: "",
+      altphone: "",
+    });
+    const [helperData1, setHelperData1] = useState({
+      id: "",
+      name: "",
+      email: "",
+      phoneno: "",
+      altphone: "",
+    });
+
+
+  const handleSelectChange4 = async (event) => {
+    const selectedOptionValue = event.target.value;
+    setSelectedHelper(selectedOptionValue);
+    console.log(selectedOptionValue);
+
+    // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
+    if (selectedOptionValue) {
+      try {
+        const response = await axios.get(
+          `https://shippingbackend-production.up.railway.app/api/helperdata/${selectedOptionValue}`
+        );
+        const selectedHelperData = response.data;
+        setHelperData(selectedHelperData);
+      } catch (error) {
+        console.error("Error fetching selected dispatcher:", error);
+      }
+    }
+  };
+  const handleSelectChange5 = async (event) => {
+    const selectedOptionValue = event.target.value;
+    setSelectedHelper1(selectedOptionValue);
+    console.log(selectedOptionValue);
+
+    // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
+    if (selectedOptionValue) {
+      try {
+        const response = await axios.get(
+          `https://shippingbackend-production.up.railway.app/api/helperdata/${selectedOptionValue}`
+        );
+        const selectedHelperData1 = response.data;
+        setHelperData1(selectedHelperData1);
+      } catch (error) {
+        console.error("Error fetching selected dispatcher:", error);
+      }
+    }
+  };
+
   return (
     <div>
-      <Modal isOpen={modalIsOpen} className="admin-section-map-modal modal_body modal-form-body">
+      <Modal
+        isOpen={modalIsOpen}
+        className="admin-section-map-modal modal_body modal-form-body"
+      >
         <div className="delivery-pickup-form-holder">
           <div className="card">
             <ModalBody className="close-icon">
@@ -412,7 +505,7 @@ function CreateShipment() {
             <div className="">
               <div className="admin-dashboard">
                 <h2 className="py-3 text-center "> Shipment Creation</h2>
-                
+
                 <div className="admin-section-admin-01">
                   <div class="tab-content" id="myTabContent">
                     <div
@@ -492,7 +585,7 @@ function CreateShipment() {
                             <div className="mb-4 w-50">
                               <label className="form-label">
                                 Customer Alternate Number
-                                <span className="stra-icon">*</span>{" "}
+                                <span className="stra-icon"></span>{" "}
                               </label>
                               <input
                                 name="altphone"
@@ -508,7 +601,7 @@ function CreateShipment() {
                             <div className="mb-4 w-50">
                               <label className="form-label">
                                 Pick up Location
-                                <span className="stra-icon">*</span>
+                                <span className="stra-icon"></span>
                               </label>
                               <input
                                 name="pickuplocation"
@@ -523,7 +616,8 @@ function CreateShipment() {
                             </div>
                             <div className="mb-4 w-50">
                               <label className="form-label">
-                                Pick up Before<span className="stra-icon">*</span>{" "}
+                                Pick up Before
+                                <span className="stra-icon"></span>{" "}
                               </label>
                               <input
                                 name="pickupdate"
@@ -547,30 +641,15 @@ function CreateShipment() {
                             </div>
                           </div>
                           <div className="row">
-                            <div className="mb-4 w-50">
+                           
+
+                            <div className="mb-4 w-100">
                               <label className="form-label">
-                                Please Select<span className="stra-icon">*</span>
-                              </label>
-                              <select
-                                name="selectshipment"
-                                id="selectshipment"
-                                class=""
-                                aria-label="Default select example"
-                                onChange={(e) =>
-                                  setSelectshipment(e.target.value)
-                                }
-                                value={selectshipment}
-                              >
-                                <option selected>Select Here</option>
-                                <option value="Shipment">Shipment</option>
-                                <option value="Force work">Force Work</option>
-                              </select>
-                            </div>
-                            <div className="mb-4 w-50">
-                              <label className="form-label">
-                                Add Description<span className="stra-icon"></span>{" "}
+                                Add Description
+                                <span className="stra-icon"></span>{" "}
                               </label>
                               <input
+                              className="p-3"
                                 name="adddescription"
                                 onChange={(e) =>
                                   setAdddescription(e.target.value)
@@ -580,16 +659,7 @@ function CreateShipment() {
                                 placeholder="Description"
                                 type="text"
                               />
-                              {/* {error && adddescription.length <= 0 ? (
-                                <span
-                                  className="valid-form"
-                                  style={{ color: "red" }}
-                                >
-                                  Enter Description*
-                                </span>
-                              ) : (
-                                ""
-                              )} */}
+                        
                             </div>
                           </div>
                           <h3 className="text-center pt-3 pb-4">
@@ -602,10 +672,11 @@ function CreateShipment() {
                                 for="exampleInputEmail1"
                                 className="form-label"
                               >
-                                Customers Name<span className="stra-icon">*</span>
+                                Customers Name
+                                <span className="stra-icon">*</span>
                               </label>
 
-                              <select
+                              {/* <select
                                 value={selectedDispatcher1}
                                 onChange={handleSelectChange1}
                                 name="name"
@@ -622,12 +693,27 @@ function CreateShipment() {
                                     {dispatcher.name}
                                   </option>
                                 ))}
-                              </select>
+                              </select> */}
+
+                              <select
+          value={selectedDispatcher1}
+          onChange={handleSelectChange1}
+        >
+          <option value="">Select Customer</option>
+          {availableDispatchersForSelectedDispatcher1.map((dispatcher) => (
+            <option
+              key={dispatcher.id}
+              value={dispatcher.id}
+            >
+              {dispatcher.name}
+            </option>
+          ))}
+        </select>
                             </div>
                             <div className="mb-4 w-50">
                               <label className="form-label">
                                 Customer Contact Number
-                                <span className="stra-icon">*</span>
+                                <span className="stra-icon"></span>
                               </label>
 
                               <input
@@ -646,9 +732,10 @@ function CreateShipment() {
                             <div className="mb-4 w-50">
                               <label className="form-label">
                                 Address (Drop Location)
-                                <span className="stra-icon">*</span>
+                                <span className="stra-icon"></span>
                               </label>
                               <input
+                              placeholder="Write Drop Location"
                                 type="text"
                                 value={selectshipdrop}
                                 onChange={(e) =>
@@ -656,13 +743,34 @@ function CreateShipment() {
                                 }
                               />
                             </div>
-
                             <div className="mb-4 w-50">
                               <label className="form-label">
-                                Add Description
-                                <span className="stra-icon">*</span>{" "}
+                                Google Map Link
+                                <span className="stra-icon"></span>
                               </label>
                               <input
+                                type="text"
+                                placeholder="Google Map link"
+                                value={maplink}
+                                onChange={(e) => setmaplink(e.target.value)}
+                                // onChange={handleLinkChange}
+                              />
+                            </div>
+                            {/* {latitude && longitude && (
+        <div>
+          Latitude: {latitude}<br />
+          Longitude: {longitude}
+        </div>
+      )} */}
+
+                            <div className="mb-4 w-100">
+                              <label className="form-label">
+                                Add Description
+                                <span className="stra-icon"></span>{" "}
+                              </label>
+                              <input
+                              className="p-3"
+                              placeholder="Write Description"
                                 type="text"
                                 value={adddescriptiondrop}
                                 onChange={(e) =>
@@ -688,8 +796,8 @@ function CreateShipment() {
                               <Accordion.Header>
                                 <div className="plus-icon Another-Location">
                                   {" "}
-                                  <img src="/Assets/dash/plus.png" /> Add Another
-                                  Location
+                                  <img src="/Assets/dash/plus.png" /> Add
+                                  Another Location
                                 </div>
                               </Accordion.Header>
                               <Accordion.Body>
@@ -707,7 +815,7 @@ function CreateShipment() {
                                       id="customer_name"
                                     >
                                       <option value="">Select Customer</option>
-                                      {dispatchers.map((dispatcher) => (
+                                      {availableDispatchersForSelectedDispatcher2.map((dispatcher) => (
                                         <option
                                           key={dispatcher.id}
                                           value={dispatcher.id}
@@ -747,7 +855,9 @@ function CreateShipment() {
                                       value={dispatcherData2.email}
                                       id="email"
                                       // value={email}
-                                      onChange={(e) => setEmail1(e.target.value)}
+                                      onChange={(e) =>
+                                        setEmail1(e.target.value)
+                                      }
                                       placeholder="Enter Email Address"
                                       type="email"
                                     />
@@ -755,7 +865,7 @@ function CreateShipment() {
                                   <div className="mb-4 w-50">
                                     <label className="form-label">
                                       Customer Alternate Number
-                                      <span className="stra-icon">*</span>{" "}
+                                      <span className="stra-icon"></span>{" "}
                                     </label>
                                     <input
                                       name="altphone"
@@ -773,7 +883,7 @@ function CreateShipment() {
                                   <div className="mb-4 w-50">
                                     <label className="form-label">
                                       Pick up Location
-                                      <span className="stra-icon">*</span>
+                                      <span className="stra-icon"></span>
                                     </label>
                                     <input
                                       name="pickuplocation"
@@ -789,7 +899,7 @@ function CreateShipment() {
                                   <div className="mb-4 w-50">
                                     <label className="form-label">
                                       Pick up Before
-                                      <span className="stra-icon">*</span>{" "}
+                                      <span className="stra-icon"></span>{" "}
                                     </label>
                                     <input
                                       name="pickupdate"
@@ -804,34 +914,14 @@ function CreateShipment() {
                                   </div>
                                 </div>
                                 <div className="row">
-                                  <div className="mb-4 w-50">
-                                    <label className="form-label">
-                                      Please Select
-                                      <span className="stra-icon">*</span>
-                                    </label>
-                                    <select
-                                      name="selectshipment"
-                                      id="selectshipment"
-                                      class=""
-                                      aria-label="Default select example"
-                                      onChange={(e) =>
-                                        setSelectshipment1(e.target.value)
-                                      }
-                                      value={selectshipment1}
-                                    >
-                                      <option selected>Select Here</option>
-                                      <option value="Shipment">Shipment</option>
-                                      <option value="Force work">
-                                        Force Work
-                                      </option>
-                                    </select>
-                                  </div>
-                                  <div className="mb-4 w-50">
+                                 
+                                  <div className="mb-4 w-100">
                                     <label className="form-label">
                                       Add Description
                                       <span className="stra-icon"></span>{" "}
                                     </label>
                                     <input
+                                    className="p-3"
                                       name="adddescription"
                                       onChange={(e) =>
                                         setAdddescription1(e.target.value)
@@ -854,7 +944,7 @@ function CreateShipment() {
                                       className="form-label"
                                     >
                                       Customers Name
-                                      <span className="stra-icon">*</span>
+                                      <span className="stra-icon"></span>
                                     </label>
 
                                     <select
@@ -864,7 +954,7 @@ function CreateShipment() {
                                       id="name"
                                     >
                                       <option value="">Select Customer</option>
-                                      {dispatchers.map((dispatcher) => (
+                                      {availableDispatchersForSelectedDispatcher3.map((dispatcher) => (
                                         <option
                                           key={dispatcher.id}
                                           value={dispatcher.id}
@@ -879,7 +969,7 @@ function CreateShipment() {
                                   <div className="mb-4 w-50">
                                     <label className="form-label">
                                       Customer Contact Number
-                                      <span className="stra-icon">*</span>
+                                      <span className="stra-icon"></span>
                                     </label>
 
                                     <input
@@ -898,9 +988,10 @@ function CreateShipment() {
                                   <div className="mb-4 w-50">
                                     <label className="form-label">
                                       Address (Drop Location)
-                                      <span className="stra-icon">*</span>
+                                      <span className="stra-icon"></span>
                                     </label>
                                     <input
+                                    placeholder="Write Drop Location"
                                       type="text"
                                       value={selectshipdrop1}
                                       onChange={(e) =>
@@ -908,13 +999,27 @@ function CreateShipment() {
                                       }
                                     />
                                   </div>
-
                                   <div className="mb-4 w-50">
+                              <label className="form-label">
+                                Google Map Link
+                                <span className="stra-icon"></span>
+                              </label>
+                              <input
+                                type="text"
+                                placeholder="Google Maps link"
+                                value={link}
+                                onChange={handleLinkChange}
+                              />
+                            </div>
+
+                                  <div className="mb-4 w-100">
                                     <label className="form-label">
                                       Add Description
-                                      <span className="stra-icon">*</span>{" "}
+                                      <span className="stra-icon"></span>{" "}
                                     </label>
                                     <input
+                                    className="p-3"
+                                    placeholder="Write Description"
                                       type="text"
                                       value={adddescriptiondrop1}
                                       onChange={(e) =>
@@ -932,7 +1037,8 @@ function CreateShipment() {
                           <div className="row pt-5">
                             <div className="mb-4 w-50">
                               <label className="form-label">
-                                vehicle plate<span className="stra-icon">*</span>
+                                Vehicle Number
+                                <span className="stra-icon"></span>
                               </label>
 
                               <select
@@ -952,9 +1058,9 @@ function CreateShipment() {
                             </div>
                             <div className="mb-4 w-50">
                               <label className="form-label">
-                                Helper 1<span className="stra-icon">*</span>{" "}
+                                Helper 1<span className="stra-icon"></span>{" "}
                               </label>
-                              <select
+                              {/* <select
                                 value={selectedHelper1}
                                 onChange={(e) =>
                                   setSelectedHelper1(e.target.value)
@@ -966,32 +1072,63 @@ function CreateShipment() {
                                     {helper.name}
                                   </option>
                                 ))}
-                              </select>
+                              </select> */}
+
+                              <select
+          value={selectedHelper}
+          onChange={handleSelectChange4}
+        >
+          <option value="">Select Helper 1</option>
+          {helpers.map((helper) => (
+            <option
+              key={helper.id}
+              value={helper.id}
+            >
+              {helper.name}
+            </option>
+          ))}
+        </select>
                             </div>
                           </div>
                           <div className="row">
                             <div className="mb-4 w-50">
                               <label className="form-label">
-                                Helper 2<span className="stra-icon">*</span>{" "}
+                                Helper 2<span className="stra-icon"></span>{" "}
                               </label>
 
                               <select
+          value={selectedHelper1}
+          onChange={handleSelectChange5}
+        >
+          <option value="">Select Helper 2</option>
+          {availableHelpersForSelectedHelper1.map((helper) => (
+            <option
+              key={helper.id}
+              value={helper.id}
+            >
+              {helper.name}
+            </option>
+          ))}
+        </select>
+
+                              {/* <select
                                 value={selectedHelper2}
                                 onChange={(e) =>
                                   setSelectedHelper2(e.target.value)
                                 }
                               >
                                 <option value="">Select a Helper</option>
-                                {helpers.map((helper) => (
+                                {availableHelperForSelectedHelper.map((helper) => (
                                   <option key={helper.id} value={helper.name}>
                                     {helper.name}
                                   </option>
                                 ))}
-                              </select>
+                              </select> */}
                             </div>
                             <div className="mb-4 w-50">
                               <label className="form-label">
-                                Assign driver<span className="stra-icon">*</span>
+                                Assign driver
+                                <span className="stra-icon"></span>
                               </label>
 
                               <select
@@ -1032,9 +1169,11 @@ function CreateShipment() {
                     </div>
                   </div>
                   <div className="form-map-section">
-                      <div><img src="assets/dashboard/map-img.png" alt="" /></div>
+                    <div>
+                      <img src="assets/dashboard/map-img.png" alt="" />
+                    </div>
                   </div>
-               </div>
+                </div>
               </div>
             </div>
           </div>

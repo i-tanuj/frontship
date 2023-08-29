@@ -1,27 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import '../../css/shippment.css'
 import axios from 'axios';
 import { Modal, ModalBody } from "reactstrap";
-
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-function CreateDriver() {
-    // const [modalIsOpen, setModalIsOpen] = useState(false);
+function CreateDriver({ onDataCreated }) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-
-
     const [full_name, setFullname] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
     const [address, setAddress] = useState("");
     const [error, setError] = useState(false);
-    const [modalPrivacy, setModalPrivacy] = useState(false);
     const [succbtn, setSuccbtn] = useState();
-    const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
+    const [data, setData] = useState([]);
 
+   
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+
+  // async function fetchData() {
+  //   try {
+  //     const response = await axios.get(
+  //       'https://shippingbackend-production.up.railway.app/api/driverdetails'
+  //     );
+  //     setData(response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   }
+  // }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,29 +42,30 @@ function CreateDriver() {
       address,
     };
 
-
     if (full_name === '' || email === '' || phone === '' || password === '' || address === '') {
       setError(true);
       setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
     } else {
       setError(false);
       setSuccbtn('');
-      axios.post('https://shippingbackend-production.up.railway.app/api/adddriverapi', dataToSubmit)
+      axios
+        .post('https://shippingbackend-production.up.railway.app/api/adddriverapi', dataToSubmit)
         .then((response) => {
           console.log(response.data);
           setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
-    setModalIsOpen(false);
+          setModalIsOpen(false);
 
-    
-    toast.success('Driver Created Successfully!', {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-    });
-
+          // Refresh data after successful submission
+          // fetchDa  ta();
+          toast.success('Driver Created Successfully!', {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+          });
+          onDataCreated();
         })
         .catch((error) => {
           console.error('Error submitting data:', error);
@@ -63,7 +73,7 @@ function CreateDriver() {
         });
     }
   };
-  
+
 
   return (
     <div>
@@ -163,7 +173,6 @@ function CreateDriver() {
             </div>
 
            </Modal>
-               {/* Created Toast Container  */}
                <ToastContainer/>
                 	<div class="d-flex create-dispatcher align-items-center">
                         <div class="plus-icon">							    

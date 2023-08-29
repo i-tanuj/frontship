@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import Modal from "react-modal"; // Import the modal component library
 
 function DriverDropdown() {
   const [data, setData] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [editData, setEditData] = useState({
+    id: null,
+    name: "",
+    email: "",
+    phoneno: "",
+    address: "",
+  }); // State for edit form
 
-  const fetchData = async () => {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
     try {
       const response = await axios.get(
         "https://shippingbackend-production.up.railway.app/api/createhelper"
@@ -17,67 +28,111 @@ function DriverDropdown() {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
+  }
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  async function deleteData(id) {
+    setSelectedItemId(id);
+    setModalIsOpen(true);
+  }
 
-  const handleStartDateChange = (date) => {
-    setStartDate(date);
-  };
-
-  const handleEndDateChange = (date) => {
-    setEndDate(date);
-  };
-
-  const filteredData = data.filter((item) => {
-    if (startDate && endDate) {
-      const itemDate = new Date(item.DateAndTime);
-      return itemDate >= startDate && itemDate <= endDate;
+  async function confirmDelete() {
+    try {
+      await axios.delete(`https://shippingbackend-production.up.railway.app/api/helperdelete/${selectedItemId}`);
+      const updatedData = data.filter((item) => item.id !== selectedItemId);
+      setData(updatedData);
+      setModalIsOpen(false);
+    } catch (error) {
+      console.error("Error deleting data:", error);
     }
-    return true;
-  });
+  }
+
+  function editDataItem(item) {
+    setEditData(item);
+    setEditModalIsOpen(true);
+  }
+
+  async function updateData() {
+    try {
+      await axios.put(
+        `https://shippingbackend-production.up.railway.app/api/updatehelperapi/${editData.id}`,
+        {
+          name: editData.name,
+          email: editData.email,
+          phoneno: editData.phoneno,
+          address: editData.address,
+        }
+      );
+      setEditModalIsOpen(false);
+      fetchData(); // Refresh data after update
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
+  }
 
   return (
-    <div className="App">
-      <h1>Date Filter and Data Display</h1>
-      <div>
-        <DatePicker
-          selected={startDate}
-          onChange={handleStartDateChange}
-          selectsStart
-          startDate={startDate}
-          endDate={endDate}
-          placeholderText="Start Date"
-        />
-        <DatePicker
-          selected={endDate}
-          onChange={handleEndDateChange}
-          selectsEnd
-          startDate={startDate}
-          endDate={endDate}
-          placeholderText="End Date"
-        />
-      </div>
+    <div>
       <table>
         <thead>
           <tr>
+            <th>ID</th>
             <th>Name</th>
             <th>Email</th>
-            <th>Date and Time</th>
+            <th>Phone Number</th>
+            <th>Address</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {filteredData.map((item, index) => (
-            <tr key={index}>
+          {data.map((item) => (
+            <tr key={item.id}>
+              <td>{item.id}</td>
               <td>{item.name}</td>
               <td>{item.email}</td>
-              <td>{item.DateAndTime}</td>
+              <td>{item.phoneno}</td>
+              <td>{item.address}</td>
+              <td>
+                <button onClick={() => editDataItem(item)}>Edit</button>
+                <button onClick={() => deleteData(item.id)}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Delete Modal */}
+      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
+        <h2>Confirm Deletion</h2>
+        <p>Are you sure you want to delete this item?</p>
+        <button onClick={confirmDelete}>Yes</button>
+        <button onClick={() => setModalIsOpen(false)}>No</button>
+      </Modal>
+
+      {/* Edit Modal */}
+      <Modal isOpen={editModalIsOpen} onRequestClose={() => setEditModalIsOpen(false)}>
+        <h2>Edit Item</h2>
+        <input
+          type="text"
+          value={editData.name}
+          onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+        />
+        <input
+          type="text"
+          value={editData.email}
+          onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+        />
+        <input
+          type="text"
+          value={editData.phoneno}
+          onChange={(e) => setEditData({ ...editData, phoneno: e.target.value })}
+        />
+        <input
+          type="text"
+          value={editData.address}
+          onChange={(e) => setEditData({ ...editData, address: e.target.value })}
+        />
+        <button onClick={updateData}>Update</button>
+        <button onClick={() => setEditModalIsOpen(false)}>Cancel</button>
+      </Modal>
     </div>
   );
 }

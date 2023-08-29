@@ -12,124 +12,15 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 
-async function ContactData(getContact) {
-  await axios
-    .get( 
-      "https://shippingbackend-production.up.railway.app/api/creatvehical",
-      // { inst_hash: localStorage.getItem('inst_hash_manual') },
-      {
-        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-      }
-    )
-    .then((res) => {
-      console.log(res.data);
-      getContact(res.data);
-    });
-}
-//************************************************************** */
-
 const currentDate = new Date().toLocaleString("en-IN", {
   timeZone: "Asia/Kolkata",
   hour12: true,
 });
 
-// async function updateBatch(id,name,vehicalplate,setModalIsOpenEdit,getBatchList){
-//   if (name != "" && vehicalplate != "") {
-//       await axios.post('https://shippingbackend-production.up.railway.app/api/updatevehical',
-//       {inst_hash: localStorage.getItem('inst_hash'),
-//       id : id,
-//       name: name,
-//       vehicalplate: vehicalplate,
-//       DateAndTime: currentDate, // Adding current date and time to the data object
-//       },
-//       {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
-//   )
-//   ContactData(getBatchList)
-//   toast.success('Vehical Updated Successfully!', {
-//     position: "top-right",
-//     autoClose: 3000,
-//     hideProgressBar: true,
-//     closeOnClick: true,
-//     pauseOnHover: false,
-//     draggable: true,
-//   });
-//   setModalIsOpenEdit(false)
-//   // Reload the page after the update is successful
-//   window.location.reload();
-// } else {
-//   document.getElementById("edit-validate-batch").innerHTML =
-//     "*Please fill required field!";
-//   console.log("Error :", "Please fill required field");
-// }
-// }
-
-async function updateBatch(
-  id,
-  name,
-  vehicalplate,
-  setModalIsOpenEdit,
-  getBatchList
-) {
-  if (name !== "" && vehicalplate !== "") {
-    await axios.post(
-      "https://shippingbackend-production.up.railway.app/api/updatevehical",
-      {
-        inst_hash: localStorage.getItem("inst_hash"),
-        id: id,
-        name: name,
-        vehicalplate: vehicalplate,
-        DateAndTime: currentDate, // Adding current date and time to the data object
-      },
-      { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
-    );
-    // ContactData(getContact,DefaultgetContact);
-
-    // Update the batch list data without refreshing the page
-    await getBatchList();
-
-    toast.success("Vehicle Updated Successfully!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-    });
-
-    setModalIsOpenEdit(false);
-    // ContactData(getContact,DefaultgetContact);
-    window.location.reload();
-  } else {
-    document.getElementById("edit-validate-batch").innerHTML =
-      "*Please fill required fields!";
-    console.log("Error:", "Please fill required fields");
-  }
-}
-
-//************************************************************** */
-async function deleteContact(ids, getContact, DefaultgetContact) {
-  const results = await axios.post(
-    "https://shippingbackend-production.up.railway.app/api/delvehical",
-    {
-      id: ids,
-    },
-    { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
-  );
-  toast.success("Vehical Deleted Successfully!", {
-    position: "top-right",
-    autoClose: 3000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: false,
-    draggable: true,
-  });
-  if (results.status == 200) {
-    ContactData(getContact, DefaultgetContact);
-  }
-}
 
 function VehicalList() {
   const [data, setData] = useState([]);
+  const [selectedItemId, setSelectedItemId] = useState(null);
 
   const [contact, getContact] = useState([]);
   const [name, setName] = useState("");
@@ -150,9 +41,96 @@ function VehicalList() {
   const numbers = [...Array(npage + 1).keys()].slice(1);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+
+
+  const handleDataCreated = () => {
+    // Refresh data after a new driver is created
+    fetchData();
+  };
+
+  const [editData, setEditData] = useState({
+    id: null,
+    name: "",
+    vehicalplate: "",
+  });
+
+
   useEffect(() => {
-    ContactData(getContact, DefaultgetContact);
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://shippingbackend-production.up.railway.app/api/creatvehical"
+      );
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+
+  
+  async function deleteData(id) {
+    setSelectedItemId(id); // Store the selected item's ID
+    setModalIsOpenDelete(true); // Open the modal
+  }
+
+
+async function confirmDelete(id) {
+  try {
+    await axios.delete(`https://shippingbackend-production.up.railway.app/api/vehicledelete/${selectedItemId}`);
+    // Remove the deleted item from the local state
+    const updatedData = data.filter((item) => item.id !== selectedItemId);
+    setData(updatedData);
+    setModalIsOpenDelete(false); // Close the modal
+    toast.success('Vehicle Deleted Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
+  } catch (error) {
+    console.error("Error deleting data:", error);
+  }
+}
+
+
+
+function editDataItem(item) {
+  setEditData(item );
+  setModalIsOpenEdit(true);
+}
+async function updateData() {
+  try {
+    await axios.put(
+      `https://shippingbackend-production.up.railway.app/api/updatevehicleapi/${editData.id}`,
+      {
+        name: editData.name,
+        vehicalplate: editData.vehicalplate,
+      }
+    );
+    toast.success('Vehicle Updated Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
+    setModalIsOpenEdit(false);
+    fetchData(); // Refresh data after update
+  } catch (error) {
+    console.error("Error updating data:", error);
+  }
+}
+
+ 
+
+
 
   const handleStartDateChange = (date) => {
     setStartDate(date);
@@ -169,34 +147,6 @@ function VehicalList() {
     }
     return true;
   });
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/creatvehical"
-      );
-      setData(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-
-
-  function handleInput(e) {
-    setName(e.target.value);
-  }
-
-  function handleEditClick(helper) {
-    setIds(helper.id);
-    setName(helper.name);
-    setVehicalplate(helper.vehicalplate);
-    setModalIsOpenEdit(true);
-  }
-
 
   
   function exportToExcel() {
@@ -252,8 +202,9 @@ function VehicalList() {
               name="name"
               id="name"
               placeholder="Edit Vehicle Name"
-              onChange={(e) => handleInput(e)}
-              value={name}
+              value={editData.name}
+          onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+
             />
           </FormGroup>
 
@@ -263,10 +214,9 @@ function VehicalList() {
               name="vehicalplate"
               id="vehicalplate"
               placeholder="Edit Vehicle Number"
-              onChange={(e) => {
-                setVehicalplate(e.target.value);
-              }}
-              value={vehicalplate}
+              value={editData.vehicalplate}
+          onChange={(e) => setEditData({ ...editData, vehicalplate: e.target.value })}
+          
             />
           </FormGroup>
           <p id="edit-validate-batch" style={{ color: "red" }}></p>
@@ -274,15 +224,7 @@ function VehicalList() {
             variant="contained"
             className="main_botton"
             style={{ backgroundColor: "#6A3187" }}
-            onClick={() =>
-              updateBatch(
-                ids,
-                name,
-                vehicalplate,
-                setModalIsOpenEdit,
-                getBatchList
-              )
-            }
+            onClick={updateData}
           >
             Update Vehicle List
           </Button>
@@ -307,10 +249,7 @@ function VehicalList() {
           >
             <Button
               outline
-              onClick={() => {
-                deleteContact(ids, getContact, DefaultgetContact);
-                setModalIsOpenDelete(false);
-              }}
+              onClick={confirmDelete}
             >
               Yes
             </Button>
@@ -403,7 +342,7 @@ function VehicalList() {
                 </div>
                 <div className="d-flex">
                   <div className="add-new-form-btn">
-                    <CreateVehical />
+                    <CreateVehical onDataCreated={handleDataCreated}/>
                   </div>
                   <div className="export-btn">
             <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
@@ -450,15 +389,14 @@ function VehicalList() {
                         <td>
                           <button
                             className="btn btn1"
-                            onClick={() => handleEditClick(item)}
+                            onClick={() => editDataItem(item)}
                           >
                             <i class="bi bi-pen"></i>
                           </button>
                           <button
                             className="btn bt"
                             onClick={() => {
-                              setModalIsOpenDelete(true);
-                              setIds(item.id);
+                                 deleteData(item.id);
                             }}
                           >
                             <i class="bi bi-trash delete"></i>

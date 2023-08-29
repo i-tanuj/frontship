@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import "../../css/shippment.css";
 import axios from "axios";
@@ -6,7 +6,7 @@ import { Modal, ModalBody } from "reactstrap";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function CreateDispatch() {
+function CreateDispatch({ onDataCreated }) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const [name, setName] = useState("");
@@ -49,15 +49,17 @@ function CreateDispatch() {
             </span>
           );
           setModalIsOpen(false);
-             // Show Toastify notification for success
-       toast.success('Dispatcher Created Successfully!', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
+          // fetchData();
+          // Show Toastify notification for success
+          toast.success('Dispatcher Created Successfully!', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
         pauseOnHover: false,
         draggable: true,
       });
+      onDataCreated();
         })
         .catch((error) => {
           console.error("Error submitting data:", error);
@@ -69,6 +71,7 @@ function CreateDispatch() {
         });
     }
   };
+
 
   return (
     <div>

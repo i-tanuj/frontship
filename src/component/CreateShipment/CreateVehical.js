@@ -17,70 +17,7 @@ import {
 } from "reactstrap";
 
 
-async function ContactData(getContact){
-
-  await axios.get('https://shippingbackend-production.up.railway.app/api/dispatcher',
-  // { inst_hash: localStorage.getItem('inst_hash_manual') },
-  {
-      headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
-  }
-  )
-  .then((res)=>{
-      console.log(res.data);
-      getContact(res.data);
-  })
-}
-
-//************************************************************** */
-async function updateBatch(id,vehicalplate,helper1, helper2,assigndriver,setModalIsOpenEdit,getBatchList){
-  if (vehicalplate != "" && helper1 != "" && helper2 != "" && assigndriver != "") {
-      await axios.post('https://shippingbackend-production.up.railway.app/api/updatecreatshipment',
-      {inst_hash: localStorage.getItem('inst_hash'),
-      id : 3,
-      vehicalplate:  vehicalplate,
-      helper1: helper1,
-      helper2: helper2,
-      assigndriver: assigndriver,
-      },
-      {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
-  )
-  ContactData(getBatchList)
-  
-  
-  setModalIsOpenEdit(false)
-  toast.success('Dispatcher Updated Successfully!', {
-    position: "top-right",
-    autoClose: 3000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: false,
-    draggable: true,
-  });
-
-
-
-} else {
-  document.getElementById("edit-validate-batch").innerHTML =
-    "*Please fill required field!";
-  console.log("Error :", "Please fill required field");
-}    
-}
-
-//************************************************************** */
-async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippingbackend-production.up.railway.app/api/deldispatcher',
-      {
-          id:ids
-      },
-      {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
-  )
-      if(results.status == 200){
-          ContactData(getContact,DefaultgetContact);
-      }
-  }
-
-
-function Createvehical() {
+function Createvehical({ onDataCreated }) {
     const [rowCount, setRowCount] = useState(0);
     const [inquiries, setInquiries] = useState( );
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -92,54 +29,59 @@ function Createvehical() {
     const [batchList,getBatchList] = useState([]);
 
 
+    const [error, setError] = useState(false);
+    const [modalPrivacy, setModalPrivacy] = useState(false);
+    const [succbtn, setSuccbtn] = useState();
     const [defaultcontact, DefaultgetContact] = useState([]);
 
-
-    useEffect(() => {
-      ContactData(getContact,DefaultgetContact)   
-   }, [])
-    console.warn(contact)
-
-    function handleInput(e){
-        setName(e.target.value)
-  }
   const currentDate = new Date().toLocaleString('en-IN', {
     timeZone: 'Asia/Kolkata',
     hour12: true,
   });
-  //************************************************************** */
-  async function addBatch(name,vehicalplate,DateAndTime,getBatchList){
-    if (name !== "" && vehicalplate!== "" ) {
-      await axios.post('https://shippingbackend-production.up.railway.app/api/addvehical',
-      {
-          inst_hash: localStorage.getItem('name'),
-          name: name,
-         vehicalplate:vehicalplate,
-        DateAndTime: currentDate, // Adding current date and time to the data object
-         
-         
-      },
-      {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}    
-      )
-      setModalIsOpen(false);
-      toast.success('Helper Created Successfully!', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-      });
-     
-      ContactData(getBatchList);
-  
-  } else {
-  document.getElementById("validate-batch").innerHTML=
-    "*Please fill required field!";
-  console.log("Error :", "Please fill required field");
-  }
-  
-  }
+
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const dataToSubmit = {
+      name,
+      vehicalplate,
+      DateAndTime: currentDate, // Adding current date and time to the data object
+    };
+
+
+
+    if (name === '' || vehicalplate === '') {
+      setError(true);
+      setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
+    } else {
+      setError(false);
+      setSuccbtn('');
+      axios.post('https://shippingbackend-production.up.railway.app/api/addvehical', dataToSubmit)
+        .then((response) => {
+          console.log(response.data);
+          setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
+    setModalIsOpen(false);
+
+    toast.success('Vehicle Created Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
+    onDataCreated();
+        })
+        .catch((error) => {
+          console.error('Error submitting data:', error);
+          setSuccbtn(<span className="" style={{ color: 'red' }}>Failed to submit data</span>);
+        });
+    }
+
+
+  };
+
 
   return (
     <section class="homedive ">
@@ -150,12 +92,12 @@ function Createvehical() {
                     <AiOutlineClose className='main_AiOutlineClose close-icon-hpr' onClick={()=>setModalIsOpen(false)}/>
                     <h5 className='card-header-01 text-center'>Create Vehicle</h5>
                 </div>
-                <Form className='form-control-holder-hpr'>
+                <Form className='form-control-holder-hpr'  onSubmit={handleSubmit}>
                   <div className='row'>
                     <div className='col'>
                       <FormGroup>
                       <label class="form-label">Vehicle Name<span class="stra-icon">*</span></label>
-                          <Input type="text" name="name" id="name" placeholder="Enter Vehicle Name" onBlur={(e) => handleInput(e)}/>
+                          <Input type="text" name="name" id="name" placeholder="Enter Vehicle Name" onBlur={(e) => setName(e.target.value)}/>
                       </FormGroup>
                     </div>
                     <div className='col'>
@@ -166,7 +108,7 @@ function Createvehical() {
                     </div>
                   </div>
                     <p id="validate-batch" style={{ color: 'red' }}></p>
-                    <Button variant="contained" className='main_botton  submit-btn' onClick={() => addBatch(name,vehicalplate,setModalIsOpen,getBatchList)}>Create Vehical</Button>
+                    <Button variant="contained" className='main_botton  submit-btn' type='submit'>Create Vehical</Button>
 
                 </Form>
             </Modal>
@@ -185,5 +127,3 @@ function Createvehical() {
 }
 
 export default Createvehical;
-
-
