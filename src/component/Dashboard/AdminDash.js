@@ -27,19 +27,47 @@ function AdminDash() {
 		}
 		return true;
 	  });
+	  const [idCount, setIdCount] = useState(null);
+	  const [idCountstatus, setIdCountstatus] = useState(null);
+
 	  useEffect(() => {
-		fetchData();
+		// Make a GET request to your API to fetch the count
+		axios.get('http://localhost:5000/api/shipmentcount')
+		  .then((response) => {
+			setIdCount(response.data.count); // Set the count in the state
+			console.log("tfg"+response.data.count); // Set the count in the state
+		  })
+		  .catch((error) => {
+			console.error('Error fetching count:', error);
+		  });
 	  }, []);
-	  const fetchData = async () => {
-		try {
-		  const response = await axios.get(
-			"https://shippingbackend-production.up.railway.app/api/creatcustomer"
-		  );
-		  setData(response.data);
-		} catch (error) {
-		  console.error("Error fetching data:", error);
-		}
-	  };
+
+	  useEffect(() => {
+		// Make a GET request to your API to fetch the count
+		axios.get('http://localhost:5000/api/shipmentcountstatus')
+		  .then((response) => {
+			setIdCountstatus(response.data.count); // Set the count in the state
+			console.log("tfg"+response.data.count); // Set the count in the state
+		  })
+		  .catch((error) => {
+			console.error('Error fetching count:', error);
+		  });
+	  }, []);
+
+	  const [totalAmount, setTotalAmount] = useState(null);
+
+	  useEffect(() => {
+		// Make a GET request to your API endpoint
+		axios.get('http://localhost:5000/api/totalAmountsum')
+		  .then((response) => {
+			setTotalAmount(response.data.totalAmount);
+		  })
+		  .catch((error) => {
+			console.error('Error fetching data:', error);
+		  });
+	  }, []);
+
+
 	
   return (
     <div>
@@ -82,7 +110,7 @@ function AdminDash() {
 									  <div class="card-body">
 									    <img src="/Assets/gif/truck.gif"/>	
 									    <p class="card-text">Total Shipment</p>
-									    <h2 class="text-left">100</h2>
+									    <h2 class="text-left">{idCount !== null ? idCount : 'Loading...'}</h2>
 									  </div>
 									</div>
 								</div>
@@ -91,7 +119,7 @@ function AdminDash() {
 									  <div class="card-body">
 									    <img src="/Assets/gif/complete.gif"/>	
 									    <p class="card-text">Completed Shipment</p>
-									    <h2 class="">80</h2>
+									    <h2 class="">{idCountstatus !== null ? idCountstatus : 'Loading...'}</h2>
 									  </div>
 									</div>
 								</div>
@@ -100,7 +128,7 @@ function AdminDash() {
 									  <div class="card-body">
 									    <img src="/Assets/gif/payment.gif"/>	
 									    <p class="card-text">Total Payment</p>
-									    <h2 class="">2000</h2>
+										<h2 class="">{totalAmount !== null ? totalAmount : 'Loading...'}</h2>
 									  </div>
 									</div>
 								</div>

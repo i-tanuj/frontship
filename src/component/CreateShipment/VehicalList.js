@@ -24,9 +24,6 @@ function VehicalList() {
   const [selectedItemId, setSelectedItemId] = useState(null);
 
   const [contact, getContact] = useState([]);
-  const [name, setName] = useState("");
-  const [vehicalplate, setVehicalplate] = useState("");
-  const [batchList, getBatchList] = useState([]);
 
   const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
@@ -72,7 +69,7 @@ function VehicalList() {
   };
 
 
-  
+
   async function deleteData(id) {
     setSelectedItemId(id); // Store the selected item's ID
     setModalIsOpenDelete(true); // Open the modal

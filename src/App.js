@@ -60,14 +60,14 @@ function App() {
             <Route  exact path="/settlementhistory" element={<SettlementHistory/>}/>
             {/* <Route  exact path="/try" element={<Try/>}/> */}
 
-            <Route  exact path="/view" element={<ViewShipment />}/>
+            <Route  exact path="/view/:id" element={<ViewShipment />}/>
             <Route  exact path="/delayd" element={<DelaydShip/>}/>
             <Route  exact path="/pending" element={<PendingShip/>}/>
             <Route  exact path="/shipment-list" element={<ShipmentDetails/>}/>
             <Route  exact path="/cancel-shipment" element={<CancelShip/>}/>
 
             <Route  exact path="/driverdropdown" element={<DriverDropdown/>}/>
-            <Route  exact path="/testdispatcher" element={<Testdispatcher/>}/>
+            <Route  exact path="/testdispatcher/:id" element={<Testdispatcher/>}/>
             <Route  exact path="/pickupcreation" element={<PickupCreation/>}/>
             <Route  exact path="/formcomponent" element={<FormComponent/>}/>
 

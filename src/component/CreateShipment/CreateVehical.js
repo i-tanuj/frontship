@@ -27,7 +27,9 @@ function Createvehical({ onDataCreated }) {
     const [vehicalplate, setVehicalplate] = useState("");
     const [phone, setPhone] = useState("");
     const [batchList,getBatchList] = useState([]);
+    const [responseMessage, setResponseMessage] = useState('');
 
+    const [isLoading, setIsLoading] = useState(false);
 
     const [error, setError] = useState(false);
     const [modalPrivacy, setModalPrivacy] = useState(false);
@@ -41,46 +43,93 @@ function Createvehical({ onDataCreated }) {
 
 
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+
+  //   const dataToSubmit = {
+  //     name,
+  //     vehicalplate,
+  //     DateAndTime: currentDate, 
+  //   };
+
+
+  //   if (name === '' || vehicalplate === '') {
+  //     setError(true);
+  //     setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
+  //   } else {
+  //     setError(false);
+  //     setSuccbtn('');
+  //     axios.post('https://shippingbackend-production.up.railway.app/api/addvehical', dataToSubmit)
+  //       .then((response) => {
+  //         console.log(response.data);
+  //         setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
+  //   setModalIsOpen(false);
+
+  //   toast.success('Vehicle Created Successfully!', {
+  //     position: "top-right",
+  //     autoClose: 3000,
+  //     hideProgressBar: true,
+  //     closeOnClick: true,
+  //     pauseOnHover: false,
+  //     draggable: true,
+  //   });
+  //   onDataCreated();
+  //       })
+  //       .catch((error) => {
+  //         console.error('Error submitting data:', error);
+  //         setSuccbtn(<span className="" style={{ color: 'red' }}>Failed to submit data</span>);
+  //       } 
+  //       );   
+  //   }
+  // };
+
+
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const dataToSubmit = {
-      name,
-      vehicalplate,
-      DateAndTime: currentDate, // Adding current date and time to the data object
-    };
 
-
-
-    if (name === '' || vehicalplate === '') {
-      setError(true);
-      setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
-    } else {
-      setError(false);
-      setSuccbtn('');
-      axios.post('https://shippingbackend-production.up.railway.app/api/addvehical', dataToSubmit)
-        .then((response) => {
-          console.log(response.data);
-          setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
-    setModalIsOpen(false);
-
-    toast.success('Vehicle Created Successfully!', {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-    });
-    onDataCreated();
-        })
-        .catch((error) => {
-          console.error('Error submitting data:', error);
-          setSuccbtn(<span className="" style={{ color: 'red' }}>Failed to submit data</span>);
-        });
+    // Validation
+    if (!name || !vehicalplate) {
+      setResponseMessage('Please fill in all fields.');
+      return;
     }
 
+    setIsLoading(true);
 
+    try {
+      const response = await axios.post(
+        'https://shippingbackend-production.up.railway.app/api/addvehical',
+        {
+          name,
+          vehicalplate,
+          DateAndTime: currentDate,
+        }
+      );
+
+      setResponseMessage(response.data.message);
+      toast.success('Vehicle Created Successfully!', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+          });
+    setModalIsOpen(false);
+          setName('');
+          onDataCreated();
+      // Clear the form
+      // setName('');
+      setVehicalplate('');
+    } catch (error) {
+      console.error('Error:', error);
+      setResponseMessage('An error occurred');
+    } finally {
+      setIsLoading(false);
+    }
   };
+
 
 
   return (
@@ -97,18 +146,25 @@ function Createvehical({ onDataCreated }) {
                     <div className='col'>
                       <FormGroup>
                       <label class="form-label">Vehicle Name<span class="stra-icon">*</span></label>
-                          <Input type="text" name="name" id="name" placeholder="Enter Vehicle Name" onBlur={(e) => setName(e.target.value)}/>
+                          <Input type="text" name="name" id="name" placeholder="Enter Vehicle Name" required onBlur={(e) => setName(e.target.value)}/>
                       </FormGroup>
                     </div>
                     <div className='col'>
                       <FormGroup>
                       <label class="form-label">Vehicle plate Number<span class="stra-icon">*</span></label>
-                          <Input type="text" name="vehicalplate" id="vehicalplate" placeholder="Enter Plate Number" onBlur={(e) => setVehicalplate(e.target.value)}/>
+                          <Input type="text" name="vehicalplate" id="vehicalplate" required placeholder="Enter Plate Number" onBlur={(e) => setVehicalplate(e.target.value)}/>
                       </FormGroup>
                     </div>
                   </div>
                     <p id="validate-batch" style={{ color: 'red' }}></p>
-                    <Button variant="contained" className='main_botton  submit-btn' type='submit'>Create Vehical</Button>
+                    <Button disabled={isLoading} variant="contained" className='main_botton  submit-btn' type='submit'>
+            {isLoading ? 'Loading...' : 'Create Vehicle'}
+            {/* {isLoading ? (
+              <i className="fa fa-spinner fa-spin"></i> // Font Awesome spinner icon
+            ) : (
+              'Create Vehicle'
+            )} */}
+                    </Button>
 
                 </Form>
             </Modal>

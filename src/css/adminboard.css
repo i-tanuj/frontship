@@ -65,6 +65,9 @@
 .card-holder img {
     width: 35%;
 }
+.Another-Location img {
+    width: 15% !important;
+}
 .title-header-admin {
     font-size: 24px;
     font-weight: 700;

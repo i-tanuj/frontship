@@ -1,3 +1,27 @@
+
+
+
+@import '~font-awesome/css/font-awesome.min.css';
+
+
+.submit-button {
+    position: relative; /* Required for absolute positioning of the spinner */
+  }
+  
+  .fa-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #1c74e7; 
+    height: 70px;
+  }
+  .fa-spinner:before {
+    content: "\f110";
+    font-size: 70px;
+}
+  
+
 .shipment-dashboard p.card-text {
     font-size: 13px;
     font-weight: 600;

@@ -6,7 +6,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
-
 import {
   Form,
   FormGroup,
@@ -15,6 +14,8 @@ import {
   Modal,
   ModalBody,
 } from "reactstrap";
+import { Link } from "react-router-dom";
+
 
 
 async function ContactData(getContact){
@@ -67,7 +68,7 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
   }
 
 
-function DispatchList() {
+function ShipmentRecords() {
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -154,9 +155,12 @@ function DispatchList() {
     }
     return true;
   });
+  // const [data, setData] = useState([]);
+
   useEffect(() => {
     fetchData();
   }, []);
+
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -168,7 +172,22 @@ function DispatchList() {
     }
   };
 
+
   
+  useEffect(() => {
+    // Fetch data from the API when the component mounts
+    axios.get('http://localhost:5000/api/shipmentdata/')
+      .then((response) => {
+        // Set the data in the state
+        setData(response.data);
+        // setLoading(false); // Mark loading as false
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        // setLoading(false); // Mark loading as false in case of an error
+      });
+  }, []); // Empty dependency array ensures this effect runs only once
+
   
   
   
@@ -181,7 +200,7 @@ function DispatchList() {
                 <ModalBody className='modal_body'>
                   
                    <div className='title-header'>
-                   <h5 className='main_h5'>Edit Dispatcher List</h5>
+                   <h5 className='main_h5'>Edit Shipment List</h5>
                 <AiOutlineClose className='main_AiOutlineClose close-icon' onClick={()=>setModalIsOpenEdit(false)}/>
 
                    </div>
@@ -196,8 +215,20 @@ function DispatchList() {
                     <FormGroup>
                         <Input type="number" name="phone" id="phone" placeholder="Edit Phone Number " onBlur={(e) => {setPhone(e.target.value); console.log(e.target.value);}} />
                     </FormGroup>
+                    <FormGroup>
+                        <Input type="text" name="pickuplocation" id="pickuplocation" placeholder="Edit Vehicle" onBlur={(e) => {setPhone(e.target.value); console.log(e.target.value);}} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Input type="text" name="droplocation" id="droplocation" placeholder="Edit Driver" onBlur={(e) => {setPhone(e.target.value); console.log(e.target.value);}} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Input type="text" name="droplocation" id="droplocation" placeholder="Edit Drop Location " onBlur={(e) => {setPhone(e.target.value); console.log(e.target.value);}} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Input type="text" name="droplocation" id="droplocation" placeholder="Edit Drop Location " onBlur={(e) => {setPhone(e.target.value); console.log(e.target.value);}} />
+                    </FormGroup>
                     <p id="edit-validate-batch" style={{ color: 'red' }}></p>
-                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => updateBatch(ids,name,email,phone,setModalIsOpenEdit,getBatchList)}>Edit Dispatcher List</Button>
+                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => updateBatch(ids,name,email,phone,setModalIsOpenEdit,getBatchList)}>Edit Shipment List</Button>
                 </Form>
             </Modal>
 
@@ -323,9 +354,28 @@ function DispatchList() {
             <td>{"Manager Dashboard"}</td>
 
             <td>
-            <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>
+            {/* <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button> */}
             <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button>
-            <a href='/view'><button className='btn bt' ><i class="bi bi-eye"></i></button></a>
+            {/* <Link to='/testdispatcher/${shipment.id}'
+            >
+            <button className='btn bt' >
+            
+            <i class="bi bi-eye">
+            </i>
+            </button>
+            </Link> */}
+            {/* {data.map((shipment) => ( */}
+          {/* <a key={shipment.id}> */}
+            <Link to={`/view/${item.id}`}>
+              {/* {shipment.customer_name}'s Shipment */}
+              <button className='btn bt' >
+            
+            <i class="bi bi-eye">
+            </i>
+            </button>
+            </Link>
+          {/* </a> */}
+        {/* ))} */}
             </td>
             
           </tr>
@@ -375,6 +425,6 @@ function DispatchList() {
   }
 }
 
-export default DispatchList
+export default ShipmentRecords
 
 

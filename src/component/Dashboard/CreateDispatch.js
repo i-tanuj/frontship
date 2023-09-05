@@ -8,67 +8,60 @@ import 'react-toastify/dist/ReactToastify.css';
 import "react-datepicker/dist/react-datepicker.css";
 function CreateDispatch({ onDataCreated }) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-
+  const [responseMessage, setResponseMessage] = useState('');
   const [error, setError] = useState(false);
   const [succbtn, setSuccbtn] = useState();
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const dataToSubmit = {
-      name,
+
+    // Validation
+    if (!name || !email || !phone || !password) {
+      setResponseMessage('Please fill in all fields.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post(
+        'https://shippingbackend-production.up.railway.app/api/addispatcher',
+        {
+          name,
       email,
       phone,
       password
-    };
-
-    if (name === "" || email === "" || phone === "" || password === "") {
-      setError(true);
-      setSuccbtn(
-        <span className="" style={{ color: "red" }}>
-          Please fill all the fields
-        </span>
+        }
       );
-    } else {
-      setError(false);
-      setSuccbtn("");
-      axios
-        .post(
-          "https://shippingbackend-production.up.railway.app/api/addispatcher",
-          dataToSubmit
-        )
-        .then((response) => {
-          console.log(response.data);
-          setSuccbtn(
-            <span className="" style={{ color: "green" }}>
-              Submitted Successfully
-            </span>
-          );
-          setModalIsOpen(false);
-          // fetchData();
-          // Show Toastify notification for success
-          toast.success('Dispatcher Created Successfully!', {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-      });
-      onDataCreated();
-        })
-        .catch((error) => {
-          console.error("Error submitting data:", error);
-          setSuccbtn(
-            <span className="" style={{ color: "red" }}>
-              Failed to submit data
-            </span>
-          );
-        });
+
+      setResponseMessage(response.data.message);
+      toast.success('Dispatcher Created Successfully!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+  });
+    setModalIsOpen(false);
+          setName('');
+          onDataCreated();
+      // Clear the form
+      // setName('');
+      setPhone('');
+      setEmail('');
+      setPassword('');
+    } catch (error) {
+      console.error('Error:', error);
+      setResponseMessage('An error occurred');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -104,6 +97,7 @@ function CreateDispatch({ onDataCreated }) {
                         id="first_name"
                         placeholder="Enter your name"
                         type="text"
+                        required
                       />
                       {error && name.length <= 0 ? (
                         <span className="valid-form" style={{ color: "red" }}>
@@ -123,6 +117,7 @@ function CreateDispatch({ onDataCreated }) {
                         id="email"
                         placeholder="Enter your email"
                         type="email"
+                        required
                       />
                       {error && email.length <= 0 ? (
                         <span className="valid-form" style={{ color: "red" }}>
@@ -143,6 +138,7 @@ function CreateDispatch({ onDataCreated }) {
                       id="phone"
                       placeholder="Enter your phone"
                       type="number"
+                      required
                     />
                     {error && phone.length <= 0 ? (
                       <span className="valid-form" style={{ color: "red" }}>
@@ -162,6 +158,7 @@ function CreateDispatch({ onDataCreated }) {
                       id="password"
                       placeholder="Enter your password"
                       type="text"
+                      required
                     />
                     {error && password.length <= 0 ? (
                       <span className="valid-form" style={{ color: "red" }}>
@@ -173,10 +170,15 @@ function CreateDispatch({ onDataCreated }) {
                   </div>
                   <button
                     type="submit"
-                    className="submit-btn"
+                    // className="submit-btn"
                     value="Send Message"
+                    disabled={isLoading} // Disable the button while loading
+                    className={`submit-btn btn ${isLoading ? 'btn-disabled' : 'btn-primary'}`}
+
                   >
-                    Create Dispatcher
+                    {/* Create Dispatcher */}
+                    {isLoading ? <span>Loading...</span> : <span>Create Dispatcher</span>}
+
                   </button>
                   <div className="succbtn mb-4">
                     {succbtn ? <p>{succbtn}</p> : null}

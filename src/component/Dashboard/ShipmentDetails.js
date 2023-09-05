@@ -7,6 +7,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
+import { toast, ToastContainer } from "react-toastify";
+
 import {
   Form,
   FormGroup,
@@ -15,6 +17,8 @@ import {
   Modal,
   ModalBody,
 } from "reactstrap";
+import { Link } from "react-router-dom";
+
 
 
 async function ContactData(getContact){
@@ -55,7 +59,7 @@ async function updateBatch(id,name,email,phone,setModalIsOpenEdit,getBatchList){
 
 //************************************************************** */
 async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippingbackend-production.up.railway.app/api/deldispatcher',
+  const results = await axios.post('https://shippingbackend-production.up.railway.app/api/customerdelete',
       {
           id:ids
       },
@@ -67,12 +71,16 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
   }
 
 
+  
+
+
 function ShipmentDetails() {
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [batchList,getBatchList] = useState([]);
+    const [selectedItemId, setSelectedItemId] = useState(null);
 
     const [data, setData] = useState([]);
     const [startDate, setStartDate] = useState(null);
@@ -99,6 +107,32 @@ function ShipmentDetails() {
   }
 
 
+
+  async function deleteData(id) {
+    setSelectedItemId(id); // Store the selected item's ID
+    setModalIsOpenDelete(true); // Open the modal
+  }
+
+
+async function confirmDelete(id) {
+  try {
+    await axios.delete(`http://localhost:5000/Api/customerdelete/${selectedItemId}`);
+    // Remove the deleted item from the local state
+    const updatedData = data.filter((item) => item.id !== selectedItemId);
+    setData(updatedData);
+    setModalIsOpenDelete(false); // Close the modal
+    toast.success('Vehicle Deleted Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
+  } catch (error) {
+    console.error("Error deleting data:", error);
+  }
+}
 
   
   function exportToExcel() {
@@ -208,10 +242,7 @@ function ShipmentDetails() {
             >
               <Button
                 outline
-                onClick={() => {
-                    deleteContact(ids, getContact, DefaultgetContact)
-                  setModalIsOpenDelete(false);
-                }}
+                onClick={confirmDelete}
               >
                 Yes
               </Button>
@@ -322,9 +353,20 @@ function ShipmentDetails() {
             <td>{item.drop_location}</td>
             <td>
             {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
-            <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>
-            <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button>
-            <a href='/view'><button className='btn bt' ><i class="bi bi-eye"></i></button></a>
+            {/* <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button> */}
+            <button className='btn bt'   onClick={() => {
+                                 deleteData(item.id);
+                            }} >
+            <i class="bi bi-trash delete"></i></button>
+            {/* <a href='/view'> */}
+            <Link to={`/view/${item.id}`}>
+
+            <button className='btn bt' >
+            <i class="bi bi-eye">
+
+            </i>
+            </button>
+            </Link>
             </td>
             
           </tr>

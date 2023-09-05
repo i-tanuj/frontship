@@ -16,65 +16,102 @@ function CreateDriver({ onDataCreated }) {
     const [error, setError] = useState(false);
     const [succbtn, setSuccbtn] = useState();
     const [data, setData] = useState([]);
+    const [responseMessage, setResponseMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-   
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
 
-  // async function fetchData() {
-  //   try {
-  //     const response = await axios.get(
-  //       'https://shippingbackend-production.up.railway.app/api/driverdetails'
-  //     );
-  //     setData(response.data);
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const dataToSubmit = {
+  //     full_name,
+  //     email,
+  //     phone,
+  //     password,
+  //     address,
+  //   };
+
+  //   if (full_name === '' || email === '' || phone === '' || password === '' || address === '') {
+  //     setError(true);
+  //     setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
+  //   } else {
+  //     setError(false);
+  //     setSuccbtn('');
+  //     axios
+  //       .post('https://shippingbackend-production.up.railway.app/api/adddriverapi', dataToSubmit)
+  //       .then((response) => {
+  //         console.log(response.data);
+  //         setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
+  //         setModalIsOpen(false);
+
+  //         // Refresh data after successful submission
+  //         // fetchDa  ta();
+  //         toast.success('Driver Created Successfully!', {
+  //           position: 'top-right',
+  //           autoClose: 3000,
+  //           hideProgressBar: true,
+  //           closeOnClick: true,
+  //           pauseOnHover: false,
+  //           draggable: true,
+  //         });
+  //         onDataCreated();
+  //       })
+  //       .catch((error) => {
+  //         console.error('Error submitting data:', error);
+  //         setSuccbtn(<span className="" style={{ color: 'red' }}>Failed to submit data</span>);
+  //       });
   //   }
-  // }
+  // };
 
+
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const dataToSubmit = {
-      full_name,
+
+    // Validation
+    if (!full_name || !email || !phone || !password) {
+      setResponseMessage('Please fill in all fields.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post(
+        'https://shippingbackend-production.up.railway.app/api/adddriverapi',
+        {
+          full_name,
       email,
       phone,
       password,
       address,
-    };
+        }
+      );
 
-    if (full_name === '' || email === '' || phone === '' || password === '' || address === '') {
-      setError(true);
-      setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
-    } else {
-      setError(false);
-      setSuccbtn('');
-      axios
-        .post('https://shippingbackend-production.up.railway.app/api/adddriverapi', dataToSubmit)
-        .then((response) => {
-          console.log(response.data);
-          setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
-          setModalIsOpen(false);
-
-          // Refresh data after successful submission
-          // fetchDa  ta();
-          toast.success('Driver Created Successfully!', {
-            position: 'top-right',
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: true,
-          });
+      setResponseMessage(response.data.message);
+      toast.success('Driver Created Successfully!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+      });
+    setModalIsOpen(false);
+          setFullname('');
           onDataCreated();
-        })
-        .catch((error) => {
-          console.error('Error submitting data:', error);
-          setSuccbtn(<span className="" style={{ color: 'red' }}>Failed to submit data</span>);
-        });
+      // Clear the form
+      setPhone('');
+      setEmail('');
+      setPassword('');
+      setAddress('');
+    } catch (error) {
+      console.error('Error:', error);
+      setResponseMessage('An error occurred');
+    } finally {
+      setIsLoading(false);
     }
   };
-
 
   return (
     <div>
@@ -106,6 +143,7 @@ function CreateDriver({ onDataCreated }) {
                       id="first_name"
                       placeholder="Enter your name"
                       type="text"
+                      required
                     />
                {error && full_name.length<=0?<span className="valid-form" style={{color:'red'}}>Please Enter full name*</span>:""}
                   </div>
@@ -119,6 +157,7 @@ function CreateDriver({ onDataCreated }) {
                       id="email"
                       placeholder="Enter your email"
                       type="email"
+                      required
                     />
                   {error && email.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter the valid Email*</span>:""}
 
@@ -133,13 +172,14 @@ function CreateDriver({ onDataCreated }) {
                        id="phone"
                        placeholder="Enter your number"
                        type="number"
+                       required
                     />
                      {error && phone.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter the 10 Digit number*</span>:""}
 
                   </div>
                   <div className="mb-4">
                     <label className="form-label">
-                      Address<span className="stra-icon">*</span>
+                      Address<span className="stra-icon"></span>
                     </label>
                     <input
                        name="address"   
@@ -147,6 +187,7 @@ function CreateDriver({ onDataCreated }) {
                        id="address"
                        placeholder="Enter your address"
                        type="text"
+                      //  required
                     />
                      {error && address.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter your address*</span>:""}
 
@@ -161,11 +202,15 @@ function CreateDriver({ onDataCreated }) {
                        id="password"
                        placeholder="Enter your password"
                        type="text"
+                       required 
                     />
                   {error && password.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter Password*</span>:""}
 
                   </div>
-									  <button type="submit" class="submit-btn">Create Driver</button>
+									  <button type="submit" class="submit-btn">
+                    {isLoading ? <span>Loading...</span> : <span>Create Driver</span>}
+
+                    </button>
                                       <div className="succbtn mb-4" >{succbtn ? <p>{succbtn}</p> : null}</div>
 									</form>
 								</div>

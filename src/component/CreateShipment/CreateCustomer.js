@@ -40,7 +40,7 @@ function CreateCustomer({ onDataCreated }) {
 
 
 
-    if (name === '' || email === '' || phoneno === '' || altphone === '' || address === '') {
+    if (name === '' || phoneno === '' || address === '') {
       setError(true);
       setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
     } else {
@@ -105,7 +105,7 @@ function CreateCustomer({ onDataCreated }) {
                   </div>
                   <div className="mb-4 w-50">
                     <label className="form-label">
-                     Customer Email<span className="stra-icon">*</span>
+                     Customer Email<span className="stra-icon"></span>
                     </label>
                     <input
                       name="email"   
@@ -114,7 +114,7 @@ function CreateCustomer({ onDataCreated }) {
                       placeholder="Enter your email"
                       type="email"
                     />
-                  {error && email.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter the valid Email*</span>:""}
+                  {/* {error && email.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter the valid Email*</span>:""} */}
 
                   </div>
                   </div>
@@ -135,7 +135,7 @@ function CreateCustomer({ onDataCreated }) {
                   </div>
                   <div className="mb-4 w-50">
                     <label className="form-label">
-                    Customer Alternate Number<span className="stra-icon">*</span>{" "}
+                    Customer Alternate Number<span className="stra-icon"></span>{" "}
                     </label>
                     <input
                        name="phone"   
@@ -144,7 +144,7 @@ function CreateCustomer({ onDataCreated }) {
                        placeholder="Enter your Alternate Number"
                        type="number"
                     />
-                  {error && altphone.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter the 10 Digit number*</span>:""}
+                  {/* {error && altphone.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter the 10 Digit number*</span>:""} */}
 
                   </div>
                   <div className="mb-4 w-50">

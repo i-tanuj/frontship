@@ -148,7 +148,6 @@ function CreateShipment() {
     setSelectedDispatcher2(selectedOptionValue);
     console.log(selectedOptionValue);
 
-    // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
@@ -164,9 +163,6 @@ function CreateShipment() {
   const handleSelectChange3 = async (event) => {
     const selectedOptionValue = event.target.value;
     setSelectedDispatcher3(selectedOptionValue);
-    console.log(selectedOptionValue);
-
-    // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
@@ -204,7 +200,6 @@ function CreateShipment() {
   const [selectedDispatcher1, setSelectedDispatcher1] = useState("");
   const [selectedDispatcher2, setSelectedDispatcher2] = useState("");
   const [selectedDispatcher3, setSelectedDispatcher3] = useState("");
-  const [selectedDispatcherIds, setSelectedDispatcherIds] = useState([]);
 
   useEffect(() => {
     fetchDispatchers();
@@ -240,15 +235,9 @@ function CreateShipment() {
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [contact, getContact] = useState([]);
-  const [vehicle, getVehicle] = useState([]);
-  const [defaultvehicle, DefaultgetVehicle] = useState([]);
   const [defaultcontact, DefaultgetContact] = useState([]);
   const [dispatchname, setDispatchName] = useState("");
   const [discontactnum, setDiscontactnum] = useState("");
-  const [disaltnum, setDisaltnum] = useState("");
-  const [dispatchemail, setDispatchemail] = useState("");
-  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-  const [error, setError] = useState(false);
 
   useEffect(() => {
     ContactData(getContact, DefaultgetContact);
@@ -268,10 +257,8 @@ function CreateShipment() {
   const [dropdate, setDropdate] = useState("");
   const [dropdate1, setDropdate1] = useState("");
   const [pickupdate1, setPickupdate1] = useState("");
-  const [adddescription, setAdddescription] = useState("");
-  const [adddescription1, setAdddescription1] = useState("");
-  const [selectshipment, setSelectshipment] = useState("");
-  const [selectshipment1, setSelectshipment1] = useState("");
+  const [description, setDescription] = useState("");
+  const [description1, setDescription1] = useState("");
   const [maplink, setmaplink] = useState("");
 
   const [dispatcherData, setDispatcherData] = useState({
@@ -322,24 +309,24 @@ function CreateShipment() {
 
     try {
       const response = await axios.post(
-        "https://shippingbackend-production.up.railway.app/api/createshipments",
+        "http://localhost:5000/api/oldshipment",
         {
           customer_name: dispatcherData.name,
           customer_contact: dispatcherData.phoneno,
           customer_email: dispatcherData.email,
           customer_alt_num: dispatcherData.altphone,
-          pick_up_location: pickuplocation,
+          pick_up_location: dispatcherData.address,
           pick_up_before: pickupdate,
           drop_date: dropdate,
           drop_date1: dropdate1,
           latitude: latitude,
           longitude: longitude,
           latitude1:latitude1,
-          longitude:longitude1,
-          description: adddescription,
+          longitude1:longitude1,
+          description: description,
           customer_name2: dispatcherData1.name,
           customer_contact2: dispatcherData1.phoneno,
-          drop_location: selectshipdrop,
+          drop_location: dispatcherData1.address,
           drop_description: adddescriptiondrop,
           vehicleplate: selectedVehicle,
           helper1: helperData.name,
@@ -349,13 +336,12 @@ function CreateShipment() {
           customer_contact1: dispatcherData2.phoneno,
           customer_email1: dispatcherData2.email,
           customer_alt_num1: dispatcherData2.altphone,
-          pick_up_location1: pickuplocation1,
+          pick_up_location1: dispatcherData2.address,
           pick_up_before1: pickupdate1,
-          shipment_type1: selectshipment1,
-          description1: adddescription1,
+          description1: description1,
           customer_name21: dispatcherData3.name,
           customer_contact21: dispatcherData3.phoneno,
-          drop_location1: selectshipdrop1,
+          drop_location1: dispatcherData3.address,
           drop_description1: adddescriptiondrop1,
         },
         {
@@ -388,8 +374,8 @@ function CreateShipment() {
       setAltphone("");
       setPickuplocation("");
       setPickupdate("");
-      setSelectshipment("");
-      setAdddescription("");
+      setDescription("");
+      setDescription1("");
       setDispatchName("");
       setDiscontactnum("");
       setSelectshipdrop("");
@@ -428,15 +414,16 @@ function CreateShipment() {
       setLongitude("");
     }
   };
+  
   const handleLinkChange1 = (event) => {
-    const newLink = event.target.value;
-    setLink1(newLink);
+    const newLink1 = event.target.value;
+    setLink1(newLink1);
 
     // Use regular expression to extract latitude and longitude
-    const match = newLink.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-    if (match) {
-      setLatitude1(match[1]);
-      setLongitude1(match[2]);
+    const matchs = newLink1.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (matchs) {
+      setLatitude1(matchs[1]);
+      setLongitude1(matchs[2]);
     } else {
       setLatitude1("");
       setLongitude1("");
@@ -634,7 +621,8 @@ function CreateShipment() {
                               </label>
                               <input
                                 name="pickuplocation"
-                                value={pickuplocation}
+                                // value={pickuplocation}
+                                value={dispatcherData.address}
                                 onChange={(e) =>
                                   setPickuplocation(e.target.value)
                                 }
@@ -679,12 +667,12 @@ function CreateShipment() {
                               </label>
                               <input
                               className="p-3"
-                                name="adddescription"
+                                name="description"
                                 onChange={(e) =>
-                                  setAdddescription(e.target.value)
+                                  setDescription(e.target.value)
                                 }
-                                value={adddescription}
-                                id="adddescription"
+                                value={description}
+                                id="description"
                                 placeholder="Description"
                                 type="text"
                               />
@@ -766,7 +754,7 @@ function CreateShipment() {
                               <input
                               placeholder="Write Drop Location"
                                 type="text"
-                                value={selectshipdrop}
+                                value={dispatcherData1.address}
                                 onChange={(e) =>
                                   setSelectshipdrop(e.target.value)
                                 }
@@ -943,7 +931,7 @@ function CreateShipment() {
                                     </label>
                                     <input
                                       name="pickuplocation"
-                                      value={pickuplocation1}
+                                      value={dispatcherData2.address}
                                       onChange={(e) =>
                                         setPickuplocation1(e.target.value)
                                       }
@@ -978,12 +966,12 @@ function CreateShipment() {
                                     </label>
                                     <input
                                     className="p-3"
-                                      name="adddescription"
+                                      name="description1"
                                       onChange={(e) =>
-                                        setAdddescription1(e.target.value)
+                                        setDescription1(e.target.value)
                                       }
-                                      value={adddescription1}
-                                      id="adddescription"
+                                      value={description1}
+                                      id="description"
                                       placeholder="Description"
                                       type="text"
                                     />
@@ -1049,7 +1037,7 @@ function CreateShipment() {
                                     <input
                                     placeholder="Write Drop Location"
                                       type="text"
-                                      value={selectshipdrop1}
+                                      value={dispatcherData3.address}
                                       onChange={(e) =>
                                         setSelectshipdrop1(e.target.value)
                                       }
@@ -1139,21 +1127,31 @@ function CreateShipment() {
                             </div>
                             <div className="mb-4 w-50">
                               <label className="form-label">
-                                Helper 1<span className="stra-icon"></span>{" "}
+                                Assign driver
+                                <span className="stra-icon"></span>
                               </label>
-                              {/* <select
-                                value={selectedHelper1}
+
+                              <select
+                                value={selectedDriver}
                                 onChange={(e) =>
-                                  setSelectedHelper1(e.target.value)
+                                  setSelectedDriver(e.target.value)
                                 }
                               >
-                                <option value="">Select a Helper</option>
-                                {helpers.map((helper) => (
-                                  <option key={helper.id} value={helper.name}>
-                                    {helper.name}
+                                <option value="">Select Driver</option>
+                                {drivers.map((driver) => (
+                                  <option key={driver.id} value={driver.id}>
+                                    {driver.full_name}
                                   </option>
                                 ))}
-                              </select> */}
+                              </select>
+                            </div>
+                          </div>
+                          <div className="row">
+                          <div className="mb-4 w-50">
+                              <label className="form-label">
+                                Helper 1<span className="stra-icon"></span>{" "}
+                              </label>
+                       
 
                               <select
           value={selectedHelper}
@@ -1170,8 +1168,6 @@ function CreateShipment() {
           ))}
         </select>
                             </div>
-                          </div>
-                          <div className="row">
                             <div className="mb-4 w-50">
                               <label className="form-label">
                                 Helper 2<span className="stra-icon"></span>{" "}
@@ -1206,26 +1202,7 @@ function CreateShipment() {
                                 ))}
                               </select> */}
                             </div>
-                            <div className="mb-4 w-50">
-                              <label className="form-label">
-                                Assign driver
-                                <span className="stra-icon"></span>
-                              </label>
-
-                              <select
-                                value={selectedDriver}
-                                onChange={(e) =>
-                                  setSelectedDriver(e.target.value)
-                                }
-                              >
-                                <option value="">Select Driver</option>
-                                {drivers.map((driver) => (
-                                  <option key={driver.id} value={driver.id}>
-                                    {driver.full_name}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
+                           
                           </div>
 
                           <button
@@ -1249,11 +1226,11 @@ function CreateShipment() {
                       <div></div>
                     </div>
                   </div>
-                  <div className="form-map-section">
+                  {/* <div className="form-map-section">
                     <div>
                       <img src="assets/dashboard/map-img.png" alt="" />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

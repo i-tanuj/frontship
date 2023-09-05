@@ -86,7 +86,7 @@ function Navbar() {
                   </span>
 
                   
-				    			<ChangePass/>
+				    			{/* <ChangePass/> */}
                 
 				    			
                                 <Nav>
