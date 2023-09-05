@@ -116,7 +116,7 @@ function ShipmentDetails() {
 
 async function confirmDelete(id) {
   try {
-    await axios.delete(`http://localhost:5000/Api/customerdelete/${selectedItemId}`);
+    await axios.delete(`https://shippingbackend-production.up.railway.app/Api/customerdelete/${selectedItemId}`);
     // Remove the deleted item from the local state
     const updatedData = data.filter((item) => item.id !== selectedItemId);
     setData(updatedData);

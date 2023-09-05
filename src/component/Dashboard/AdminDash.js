@@ -32,7 +32,7 @@ function AdminDash() {
 
 	  useEffect(() => {
 		// Make a GET request to your API to fetch the count
-		axios.get('http://localhost:5000/api/shipmentcount')
+		axios.get('https://shippingbackend-production.up.railway.app/api/shipmentcount')
 		  .then((response) => {
 			setIdCount(response.data.count); // Set the count in the state
 			console.log("tfg"+response.data.count); // Set the count in the state
@@ -44,7 +44,7 @@ function AdminDash() {
 
 	  useEffect(() => {
 		// Make a GET request to your API to fetch the count
-		axios.get('http://localhost:5000/api/shipmentcountstatus')
+		axios.get('https://shippingbackend-production.up.railway.app/api/shipmentcountstatus')
 		  .then((response) => {
 			setIdCountstatus(response.data.count); // Set the count in the state
 			console.log("tfg"+response.data.count); // Set the count in the state
@@ -58,7 +58,7 @@ function AdminDash() {
 
 	  useEffect(() => {
 		// Make a GET request to your API endpoint
-		axios.get('http://localhost:5000/api/totalAmountsum')
+		axios.get('https://shippingbackend-production.up.railway.app/api/totalAmountsum')
 		  .then((response) => {
 			setTotalAmount(response.data.totalAmount);
 		  })

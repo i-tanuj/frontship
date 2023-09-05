@@ -176,7 +176,7 @@ function ShipmentRecords() {
   
   useEffect(() => {
     // Fetch data from the API when the component mounts
-    axios.get('http://localhost:5000/api/shipmentdata/')
+    axios.get('https://shippingbackend-production.up.railway.app/api/shipmentdata/')
       .then((response) => {
         // Set the data in the state
         setData(response.data);

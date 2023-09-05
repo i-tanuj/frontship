@@ -37,7 +37,7 @@ function ViewShipment() {
 
     useEffect(() => {
         axios
-          .get(`http://localhost:5000/Api/shipmentdata/${id}`)
+          .get(`https://shippingbackend-production.up.railway.app/Api/shipmentdata/${id}`)
           .then((response) => {
             setData(response.data);
             setLoading(false);
