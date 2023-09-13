@@ -32,25 +32,37 @@ function ViewShipment() {
 
   const { id } = useParams();
   const [data, setData] = useState({});
+//   const [loading, setLoading] = useState(true);
+
+  const { customerId } = useParams();
+  const [customerDetails, setCustomerDetails] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    // Fetch data for a single customer from your API endpoint
+    axios.get(`http://localhost:5000/api/mergeapidata/${customerId}`)
+      .then((response) => {
+        setCustomerDetails(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching customer data:', error);
+        setLoading(false);
+      });
+  }, [customerId]);
 
-    useEffect(() => {
-        axios
-          .get(`https://shippingbackend-production.up.railway.app/Api/shipmentdata/${id}`)
-          .then((response) => {
-            setData(response.data);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.error('Error fetching data:', error);
-            setLoading(false);
-          });
-      }, [id]);
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+
+  
 
 
   return (
     <section class="homedive ">
+          {customerDetails.map((customer) => (
+
   <div class="rightdiv px-3 py-5">
         <div class="container">
             <div className="row mt-3">
@@ -77,17 +89,17 @@ function ViewShipment() {
                         <div className='column-one'>
                             <div>
                                 <p className='shiping-label'>Customers Name <span>*</span></p>
-                                <p className='shiping-input'>{data.customer_name}</p>
+                                <p className='shiping-input'>{customer.customer_name}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Pick up Location <span>*</span></p>
-                                <p className='shiping-input'>{data.pick_up_location}</p>
+                                <p className='shiping-input'>{customer.pick_up_location}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Pick up POD Details <span>*</span></p>
                                 <p className='shiping-img-pre'>
                                     {/* <img src="/Assets/dashboard/shipment-view.png" /> */}
-                                    <img width={50} src={data.pod_doc} alt="Pickup POD Details" />
+                                    <img width={50} src={customer.pod_doc} alt="Pickup POD Details" />
 
                                 </p>
                             </div>
@@ -96,33 +108,33 @@ function ViewShipment() {
                         <div className='column-two'>
                         <div>
                                 <p className='shiping-label'>Customer’s Contact Number<span>*</span></p>
-                                <p className='shiping-input'>{data.customer_contact}</p>
+                                <p className='shiping-input'>{customer.customer_contact}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Pick up date & time<span>*</span></p>
-                                <p className='shiping-input'>{data.pick_up_before}</p>
+                                <p className='shiping-input'>{customer.pick_up_before}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Dispatcher ID <span>*</span></p>
                                 <p className='shiping-img-pre'>
                                     {/* <img src="/Assets/dashboard/shipment-view.png" /> */}
-                                    <img width={50} src={data.dispatcher_id} alt="Dispatcher ID" />
+                                    <img width={50} src={customer.dispatcher_id} alt="Dispatcher ID" />
                                 </p>
                             </div>
                         </div>
                         <div className='column-three'>
                         <div>
                                 <p className='shiping-label'>Customer’s Email Number <span>*</span></p>
-                                <p className='shiping-input'>{data.customer_email}</p>
+                                <p className='shiping-input'>{customer.customer_email}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Description<span>*</span></p>
-                                <p className='shiping-input'>{data.description}</p>
+                                <p className='shiping-input'>{customer.description}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Sign DC Dispatcher <span>*</span></p>
                                 <p className='shiping-img-pre'>
-                                    <img width={50} src={data.sign_doc_dispatcher} alt="Signature Dispatcher" />
+                                    <img width={50} src={customer.sign_doc_dispatcher} alt="Signature Dispatcher" />
 
                                 </p>
                             </div>
@@ -135,17 +147,17 @@ function ViewShipment() {
                         <div className='column-one'>
                             <div>
                                 <p className='shiping-label'>Customers Name<span>*</span></p>
-                                <p className='shiping-input'>{data.customer_name2}</p>
+                                <p className='shiping-input'>{customer.customer_name2}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Drop Location<span>*</span></p>
-                                <p className='shiping-input'>{data.drop_location}</p>
+                                <p className='shiping-input'>{customer.drop_location}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>POD Stamp <span>*</span></p>
                                 <p className='shiping-img-pre'>
                                     {/* <img  width={50} src="/Assets/dashboard/shipment-view.png" /> */}
-                                    <img  width={50} src={data.pod_doc} alt="POD Stamp" />
+                                    <img  width={50} src={customer.pod_doc} alt="POD Stamp" />
                                 </p>
                             </div>
                             
@@ -153,7 +165,7 @@ function ViewShipment() {
                         <div className='column-two'>
                         <div>
                                 <p className='shiping-label'>Customer’s Contact Number<span>*</span></p>
-                                <p className='shiping-input'>{data.customer_contact2}</p>
+                                <p className='shiping-input'>{customer.customer_contact2}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Drop date <span>*</span></p>
@@ -162,7 +174,7 @@ function ViewShipment() {
                             <div>
                                 <p className='shiping-label'>Receivers ID <span>*</span></p>
                                 <p className='shiping-img-pre'>
-                                <img  width={50} src={data.pod_doc2} // Change 'png' to the actual image format
+                                <img  width={50} src={customer.pod_doc2} // Change 'png' to the actual image format
             alt="Dispatcher Signature"
           />
                                 </p>
@@ -171,17 +183,17 @@ function ViewShipment() {
                         <div className='column-three'>
                         <div>
                                 <p className='shiping-label'>Customer’s Email Number* <span>*</span></p>
-                                <p className='shiping-input'>{data.customer_email}</p>
+                                <p className='shiping-input'>{customer.customer_email}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Description <span>*</span></p>
-                                <p className='shiping-input'>{data.drop_description}</p>
+                                <p className='shiping-input'>{customer.drop_description}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Receivers Signature<span>*</span></p>
                                 <p className='shiping-img-pre'>
                                     {/* <img src="/Assets/dashboard/shipment-view.png" /> */}
-                                    <img  width={50} src={data.sign_doc_dispatcher2} alt="Receiver Signature" />
+                                    <img  width={50} src={customer.sign_doc_dispatcher2} alt="Receiver Signature" />
                                 
                                 </p>
                             </div>
@@ -193,11 +205,11 @@ function ViewShipment() {
                         <div className='column-one'>
                             <div>
                                 <p className='shiping-label'>Customers Name<span>*</span></p>
-                                <p className='shiping-input'>{data.customer_name}</p>
+                                <p className='shiping-input'>{customer.customer_name}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Drop Location<span>*</span></p>
-                                <p className='shiping-input'>{data.drop_location}</p>
+                                <p className='shiping-input'>{customer.drop_location}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>POD Stamp <span>*</span></p>
@@ -210,11 +222,11 @@ function ViewShipment() {
                         <div className='column-two'>
                         <div>
                                 <p className='shiping-label'>Customer’s Contact Number<span>*</span></p>
-                                <p className='shiping-input'>{data.customer_contact}</p>
+                                <p className='shiping-input'>{customer.customer_contact}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Drop date <span>*</span></p>
-                                <p className='shiping-input'>{data.drop_date}</p>
+                                <p className='shiping-input'>{customer.drop_date}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Receivers ID <span>*</span></p>
@@ -226,11 +238,11 @@ function ViewShipment() {
                         <div className='column-three'>
                         <div>
                                 <p className='shiping-label'>Customer’s Email Number* <span>*</span></p>
-                                <p className='shiping-input'>{data.customer_email}</p>
+                                <p className='shiping-input'>{customer.customer_email}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Description <span>*</span></p>
-                                <p className='shiping-input'>{data.drop_description}</p>
+                                <p className='shiping-input'>{customer.drop_description}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Receivers Signature<span>*</span></p>
@@ -245,18 +257,18 @@ function ViewShipment() {
                         <div className='column-one'>
                             <div>
                                 <p className='shiping-label'>Driver Name<span>*</span></p>
-                                <p className='shiping-input'>{data.driver_id}</p>
+                                <p className='shiping-input'>{customer.driver_id}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Vehicle Plate<span>*</span></p>
-                                <p className='shiping-input'>{data.vehicleplate}</p>
+                                <p className='shiping-input'>{customer.vehicleplate}</p>
                             </div>
                             
                         </div>
                         <div className='column-two'>
                         <div>
                                 <p className='shiping-label'>Helper1 Name<span>*</span></p>
-                                <p className='shiping-input'>{data.helper1}</p>
+                                <p className='shiping-input'>{customer.helper1}</p>
                             </div>
                             <div>
                                 <p className='shiping-label'>Created by<span>*</span></p>
@@ -266,7 +278,7 @@ function ViewShipment() {
                         <div className='column-three'>
                         <div>
                                 <p className='shiping-label'>Helper2 Name <span>*</span></p>
-                                <p className='shiping-input'>{data.helper2}</p>
+                                <p className='shiping-input'>{customer.helper2}</p>
                             </div>
                         </div>
                         
@@ -278,6 +290,7 @@ function ViewShipment() {
             </div>
         </div>
     </div>
+    ))}
    </section>
   )
 

@@ -269,7 +269,7 @@ const filteredData = data.filter((item) => {
             style={{ backgroundColor: "#6A3187" }}
             onClick={updateData}
           >
-            Edit Driver List
+            Update Driver List
           </Button>
         </Form>
       </Modal>

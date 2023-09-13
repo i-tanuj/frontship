@@ -209,8 +209,8 @@ form.form-control-holder {
 .close-icon-01.modal-body {
     position: absolute;
     right: 0;
-    top: 0;
-    font-size: 20px;
+    top: -4px;
+    font-size: 22px;
     font-weight: 700;
 }
 

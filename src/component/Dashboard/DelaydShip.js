@@ -2,11 +2,13 @@ import React,{useState,useEffect} from 'react'
 import { AiOutlineClose } from "react-icons/ai";
 import axios from 'axios';
 import '../../css/dispatchlist.css'
-import Navbar from '../Navbar'
+import Navbar from '../Navbar';
+import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
-import "react-datepicker/dist/react-datepicker.css";
+import { toast, ToastContainer } from "react-toastify";
+
 import {
   Form,
   FormGroup,
@@ -15,73 +17,19 @@ import {
   Modal,
   ModalBody,
 } from "reactstrap";
-
-
-async function ContactData(getContact){
-
-  await axios.get('https://shippingbackend-production.up.railway.app/api/shipmentdata',
-  // { inst_hash: localStorage.getItem('inst_hash_manual') },
-  {
-      headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
-  }
-  )
-  .then((res)=>{
-      console.log(res.data);
-      getContact(res.data);
-  })
-}
-//************************************************************** */
-
-async function updateBatch(id,name,email,phone,setModalIsOpenEdit,getBatchList){
-  if (name != "" && email != "" && phone != "") {
-      await axios.post('https://shippingbackend-production.up.railway.app/api/updatedispatcher',
-      {inst_hash: localStorage.getItem('inst_hash'),
-      id : id,
-      name: name,
-      email: email,
-      phone: phone,
-  
-      },
-      {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
-  )
-  ContactData(getBatchList)
-  setModalIsOpenEdit(false)
-} else {
-  document.getElementById("edit-validate-batch").innerHTML =
-    "*Please fill required field!";
-  console.log("Error :", "Please fill required field");
-}    
-}
-
-//************************************************************** */
-async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippingbackend-production.up.railway.app/api/deldispatcher',
-      {
-          id:ids
-      },
-      {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
-  )
-      if(results.status == 200){
-          ContactData(getContact,DefaultgetContact);
-      }
-  }
+import { Link } from "react-router-dom";
 
 
 function DelaydShip() {
-  
-  const [data, setData] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-    const [rowCount, setRowCount] = useState(0);
-    const [inquiries, setInquiries] = useState( );
-    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [batchList,getBatchList] = useState([]);
-
-
+    const [selectedItemId, setSelectedItemId] = useState(null);
+    const [data, setData] = useState([]);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
     const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
     const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
     const [defaultcontact, DefaultgetContact] = useState([]);
@@ -95,39 +43,85 @@ function DelaydShip() {
   const npage = Math.ceil(contact.length / recordsPerPage)
   const numbers = [...Array(npage + 1).keys()].slice(1)
 
-    useEffect(() => {
-      ContactData(getContact,DefaultgetContact)   
-   }, [])
-    console.warn(contact)
+  //   useEffect(() => {
+  //     ContactData(getContact,DefaultgetContact)   
+  //  }, [])
 
     function handleInput(e){
       setName(e.target.value)
   }
 
+  const [customerData, setCustomerData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    
+  useEffect(() => {
+    // Fetch data from your API endpoint
+    axios.get('http://localhost:5000/api/mergeapidata')
+      .then((response) => {
+        setCustomerData(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  async function deleteData(id) {
+    setSelectedItemId(id); // Store the selected item's ID
+    setModalIsOpenDelete(true); // Open the modal
+  }
+
+
+async function confirmDelete(id) {
+  try {
+    await axios.delete(`https://shippingbackend-production.up.railway.app/Api/customerdelete/${selectedItemId}`);
+    // Remove the deleted item from the local state
+    const updatedData = data.filter((item) => item.id !== selectedItemId);
+    setData(updatedData);
+    setModalIsOpenDelete(false); // Close the modal
+    toast.success('Shipment Deleted Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
+  } catch (error) {
+    console.error("Error deleting data:", error);
+  }
+}
+
+  
   function exportToExcel() {
     const data = contact.map((item) => [
+      item.driver_id,
       item.customer_name,
-      'delay',
-      item.customer_contact,
       item.pick_up_location,
-      item.drop_location,
+      item.helper1,
+      item.helper2,
+      item.drop_date,
+      item.vehicleplate,
  
     ]);
   
     const ws = XLSX.utils.aoa_to_sheet([
-      ['Customer Name', 'Order status', 'Phone No.', 'Pickup Location', 'Drop Location'],
+      ['Driver Name', 'Customer Name.', 'Delivery Details', 'Helper 1', 'Helper 2', 'Date & Time Of Delivery', 'Vehicle Plate No.'],
       ...data,
     ]);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Delay Shipment Records');
+    XLSX.utils.book_append_sheet(wb, ws, 'Delayed Shipment Records');
   
     const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
       type: 'application/octet-stream',
     });
   
-    FileSaver.saveAs(blob, 'DelayShipmentRecords.xlsx');
+    FileSaver.saveAs(blob, 'ShipmentRecords.xlsx');
   }
   
   // Convert data to array buffer
@@ -156,29 +150,16 @@ function DelaydShip() {
     }
     return true;
   });
-  useEffect(() => {
-    fetchData();
-  }, []);
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/shipmentdata"
-        );
-        setData(response.data);
-        console.log("data fetch" + response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+
 
 
   return (
     <section class="homedive ">
 
 <Modal isOpen={modalIsOpenEdit} className='main_modal_body dispatcher-list-form'>
-                <ModalBody className='modal_body'>
+                <ModalBody className='modal_body'>  
                 <AiOutlineClose className='main_AiOutlineClose close-icon' onClick={()=>setModalIsOpenEdit(false)}/>
-                   <h5 className='main_h5'>Edit Dispatcher List</h5>
+                   <h5 className='main_h5'>Edit Shipment List</h5>
                 </ModalBody>
                 <Form className='form_main '>
                     <FormGroup>
@@ -191,7 +172,7 @@ function DelaydShip() {
                         <Input type="number" name="phone" id="phone" placeholder="Edit Phone Number " onBlur={(e) => {setPhone(e.target.value); console.log(e.target.value);}} />
                     </FormGroup>
                     <p id="edit-validate-batch" style={{ color: 'red' }}></p>
-                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => updateBatch(ids,name,email,phone,setModalIsOpenEdit,getBatchList)}>Edit Dispatcher List</Button>
+                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} >Update Shipment List</Button>
                 </Form>
             </Modal>
 
@@ -213,10 +194,7 @@ function DelaydShip() {
             >
               <Button
                 outline
-                onClick={() => {
-                    deleteContact(ids, getContact, DefaultgetContact)
-                  setModalIsOpenDelete(false);
-                }}
+                onClick={confirmDelete}
               >
                 Yes
               </Button>
@@ -249,13 +227,15 @@ function DelaydShip() {
             <div className="row pt-0">
               <div className='col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 '>
               <Navbar/>
+
                     </div>
-                <div class="col p-0 shipment-view-table">
+                <div class="col p-0 shipment-view-pending-cencal">
                 <div className='driver-view-list'>
                 
                 <div className=''>
-                  <h2> Delayed Shipment List</h2>
+                  <h2>Delayed Shipment List</h2>
                 </div>
+
 
 
                 <div  className='datepicker-date-comm'>
@@ -283,6 +263,7 @@ function DelaydShip() {
                       </span>
 									</div>
 
+
                 <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                     <div class="input-group input-group-lg">
                       <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
@@ -293,41 +274,62 @@ function DelaydShip() {
                 <div className="export-btn">
             <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
           </div>
-                  <div className='Back-btn-01'><a href='#'>Back</a></div>
+                  <div className='Back-btn-01'><a href='/'>Back</a></div>
                 </div>
               </div>
-              <table class="table align-middle bg-white rounded m-0" id="table-to-xls">
+                    <table class="table align-middle bg-white rounded m-0" id="table-to-xls">
                         <thead class="tableheading">
                           <tr>
-                            <th scope="col" class="borderre">No.</th>
-                            <th scope="col">Customer Name</th>
-                            <th scope="col">Order status</th>
-                            <th scope="col">Phone no.</th>
-                            <th  scope="col">Pickup Location</th>
-                            <th scope="col">Drop Location</th>
+                            {/* <th scope="col" class="borderre">No.</th> */}
+                            <th scope="col">Driver Name</th>
+                            <th scope="col">Customers Name</th>
+                            <th scope="col">Delivery Detail</th>
+                            <th scope="col">Helper 1</th>
+                            <th scope="col">Helper 2</th>
+                            <th scope="col">Date & Time of Delivery</th>
+                            <th scope="col">Vehicle Plate No.</th>
+                            <th scope="col">Status</th>
                             <th scope="col" class="borderre1">Action</th>
                           </tr>
                         </thead>
                       <tbody class="tbody">
   
-        {
-          filteredData.filter((item)=>{
-            return search.toLowerCase() === '' ? item : item.customer_name.toLowerCase().includes(search)
-          }).map((item,i)=>
+                      {
+  customerData
+    .filter((item) => {
+      return (
+        search.trim() === '' ||
+        item.customer_name.toLowerCase().includes(search.toLowerCase())
+      );
+    })
+    .map((item, i) => 
             <tr key={i}>
-                 <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
+                 {/* <th scope="row"><span className="dispatcher-id">{i+1}</span></th> */}
             {/* <td>{item.id}</td> */}
+            <td>{item.driver_id}</td>
             <td>{item.customer_name}</td>
+            <td>{item.pick_up_location}</td>
+            <td>{item.helper1}</td>
+            <td>{item.helper2}</td>
+            <td>{item.drop_date}</td>
+            <td>{item.vehicleplate}</td>
             <td><span className='ship-delayed'>Delayed</span></td>
-            <td className="dis-email text-left">{item.customer_contact}</td>
-            
-            <td className="Pickup-Location-table">{item.pick_up_location}</td>
-            <td>{item.drop_location}</td>
             <td>
             {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
-            <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button>
-            <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button>
-            <a href='/view'><button className='btn bt' ><i class="bi bi-eye"></i></button></a>
+            {/* <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button> */}
+            <button className='btn bt'   onClick={() => {
+                                 deleteData(item.id);
+                            }} >
+            <i class="bi bi-trash delete"></i></button>
+            {/* <a href='/view'> */}
+            <Link to={`/view/${item.id}`}>
+
+            <button className='btn bt' >
+            <i class="bi bi-eye">
+
+            </i>
+            </button>
+            </Link>
             </td>
             
           </tr>

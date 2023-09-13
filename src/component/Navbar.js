@@ -1,10 +1,9 @@
-import React,{useState} from 'react'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { AiOutlineClose } from "react-icons/ai";
 import "../css/navbar.css"
 import ChangePass from './ChangePass';
 import EditProfile from './EditProfile';
-import Tooltip from './CreateShipment/DriverDropdown.js';
-
 import {
     Nav,
     NavItem,
@@ -17,7 +16,54 @@ import {
 
 
 function Navbar() {
+ 
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const [isButtonClicked, setIsButtonClicked] = useState(false);
+  
+    const handleButtonClick = () => {
+      // Toggle the state when the button is clicked
+      setIsButtonClicked(!isButtonClicked);
+    };
+    const toggleSidebar = () => {
+      handleButtonClick();
+      setSidebarOpen(!isSidebarOpen);
+    };
+  
+    const closeSidebar = () => {
+      setSidebarOpen(false);
+    };
+
+    const [users, setUsers] = useState([]);
+    const [notification, setNotification] = useState([]);
+    const [loading, setLoading] = useState(true);
+  
+    useEffect(() => {
+      // Fetch usernames from the API
+      axios.get('http://localhost:5000/api/getidentities')
+        .then((response) => {
+          setUsers(response.data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error fetching usernames:', error);
+          setLoading(false);
+        });
+    }, []);
+
+    useEffect(() => {
+      // Fetch usernames from the API
+      axios.get('http://localhost:5000/api/getnotifications')
+        .then((response) => {
+          setNotification(response.data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error fetching usernames:', error);
+          setLoading(false);
+        });
+    }, []);
+    
 
   return (
     <div>
@@ -57,7 +103,7 @@ function Navbar() {
 
 
 
-     <hrader>
+     <hrader className={isButtonClicked ? 'active' : ''}>
 	    <nav class="navbar navbar-expand-lg px-4 bg-color align-items-center">
 			<div class="container-fluid p-0">
 			  	<div class="d-flex justify-content-between w-100 align-items-center	">
@@ -74,14 +120,47 @@ function Navbar() {
 				    			{/* <img src="/Assets/Navbar/avtar.png"/> */}
 					    	<div class="avtar">
                   <EditProfile/>
-					    		<a class="nav-link">Admin</a>
+					    		 {users.map((user) => (
+          <a key={user.id}>{user.username}</a>
+        ))}
 					    	</div>
 
 
 				    		<div class="notification">
 
                   <span className='tooltip-holder'>
+                  {/* <Link>
                   <img className='Notification-img' src="/Assets/Navbar/bell.png"/>
+                  </Link> */}
+
+                  <div className="menusidebar">
+      <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        {/* Sidebar content */}
+        <ul>
+          <li>Link 1</li>
+          <li>Link 2</li>
+          
+          {notification.map((notification) => (
+          <li key={notification.id}>{notification.message}</li>
+        ))}
+         
+        </ul>
+      </div>
+
+      <div className="content">
+        {/* Content of your main page */}
+        <button onClick={toggleSidebar} className="toggle-button">
+          {isSidebarOpen ? '' : ''}
+        </button>
+      </div>
+
+      {isSidebarOpen && (
+        <div
+          className="overlay"
+          onClick={closeSidebar}
+        ></div>
+      )}
+    </div>
 				    			   
                   </span>
 

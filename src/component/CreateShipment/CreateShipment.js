@@ -29,6 +29,7 @@ function CreateShipment() {
   const [latitude1, setLatitude1] = useState("");
   const [longitude, setLongitude] = useState("");
   const [longitude1, setLongitude1] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [vehicleDetails, setVehicleDetails] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState("");
@@ -306,6 +307,7 @@ function CreateShipment() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
       const response = await axios.post(
@@ -397,6 +399,8 @@ function CreateShipment() {
     } catch (error) {
       console.error("Error submitting data:", error);
       // You can display an error message or perform any other error handling here
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -1085,16 +1089,7 @@ function CreateShipment() {
                                 type="datetime-local"
                               />
 
-                              {/* {error && pickupbeforedate.length <= 0 ? (
-                                <span
-                                  className="valid-form"
-                                  style={{ color: "red" }}
-                                >
-                                  Please Enter Pick Up location*
-                                </span>
-                              ) : (
-                                ""
-                              )} */}
+            
                             </div>
                                 </div>
                               </Accordion.Body>
@@ -1207,10 +1202,15 @@ function CreateShipment() {
 
                           <button
                             type="submit"
-                            className="submit-btn"
+                            // className="submit-btn"
                             value="Send Message"
+                            className={`submit-btn btn ${isLoading ? 'btn-disabled' : 'btn-primary'}`}
+        disabled={isLoading} // Disable the button while loading
+          
                           >
-                            Create Task
+ {isLoading ? <span>Loading...</span> : <span>Create Task</span>}
+
+                            
                           </button>
                         </form>
                       </div>
@@ -1239,9 +1239,11 @@ function CreateShipment() {
       </Modal>
       <div className="d-flex create-dispatcher-01 align-items-center">
         <div className="plus-icon">
-          <button type="submit" onClick={() => setModalIsOpen(true)}>
+          <button type="submit" 
+          onClick={() => setModalIsOpen(true)}
+          >
             <img src="/Assets/dash/plus.png" />
-            Create New Shipment
+           Create New Shipment
           </button>
         </div>
       </div>

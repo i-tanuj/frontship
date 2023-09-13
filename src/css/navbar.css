@@ -22,7 +22,7 @@ body{
     align-items: center;
 }
 div#navbarScroll {
-    width: 265px;
+    width: auto;
 }
 .bg-color ul li a.nav-link.dropdown-toggle {
     color: #fff;
@@ -136,3 +136,69 @@ button.logout-btn{
     background-color: #1b2644;
     margin: 20px 10px 0;
 }
+
+
+
+
+/* App.css */
+.menusidebar {
+    display: flex;
+  }
+  
+  .sidebar {
+    width: 0;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: #000000;
+    overflow-x: hidden;
+    transition: 0.3s; /* Sidebar sliding animation */
+    z-index: 9999 !important;
+  }
+  
+  .sidebar.open {
+    width: 438px; /* Adjust the width as needed */
+  }
+  
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar li {
+    padding: 10px;
+    color: white;
+  }
+  
+  .content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .toggle-button {
+    /* background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px; */
+    background-image: url(../../public/Assets/Navbar/bell.png);
+    padding: 22px 22px;
+  }
+  
+
+
+  
+  /* App.css */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* Semi-transparent black overlay */
+    z-index: 999; /* Ensure the overlay is on top of other content */
+    cursor: pointer;
+  }
+  

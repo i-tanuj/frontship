@@ -15,6 +15,7 @@ import {
   ModalBody,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 
 
 
@@ -78,6 +79,7 @@ function ShipmentRecords() {
     const [phone, setPhone] = useState('');
     const [batchList,getBatchList] = useState([]);
 
+    const [selectedItemId, setSelectedItemId] = useState(null);
 
     const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
     const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
@@ -171,6 +173,33 @@ function ShipmentRecords() {
       console.error("Error fetching data:", error);
     }
   };
+
+  
+  async function deleteData(id) {
+    setSelectedItemId(id); // Store the selected item's ID
+    setModalIsOpenDelete(true); // Open the modal
+  }
+
+
+async function confirmDelete(id) {
+  try {
+    await axios.delete(`https://shippingbackend-production.up.railway.app/Api/customerdelete/${selectedItemId}`);
+    // Remove the deleted item from the local state
+    const updatedData = data.filter((item) => item.id !== selectedItemId);
+    setData(updatedData);
+    setModalIsOpenDelete(false); // Close the modal
+    toast.success('Vehicle Deleted Successfully!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
+  } catch (error) {
+    console.error("Error deleting data:", error);
+  }
+}
 
 
   
@@ -323,39 +352,49 @@ function ShipmentRecords() {
                     <table class="table align-middle bg-white rounded m-0 dwf-shipment-rec" id="table-to-xls">
                         <thead class="tableheading">
                           <tr>
-                             <th scope="col" class="borderre">S.No</th>
-                             <th scope="col" class="borderre">Task Id</th>
-                             <th scope="col" class="borderre">Driver Details</th>
-                            <th scope="col" >Delivery Details</th>
-                            <th scope="col">Vehicle</th>
-                            <th scope="col">Helper</th>
-                            <th scope="col">Task Status</th>
-                            <th scope="col">Creation Date & Time</th>
-                            <th scope="col">Created By</th>
+                             <th scope="col" class="borderre">Driver Name</th>
+                             <th scope="col" class="borderre">Customers Name</th>
+                             <th scope="col" class="borderre">Delivery Detail</th>
+                            <th scope="col" >Helper1</th>
+                            <th scope="col">Helper2</th>
+                            <th scope="col">Date & Time of Delivery</th>
+                            <th scope="col">Vehicle Plate No.</th>
+                            {/* <th scope="col">Creation Date & Time</th> */}
+                            {/* <th scope="col">Created By</th> */}
                             <th scope="col" class="borderre1">Action</th>
                           </tr>
                         </thead>
                       <tbody class="tbody">
   
-        {
-          filteredData.filter((item)=>{
-            return search.toLowerCase() === '' ? item : item.helper1.toLowerCase().includes(search)
-          }).map((item,i)=>
+                      {
+  filteredData
+    .filter((item) => {
+      return (
+        search.trim() === '' ||
+        item.customer_name.toLowerCase().includes(search.toLowerCase())
+      );
+    })
+    .map((item, i) => 
             <tr key={i}>
-                 <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
-            <td>{item.id}</td>
+                 {/* <th scope="row"><span className="dispatcher-id">{i+1}</span></th> */}
             <td>{item.driver_id}</td>
+            <td>{item.customer_name}</td>
             <td className="Pickup-Location-table">{item.pick_up_location+ " , " +   item.drop_location}</td>
-            <td>{item.vehicleplate}</td>
             <td>{item.helper1}</td>
-            <td>{"pending"}</td>
-            <td>{item.created_at}</td>
+            <td>{item.helper2}</td>
+            {/* <td>{"pending"}</td> */}
+            <td>{item.drop_date}</td>
+            <td>{item.vehicleplate}</td>
             {/* <td className="dis-email text-left">{item.droplocation}<br></br>{item.dropdate}<br></br></td> */}
-            <td>{"Manager Dashboard"}</td>
+            {/* <td>{"Manager Dashboard"}</td> */}
 
             <td>
             {/* <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button> */}
-            <button className='btn bt' onClick={()=>{setModalIsOpenDelete(true); setIds(item.id);}}><i class="bi bi-trash delete"></i></button>
+            <button className='btn bt' 
+            onClick={() => {
+                                 deleteData(item.id);
+                            }}
+            ><i class="bi bi-trash delete"></i></button>
             {/* <Link to='/testdispatcher/${shipment.id}'
             >
             <button className='btn bt' >

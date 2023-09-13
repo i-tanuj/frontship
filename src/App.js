@@ -6,7 +6,7 @@ import PaymentRecords from './component/Dashboard/PaymentRecords';
 import SettlementRecords from './component/Dashboard/SettlementRecords';
 import SettlementHistory from './component/Dashboard/SettlementHistory';
 // import AmountZero from './component/Dashboard/AmountZero';
-import Testdispatcher from './component/CreateShipment/Testdispatcher';
+// import Testdispatcher from './component/CreateShipment/Testdispatcher';
 import FormComponent from './component/Dashboard/FormComponent';
 import ShipmentDetails from './component/Dashboard/ShipmentDetails';
 import CancelShip from './component/Dashboard/CancelShip';
@@ -32,7 +32,7 @@ const DelaydShip = React.lazy(() => import("./component/Dashboard/DelaydShip"))
 const PendingShip = React.lazy(() => import("./component/Dashboard/PendingShip"))
 const formcomponent = React.lazy(() => import("./component/Dashboard/FormComponent"))
 const PickupCreation = React.lazy(() => import("./component/CreateShipment/PickupCreation"))
-const DriverDropdown = React.lazy(() => import("./component/CreateShipment/DriverDropdown"))
+// const ClassContext = React.lazy(() => import("./component/CreateShipment/ClassContext"))
 
 
 function App() {
@@ -58,16 +58,11 @@ function App() {
             <Route  exact path="/paymentRecords" element={<PaymentRecords/>}/>
             <Route  exact path="/settlementRecord" element={<SettlementRecords/>}/>
             <Route  exact path="/settlementhistory" element={<SettlementHistory/>}/>
-            {/* <Route  exact path="/try" element={<Try/>}/> */}
-
-            <Route  exact path="/view/:id" element={<ViewShipment />}/>
+            <Route  exact path="/view/:customerId" element={<ViewShipment />}/>
             <Route  exact path="/delayd" element={<DelaydShip/>}/>
             <Route  exact path="/pending" element={<PendingShip/>}/>
             <Route  exact path="/shipment-list" element={<ShipmentDetails/>}/>
             <Route  exact path="/cancel-shipment" element={<CancelShip/>}/>
-
-            <Route  exact path="/driverdropdown" element={<DriverDropdown/>}/>
-            <Route  exact path="/testdispatcher/:id" element={<Testdispatcher/>}/>
             <Route  exact path="/pickupcreation" element={<PickupCreation/>}/>
             <Route  exact path="/formcomponent" element={<FormComponent/>}/>
 

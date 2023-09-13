@@ -319,7 +319,7 @@ function PaymentRecords() {
   
         {
           filteredData.filter((item)=>{
-            return search.toLowerCase() === '' ? item : item.name.toLowerCase().includes(search)
+            return search.toLowerCase() === '' ? item : item.full_name.toLowerCase().includes(search)
           }).map((item,i)=>
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>

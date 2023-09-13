@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 
 function TransferMoneyToDriver() {
+  // const [isLoading, setIsLoading] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [shipment_id, setShipmentid] = useState("");
   const [amount, setAmount] = useState("");
@@ -18,6 +19,7 @@ function TransferMoneyToDriver() {
   const [customernumber, setCustomernumber] = useState('');
   const [customers, setCustomers] = useState([]);
   const [selectedCustomers, setSelectedCustomers] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [CustomersData, setCustomersData] = useState({
       id: "",
@@ -65,43 +67,89 @@ function TransferMoneyToDriver() {
     //   timeZone: "Asia/Kolkata",
     //   hour12: true,
     // });
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const dataToSubmit = {
-      full_name:CustomersData.full_name,
-      driver_id:CustomersData.id,
-      shipment_id,
-      amount,
-      // DateAndTime: currentDate, // Adding current date and time to the data object
-    };
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      const dataToSubmit = {
+        full_name: CustomersData.full_name,
+        driver_id: CustomersData.id,
+        shipment_id,
+        amount,
+        // DateAndTime: currentDate, // Adding current date and time to the data object
+      };
+      setIsLoading(true);
     
-    if (shipment_id === '' || amount === '') {
-      setError(true);
-      setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
-    } else {
-      setError(false);
-      setSuccbtn('');
-      axios.post('https://shippingbackend-production.up.railway.app/api/payment', dataToSubmit)
-      .then((response) => {
-        console.log(response.data);
-        setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
-        setModalIsOpen(false);
-        toast.success("Transfer Amount Successfully!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-        });
-        console.log(selectedCustomers);
-        })
-        .catch((error) => {
-          console.error('Error submitting data:', error);
-          setSuccbtn(<span className="" style={{ color: 'red' }}>Failed to submit data</span>);
-        });
-    }
-  };
+      if (shipment_id === '' || amount === '') {
+        setError(true);
+        setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
+      } else {
+        setError(false);
+        setSuccbtn('');
+        axios.post('https://shippingbackend-production.up.railway.app/api/payment', dataToSubmit)
+          .then((response) => {
+            console.log(response.data);
+            setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
+            setModalIsOpen(false);
+            toast.success("Transfer Amount Successfully!", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: true,
+            });
+            console.log(selectedCustomers);
+          })
+          .catch((error) => {
+            console.error('Error submitting data:', error);
+            setSuccbtn(<span className="" style={{ color: 'red' }}>Failed to submit data</span>);
+          })
+          .finally(() => {
+            setIsLoading(false); // Set isLoading to false when the request is complete
+          });
+      }
+    };
+
+    
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const dataToSubmit = {
+  //     full_name:CustomersData.full_name,
+  //     driver_id:CustomersData.id,
+  //     shipment_id,
+  //     amount,
+  //     // DateAndTime: currentDate, // Adding current date and time to the data object
+  //   };
+  //   setIsLoading(true);
+    
+  //   if (shipment_id === '' || amount === '') {
+  //     setError(true);
+  //     setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
+  //   } else {
+  //     setError(false);
+  //     setSuccbtn('');
+  //     axios.post('https://shippingbackend-production.up.railway.app/api/payment', dataToSubmit)
+  //     .then((response) => {
+  //       console.log(response.data);
+  //       setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
+  //       setModalIsOpen(false);
+  //       toast.success("Transfer Amount Successfully!", {
+  //         position: "top-right",
+  //         autoClose: 3000,
+  //         hideProgressBar: true,
+  //         closeOnClick: true,
+  //         pauseOnHover: false,
+  //         draggable: true,
+  //       });
+  //       console.log(selectedCustomers);
+  //       } ) 
+  //       .catch((error) => {
+  //         console.error('Error submitting data:', error);
+  //         setSuccbtn(<span className="" style={{ color: 'red' }}>Failed to submit data</span>);
+  //       } 
+  //       ); 
+  //   } 
+  // };
 
   return (
     <div>
@@ -247,6 +295,7 @@ function TransferMoneyToDriver() {
                        id="shipment_id"
                        placeholder="Enter Shipment ID"
                        type="number"
+                       required
                     />
                     {/* <input 
                        name="driver_id"   
@@ -270,13 +319,21 @@ function TransferMoneyToDriver() {
                        id="amount"
                        placeholder="Enter Amount"
                        type="number"
+                       required
                     />
                      {error && amount.length <= 0 ?<span className="valid-form" style={{color:'red'}}>Please Enter Amount*</span>:""}
 
                   </div>
                   </div>
-                  <button type="submit" className="submit-btn"  value="Send Message">
-                  Transfer Amount
+                  <button type="submit" 
+                  // className="submit-btn"  
+                      className={`submit-btn btn ${isLoading ? 'btn-disabled' : 'btn-primary'}`}
+        disabled={isLoading} // Disable the button while loading
+          
+                  value="Send Message">
+                  
+ {isLoading ? <span>Loading...</span> : <span>Transfer Amount</span>}
+
                   </button>
                   {/* <div className="succbtn mb-4" >{succbtn ? <p>{succbtn}</p> : null}</div> */}
                 </form>
@@ -286,8 +343,16 @@ function TransferMoneyToDriver() {
         </div>
       </Modal>
       <div className="d-flex shipment-bnt">
-          <button type="submit" onClick={() => setModalIsOpen(true)}>
-            Transfer money to Driver
+          <button type="submit" 
+          onClick={() => setModalIsOpen(true)}
+        //   className={`submit-btn btn ${isLoading ? 'btn-disabled' : 'btn-primary'}`}
+        // disabled={isLoading} // Disable the button while loading
+          
+        >
+        Transfer money to Driver
+            
+ {/* {isLoading ? <span>Loading...</span> : <span>Transfer money to Driver</span>} */}
+
           </button>
       </div>
     </div>

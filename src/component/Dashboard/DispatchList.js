@@ -299,7 +299,7 @@ async function updateData() {
             style={{ backgroundColor: "#6A3187" }}
             onClick={updateData}
           >
-            Edit Dispatcher List
+            Update Dispatcher List
           </Button>
         </Form>
       </Modal>
@@ -446,6 +446,7 @@ async function updateData() {
                     <th scope="col">Email</th>
                     <th scope="col">Password</th>
                     <th scope="col">Phone number</th>
+                    <th scope="col">Date & Time</th>
 
                     <th scope="col" class="borderre1">
                       Action
@@ -470,6 +471,7 @@ async function updateData() {
                         <td className="dis-email text-left">{item.email}</td>
                         <td>{item.password}</td>
                         <td>{item.phone}</td>
+                        <td>{item.DateAndTime}</td>
                         <td>
                           {/* <button className="btn bt"><a href="#" class="eye"><i class="bi bi-pen"></i></a></button> */}
                           <button
