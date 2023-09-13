@@ -8,7 +8,7 @@ function FormComponent() {
 
   useEffect(() => {
     // Fetch data from the API
-    axios.get('http://localhost:5000/api/mergeapidata')
+    axios.get('https://shippingbackend-production.up.railway.app/api/mergeapidata')
       .then((response) => {
         setCustomerData(response.data);
         setLoading(false);

@@ -40,7 +40,7 @@ function ViewShipment() {
 
   useEffect(() => {
     // Fetch data for a single customer from your API endpoint
-    axios.get(`http://localhost:5000/api/mergeapidata/${customerId}`)
+    axios.get(`https://shippingbackend-production.up.railway.app/api/mergeapidata/${customerId}`)
       .then((response) => {
         setCustomerDetails(response.data);
         setLoading(false);

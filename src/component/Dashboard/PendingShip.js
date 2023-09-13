@@ -56,7 +56,7 @@ function PendingShip() {
 
   useEffect(() => {
     // Fetch data from your API endpoint
-    axios.get('http://localhost:5000/api/mergeapidata')
+    axios.get('https://shippingbackend-production.up.railway.app/api/mergeapidata')
       .then((response) => {
         setCustomerData(response.data);
         setLoading(false);

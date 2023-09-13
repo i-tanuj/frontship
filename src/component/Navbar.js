@@ -40,7 +40,7 @@ function Navbar() {
   
     useEffect(() => {
       // Fetch usernames from the API
-      axios.get('http://localhost:5000/api/getidentities')
+      axios.get('https://shippingbackend-production.up.railway.app/api/getidentities')
         .then((response) => {
           setUsers(response.data);
           setLoading(false);
@@ -53,7 +53,7 @@ function Navbar() {
 
     useEffect(() => {
       // Fetch usernames from the API
-      axios.get('http://localhost:5000/api/getnotifications')
+      axios.get('https://shippingbackend-production.up.railway.app/api/getnotifications')
         .then((response) => {
           setNotification(response.data);
           setLoading(false);
