@@ -275,19 +275,23 @@ const filteredData = data.filter((item) => {
       </Modal>
 
       <Modal isOpen={modalIsOpenDelete} onRequestClose={() => setModalIsOpenDelete(false)} className="modal_body-delete">
-        <ModalBody className="dispatcher-list-form">
+        <ModalBody className="delete-popup-icon-holder">
+        <div className="delete-popup-icon">
+        <h3 class="card-header-01" style={{ color: "grey", textAlign: "center" }}>
+            Do you really want to delete?
+          </h3>
+        
           <AiOutlineClose
             className="main_AiOutlineClose close-icon"
             onClick={() => setModalIsOpenDelete(false)}
             color="black"
           />
+          </div>
         </ModalBody>
         <Form className="">
-          <h3 style={{ color: "grey", textAlign: "center" }}>
-            Do you really want to delete?
-          </h3>
+         
           <div
-            className="d-flex justify-content-center"
+            className="d-flex justify-content-center mt-5"
             style={{ marginBottom: "50px" }}
           >
             <Button

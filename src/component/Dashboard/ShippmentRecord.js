@@ -262,27 +262,27 @@ async function confirmDelete(id) {
             </Modal>
 
 <Modal isOpen={modalIsOpenDelete} className="modal_body-delete">
-          <ModalBody className="">
-            <AiOutlineClose
-              className="main_AiOutlineClose"
-              onClick={() => setModalIsOpenDelete(false)}
-              color="black"
-            />
+          <ModalBody className="delete-popup-icon-holder">
+          <div className="delete-popup-icon">
+              <h3 class="card-header-01" style={{ color: "grey", textAlign: "center" }}>
+                Do you really want to delete?
+              </h3>
+              <AiOutlineClose
+                className="main_AiOutlineClose close-icon-delete"
+                onClick={() => setModalIsOpenDelete(false)}
+                color="black"
+              />
+            </div>
           </ModalBody>
           <Form className="">
-            <h3 style={{ color: "grey", textAlign: "center" }}>
-              Do you really want to delete?
-            </h3>
+          
             <div
-              className="d-flex justify-content-center"
+              className="d-flex justify-content-center mt-5"
               style={{ marginBottom: "50px" }}
             >
               <Button
                 outline
-                onClick={() => {
-                    deleteContact(ids, getContact, DefaultgetContact)
-                  setModalIsOpenDelete(false);
-                }}
+                onClick={confirmDelete}
               >
                 Yes
               </Button>

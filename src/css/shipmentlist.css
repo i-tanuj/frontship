@@ -41,6 +41,14 @@
     overflow-y: scroll;
     overflow-x: hidden;
 }
+.close-icon-edit {
+    position: absolute;
+    right: 30;
+    top: 14px;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 99;
+}
 .close-icon {
     position: absolute;
     right: 30;

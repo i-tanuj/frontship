@@ -311,7 +311,7 @@ function CreateShipment() {
 
     try {
       const response = await axios.post(
-        "https://shippingbackend-production.up.railway.app/api/oldshipment",
+        "http://localhost:5000/api/oldshipment",
         {
           customer_name: dispatcherData.name,
           customer_contact: dispatcherData.phoneno,

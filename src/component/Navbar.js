@@ -137,9 +137,7 @@ function Navbar() {
       <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         {/* Sidebar content */}
         <ul>
-          <li>Link 1</li>
-          <li>Link 2</li>
-          
+                 
           {notification.map((notification) => (
           <li key={notification.id}>{notification.message}</li>
         ))}

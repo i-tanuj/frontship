@@ -40,8 +40,9 @@ li.page-item a {
 .close-icon {
     position: absolute;
     right: 20px;
-    font-size: 20px;
-    cursor: pointer;
+    font-size: 25px;
+    top: 14px;
+
 }
 form.form_main {
     padding: 30px;
@@ -403,6 +404,20 @@ td.Pickup-Location-table {
 }
 .tbody .btn.bt:hover  .delete::before {
     color: #ffffff;
+}
+
+
+svg.main_AiOutlineClose.close-icon-delete {
+    position: absolute;
+    right: 10px;
+    top: 16px;
+    font-size: 22px;
+}
+.delete-popup-icon {
+    position: relative;
+}
+.delete-popup-icon-holder.modal-body {
+    padding: 0;
 }
 
 

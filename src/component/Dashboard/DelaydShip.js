@@ -43,10 +43,6 @@ function DelaydShip() {
   const npage = Math.ceil(contact.length / recordsPerPage)
   const numbers = [...Array(npage + 1).keys()].slice(1)
 
-  //   useEffect(() => {
-  //     ContactData(getContact,DefaultgetContact)   
-  //  }, [])
-
     function handleInput(e){
       setName(e.target.value)
   }
@@ -175,25 +171,28 @@ async function confirmDelete(id) {
                     <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} >Update Shipment List</Button>
                 </Form>
             </Modal>
-
-<Modal isOpen={modalIsOpenDelete} className="modal_body-delete">
-          <ModalBody className="">
-            <AiOutlineClose
-              className="main_AiOutlineClose"
-              onClick={() => setModalIsOpenDelete(false)}
-              color="black"
-            />
+  
+            <Modal isOpen={modalIsOpenDelete} className="modal_body-delete">
+          <ModalBody className="delete-popup-icon-holder">
+          <div className="delete-popup-icon">
+              <h3 class="card-header-01" style={{ color: "grey", textAlign: "center" }}>
+                Do you really want to delete?
+              </h3>
+              <AiOutlineClose
+                className="main_AiOutlineClose close-icon-delete"
+                onClick={() => setModalIsOpenDelete(false)}
+                color="black"
+              />
+            </div>
           </ModalBody>
           <Form className="">
-            <h3 style={{ color: "grey", textAlign: "center" }}>
-              Do you really want to delete?
-            </h3>
+          
             <div
-              className="d-flex justify-content-center"
+              className="d-flex justify-content-center mt-5"
               style={{ marginBottom: "50px" }}
             >
               <Button
-                outline
+               outline
                 onClick={confirmDelete}
               >
                 Yes

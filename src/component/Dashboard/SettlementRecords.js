@@ -22,8 +22,6 @@ async function ContactData(getContact){
       getContact(res.data);
   })
 }
-//************************************************************** */
-
 
 
 
