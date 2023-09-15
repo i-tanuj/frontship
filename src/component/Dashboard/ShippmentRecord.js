@@ -18,119 +18,117 @@ import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
 
-
-async function ContactData(getContact){
-
-  await axios.get('https://shippingbackend-production.up.railway.app/api/shipmentdata',
-  // { inst_hash: localStorage.getItem('inst_hash_manual') },
-  {
-      headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
-  }
-  )
-  .then((res)=>{
-      console.log(res.data);
-      getContact(res.data);
-  })
-}
-//************************************************************** */
-async function updateBatch(id,name,email,phone,setModalIsOpenEdit,getBatchList){
-  if (name != "" && email != "" && phone != "") {
-      await axios.post('https://shippingbackend-production.up.railway.app/api/updatedispatcher',
-      {inst_hash: localStorage.getItem('inst_hash'),
-      id : id,
-      name: name,
-      email: email,
-      phone: phone,
-  
-      },
-      {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
-  )
-  ContactData(getBatchList)
-  setModalIsOpenEdit(false)
-} else {
-  document.getElementById("edit-validate-batch").innerHTML =
-    "*Please fill required field!";
-  console.log("Error :", "Please fill required field");
-}    
-}
-
-//************************************************************** */
-async function deleteContact(ids,getContact,DefaultgetContact ){
-  const results = await axios.post('https://shippingbackend-production.up.railway.app/api/delcreatshipment',
-      {
-          id:ids
-      },
-      {headers: { authorization:`Bearer ${localStorage.getItem('token')}` }}
-  )
-  console.log(results);
-      if(results.status == 200){
-          ContactData(getContact,DefaultgetContact);
-      }
-  }
-
-
 function ShipmentRecords() {
+ 
+  const [contact, getContact] = useState([]);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [batchList, getBatchList] = useState([]);
+  const [selectedItemId, setSelectedItemId] = useState(null);
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-    const [contact, getContact] = useState([]);
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [batchList,getBatchList] = useState([]);
-
-    const [selectedItemId, setSelectedItemId] = useState(null);
-
-    const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
-    const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
-    const [defaultcontact, DefaultgetContact] = useState([]);
-    const [ids, setIds] = useState('');
-    const [search,setSearch] =useState('');
-  const [currentPage,setCurrentPage] = useState(1);
+  const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
+  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
+  const [defaultcontact, DefaultgetContact] = useState([]);
+  const [ids, setIds] = useState("");
+  const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
-  const firstIndex= lastIndex - recordsPerPage;
+  const firstIndex = lastIndex - recordsPerPage;
   const records = contact.slice(firstIndex, lastIndex);
-  const npage = Math.ceil(contact.length / recordsPerPage)
-  const numbers = [...Array(npage + 1).keys()].slice(1)
+  const npage = Math.ceil(contact.length / recordsPerPage);
+  const numbers = [...Array(npage + 1).keys()].slice(1);
 
-    useEffect(() => {
-      ContactData(getContact,DefaultgetContact)   
-   }, [])
-    console.warn(contact)
+  const [customerData, setCustomerData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [deleteId, setDeleteId] = useState(null);
+  
+  
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-    function handleInput(e){
-      setName(e.target.value)
+  const fetchData = () => {
+    axios.get('https://shippingbackend-production.up.railway.app/api/mergeapidata')
+      .then((response) => {
+        setCustomerData(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      });
+  };
+
+  const handleDelete = (id) => {
+    setDeleteId(id);
+    setModalIsOpenDelete(true);
+  };
+
+
+  const confirmDelete = () => {
+    axios.delete(`http://localhost:5000/api/deleteShipmentsby/${deleteId}`)
+      .then(() => {
+        setCustomerData((prevData) => prevData.filter((customer) => customer.shipment_id !== deleteId));
+        toast.success('Shipment deleted successfully!');
+        setModalIsOpenDelete(false);
+        setTimeout(fetchData, 2000);
+      })
+      .catch((error) => {
+        console.error('Error deleting data:', error);
+        toast.error('Error deleting data.');
+        setModalIsOpenDelete(false);
+      });
+  };
+
+
+  function handleInput(e) {
+    setName(e.target.value);
   }
 
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
-  
   function exportToExcel() {
     const data = contact.map((item) => [
-      item.id,
       item.driver_id,
+      item.customer_name,
       item.pick_up_location,
-      item.drop_location,
-      item.vehicleplate,
       item.helper1,
-      'Success',
-      item.created_at,
+      item.helper2,
+      item.drop_date,
+      item.vehicleplate,
     ]);
-  
+
     const ws = XLSX.utils.aoa_to_sheet([
-      ['Task ID', 'Driver ID', 'Pickup Location', 'Drop Location', 'Vehicle Number', 'Helper Name', 'Status', 'Date And Time'],
+      [
+        "Driver Name",
+        "Customer Name.",
+        "Delivery Details",
+        "Helper 1",
+        "Helper 2",
+        "Date & Time Of Delivery",
+        "Vehicle Plate No.",
+      ],
       ...data,
     ]);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Payment Records');
-  
-    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
-      type: 'application/octet-stream',
-    });
-  
-    FileSaver.saveAs(blob, 'PaymentRecords.xlsx');
+    XLSX.utils.book_append_sheet(wb, ws, "Shipment Records");
+
+    const blob = new Blob(
+      [s2ab(XLSX.write(wb, { bookType: "xlsx", type: "binary" }))],
+      {
+        type: "application/octet-stream",
+      }
+    );
+
+    FileSaver.saveAs(blob, "ShipmentRecords.xlsx");
   }
-  
+
   // Convert data to array buffer
   function s2ab(s) {
     const buf = new ArrayBuffer(s.length);
@@ -140,7 +138,6 @@ function ShipmentRecords() {
     }
     return buf;
   }
-  
 
   const handleStartDateChange = (date) => {
     setStartDate(date);
@@ -149,7 +146,7 @@ function ShipmentRecords() {
   const handleEndDateChange = (date) => {
     setEndDate(date);
   };
-  
+
   const filteredData = data.filter((item) => {
     if (startDate && endDate) {
       const itemDate = new Date(item.DateAndTime);
@@ -157,69 +154,6 @@ function ShipmentRecords() {
     }
     return true;
   });
-  // const [data, setData] = useState([]);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/shipmentdata"
-      );
-      setData(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  
-  async function deleteData(id) {
-    setSelectedItemId(id); // Store the selected item's ID
-    setModalIsOpenDelete(true); // Open the modal
-  }
-
-
-async function confirmDelete(id) {
-  try {
-    await axios.delete(`https://shippingbackend-production.up.railway.app/Api/customerdelete/${selectedItemId}`);
-    // Remove the deleted item from the local state
-    const updatedData = data.filter((item) => item.id !== selectedItemId);
-    setData(updatedData);
-    setModalIsOpenDelete(false); // Close the modal
-    toast.success('Vehicle Deleted Successfully!', {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-    });
-  } catch (error) {
-    console.error("Error deleting data:", error);
-  }
-}
-
-
-  
-  useEffect(() => {
-    // Fetch data from the API when the component mounts
-    axios.get('https://shippingbackend-production.up.railway.app/api/shipmentdata/')
-      .then((response) => {
-        // Set the data in the state
-        setData(response.data);
-        // setLoading(false); // Mark loading as false
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-        // setLoading(false); // Mark loading as false in case of an error
-      });
-  }, []); // Empty dependency array ensures this effect runs only once
-
-  
-  
-  
 
 
   return (
@@ -257,7 +191,7 @@ async function confirmDelete(id) {
                         <Input type="text" name="droplocation" id="droplocation" placeholder="Edit Drop Location " onBlur={(e) => {setPhone(e.target.value); console.log(e.target.value);}} />
                     </FormGroup>
                     <p id="edit-validate-batch" style={{ color: 'red' }}></p>
-                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} onClick={() => updateBatch(ids,name,email,phone,setModalIsOpenEdit,getBatchList)}>Edit Shipment List</Button>
+                    <Button variant="contained" className='main_botton' style={{backgroundColor: '#6A3187'}} >Edit Shipment List</Button>
                 </Form>
             </Modal>
 
@@ -366,34 +300,33 @@ async function confirmDelete(id) {
                         </thead>
                       <tbody class="tbody">
   
-                      {
-  filteredData
-    .filter((item) => {
-      return (
-        search.trim() === '' ||
-        item.customer_name.toLowerCase().includes(search.toLowerCase())
-      );
-    })
-    .map((item, i) => 
+                      {customerData
+                    .filter((customer) => {
+                      return (
+                        search.trim() === "" ||
+                        customer.customer_name
+                          .toLowerCase()
+                          .includes(search.toLowerCase())
+                      );
+                    })
+                    .map((customer, i) => 
             <tr key={i}>
                  {/* <th scope="row"><span className="dispatcher-id">{i+1}</span></th> */}
-            <td>{item.driver_id}</td>
-            <td>{item.customer_name}</td>
-            <td className="Pickup-Location-table">{item.pick_up_location+ " , " +   item.drop_location}</td>
-            <td>{item.helper1}</td>
-            <td>{item.helper2}</td>
+            <td>{customer.driver_id}</td>
+            <td>{customer.customer_name}</td>
+            <td className="Pickup-Location-table">{customer.pick_up_location+ " , " +   customer.drop_location}</td>
+            <td>{customer.helper1}</td>
+            <td>{customer.helper2}</td>
             {/* <td>{"pending"}</td> */}
-            <td>{item.drop_date}</td>
-            <td>{item.vehicleplate}</td>
+            <td>{customer.drop_date}</td>
+            <td>{customer.vehicleplate}</td>
             {/* <td className="dis-email text-left">{item.droplocation}<br></br>{item.dropdate}<br></br></td> */}
             {/* <td>{"Manager Dashboard"}</td> */}
 
             <td>
             {/* <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button> */}
             <button className='btn bt' 
-            onClick={() => {
-                                 deleteData(item.id);
-                            }}
+                                       onClick={() => handleDelete(customer.shipment_id)}
             ><i class="bi bi-trash delete"></i></button>
             {/* <Link to='/testdispatcher/${shipment.id}'
             >
@@ -405,7 +338,7 @@ async function confirmDelete(id) {
             </Link> */}
             {/* {data.map((shipment) => ( */}
           {/* <a key={shipment.id}> */}
-            <Link to={`/view/${item.id}`}>
+            <Link to={`/view/${customer.id}`}>
               {/* {shipment.customer_name}'s Shipment */}
               <button className='btn bt' >
             

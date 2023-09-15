@@ -17,7 +17,6 @@ async function ContactData(getContact, id) {
       }
     )
     .then((res) => {
-      // console.log(res.data);
       getContact(res.data);
     });
 }
@@ -30,7 +29,6 @@ function CreateShipment() {
   const [longitude, setLongitude] = useState("");
   const [longitude1, setLongitude1] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
   const [vehicleDetails, setVehicleDetails] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState("");
 
@@ -311,7 +309,7 @@ function CreateShipment() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/oldshipment",
+        "https://shippingbackend-production.up.railway.app/api/newidshipment",
         {
           customer_name: dispatcherData.name,
           customer_contact: dispatcherData.phoneno,
@@ -323,8 +321,8 @@ function CreateShipment() {
           drop_date1: dropdate1,
           latitude: latitude,
           longitude: longitude,
-          latitude1:latitude1,
-          longitude1:longitude1,
+          latitude1: latitude1,
+          longitude1: longitude1,
           description: description,
           customer_name2: dispatcherData1.name,
           customer_contact2: dispatcherData1.phoneno,
@@ -418,7 +416,7 @@ function CreateShipment() {
       setLongitude("");
     }
   };
-  
+
   const handleLinkChange1 = (event) => {
     const newLink1 = event.target.value;
     setLink1(newLink1);
@@ -434,41 +432,39 @@ function CreateShipment() {
     }
   };
 
+  const availableDispatchersForSelectedDispatcher1 = dispatchers.filter(
+    (dispatcher) => !selectedDispatcher.includes(dispatcher.id)
+  );
+  const availableDispatchersForSelectedDispatcher2 = dispatchers.filter(
+    (dispatcher) =>
+      !selectedDispatcher.includes(dispatcher.id) &&
+      !selectedDispatcher1.includes(dispatcher.id)
+  );
+  const availableDispatchersForSelectedDispatcher3 = dispatchers.filter(
+    (dispatcher) =>
+      !selectedDispatcher.includes(dispatcher.id) &&
+      !selectedDispatcher1.includes(dispatcher.id) &&
+      !selectedDispatcher2.includes(dispatcher.id)
+  );
+  const [selectedHelper, setSelectedHelper] = useState("");
+  const availableHelpersForSelectedHelper1 = helpers.filter(
+    (helper) => !selectedHelper.includes(helper.id)
+  );
 
-    const availableDispatchersForSelectedDispatcher1 = dispatchers.filter(
-      dispatcher => !selectedDispatcher.includes(dispatcher.id)
-    );
-    const availableDispatchersForSelectedDispatcher2 = dispatchers.filter(
-      dispatcher => !selectedDispatcher.includes(dispatcher.id) && !selectedDispatcher1.includes(dispatcher.id)
-    );
-    const availableDispatchersForSelectedDispatcher3 = dispatchers.filter(
-      dispatcher => !selectedDispatcher.includes(dispatcher.id) && !selectedDispatcher1.includes(dispatcher.id) && !selectedDispatcher2.includes(dispatcher.id)
-    );
-    // const availableHelperForSelectedHelper = helpers.filter(
-    //   helper => !selectedHelper1.includes(helper.id)
-    // );
-    const [selectedHelper, setSelectedHelper] = useState("");
-
-
-    const availableHelpersForSelectedHelper1 = helpers.filter(
-      helper => !selectedHelper.includes(helper.id)
-      );
-
-    const [helperData, setHelperData] = useState({
-      id: "",
-      name: "",
-      email: "",
-      phoneno: "",
-      altphone: "",
-    });
-    const [helperData1, setHelperData1] = useState({
-      id: "",
-      name: "",
-      email: "",
-      phoneno: "",
-      altphone: "",
-    });
-
+  const [helperData, setHelperData] = useState({
+    id: "",
+    name: "",
+    email: "",
+    phoneno: "",
+    altphone: "",
+  });
+  const [helperData1, setHelperData1] = useState({
+    id: "",
+    name: "",
+    email: "",
+    phoneno: "",
+    altphone: "",
+  });
 
   const handleSelectChange4 = async (event) => {
     const selectedOptionValue = event.target.value;
@@ -493,7 +489,6 @@ function CreateShipment() {
     setSelectedHelper1(selectedOptionValue);
     console.log(selectedOptionValue);
 
-    // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
@@ -662,25 +657,20 @@ function CreateShipment() {
                             </div>
                           </div>
                           <div className="row">
-                           
-
                             <div className="mb-4 w-100">
                               <label className="form-label">
                                 Add Description
                                 <span className="stra-icon"></span>{" "}
                               </label>
                               <input
-                              className="p-3"
+                                className="p-3"
                                 name="description"
-                                onChange={(e) =>
-                                  setDescription(e.target.value)
-                                }
+                                onChange={(e) => setDescription(e.target.value)}
                                 value={description}
                                 id="description"
                                 placeholder="Description"
                                 type="text"
                               />
-                        
                             </div>
                           </div>
                           <h3 className="text-center pt-3 pb-4">
@@ -696,40 +686,22 @@ function CreateShipment() {
                                 Customers Name
                                 <span className="stra-icon">*</span>
                               </label>
-
-                              {/* <select
+                              <select
                                 value={selectedDispatcher1}
                                 onChange={handleSelectChange1}
-                                name="name"
-                                id="name"
                               >
                                 <option value="">Select Customer</option>
-                                {dispatchers.map((dispatcher) => (
-                                  <option
-                                    key={dispatcher.id}
-                                    value={dispatcher.id}
-                                    name="name"
-                                    id="name"
-                                  >
-                                    {dispatcher.name}
-                                  </option>
-                                ))}
-                              </select> */}
-
-                              <select
-          value={selectedDispatcher1}
-          onChange={handleSelectChange1}
-        >
-          <option value="">Select Customer</option>
-          {availableDispatchersForSelectedDispatcher1.map((dispatcher) => (
-            <option
-              key={dispatcher.id}
-              value={dispatcher.id}
-            >
-              {dispatcher.name}
-            </option>
-          ))}
-        </select>
+                                {availableDispatchersForSelectedDispatcher1.map(
+                                  (dispatcher) => (
+                                    <option
+                                      key={dispatcher.id}
+                                      value={dispatcher.id}
+                                    >
+                                      {dispatcher.name}
+                                    </option>
+                                  )
+                                )}
+                              </select>
                             </div>
                             <div className="mb-4 w-50">
                               <label className="form-label">
@@ -740,9 +712,7 @@ function CreateShipment() {
                               <input
                                 name="phone"
                                 value={dispatcherData1.phoneno}
-                                // value={phone}
                                 onChange={(e) => setPhone1(e.target.value)}
-                                // readOnly
                                 id="phone"
                                 placeholder="Enter Contact Number"
                                 type="number"
@@ -756,7 +726,7 @@ function CreateShipment() {
                                 <span className="stra-icon"></span>
                               </label>
                               <input
-                              placeholder="Write Drop Location"
+                                placeholder="Write Drop Location"
                                 type="text"
                                 value={dispatcherData1.address}
                                 onChange={(e) =>
@@ -774,17 +744,8 @@ function CreateShipment() {
                                 onChange={handleLinkChange1}
                                 type="text"
                                 placeholder="Google Map link"
-                                // value={maplink}
-                                // onChange={(e) => setmaplink(e.target.value)}
-                                // onChange={handleLinkChange}
                               />
                             </div>
-                            {/* {latitude && longitude && (
-        <div>
-          Latitude: {latitude}<br />
-          Longitude: {longitude}
-        </div>
-      )} */}
 
                             <div className="mb-4 w-50">
                               <label className="form-label">
@@ -792,23 +753,13 @@ function CreateShipment() {
                                 <span className="stra-icon"></span>{" "}
                               </label>
                               <input
-                              // className="p-3"
-                              placeholder="Write Description"
+                                placeholder="Write Description"
                                 type="text"
                                 value={adddescriptiondrop}
                                 onChange={(e) =>
                                   setAdddescriptiondrop(e.target.value)
                                 }
                               />
-
-                              {/*                    
-                      {error && adddesc.length <= 0 ? (
-                        <span className="valid-form" style={{ color: "red" }}>
-                          Please Enter drop location*
-                        </span>
-                      ) : (
-                        ""
-                      )}  */}
                             </div>
                             <div className="mb-4 w-50">
                               <label className="form-label">
@@ -863,16 +814,18 @@ function CreateShipment() {
                                       id="customer_name"
                                     >
                                       <option value="">Select Customer</option>
-                                      {availableDispatchersForSelectedDispatcher2.map((dispatcher) => (
-                                        <option
-                                          key={dispatcher.id}
-                                          value={dispatcher.id}
-                                          name="customer_name"
-                                          id="customer_name"
-                                        >
-                                          {dispatcher.name}
-                                        </option>
-                                      ))}
+                                      {availableDispatchersForSelectedDispatcher2.map(
+                                        (dispatcher) => (
+                                          <option
+                                            key={dispatcher.id}
+                                            value={dispatcher.id}
+                                            name="customer_name"
+                                            id="customer_name"
+                                          >
+                                            {dispatcher.name}
+                                          </option>
+                                        )
+                                      )}
                                     </select>
                                   </div>
 
@@ -962,14 +915,13 @@ function CreateShipment() {
                                   </div>
                                 </div>
                                 <div className="row">
-                                 
                                   <div className="mb-4 w-100">
                                     <label className="form-label">
                                       Add Description
                                       <span className="stra-icon"></span>{" "}
                                     </label>
                                     <input
-                                    className="p-3"
+                                      className="p-3"
                                       name="description1"
                                       onChange={(e) =>
                                         setDescription1(e.target.value)
@@ -1002,16 +954,18 @@ function CreateShipment() {
                                       id="name"
                                     >
                                       <option value="">Select Customer</option>
-                                      {availableDispatchersForSelectedDispatcher3.map((dispatcher) => (
-                                        <option
-                                          key={dispatcher.id}
-                                          value={dispatcher.id}
-                                          name="name"
-                                          id="name"
-                                        >
-                                          {dispatcher.name}
-                                        </option>
-                                      ))}
+                                      {availableDispatchersForSelectedDispatcher3.map(
+                                        (dispatcher) => (
+                                          <option
+                                            key={dispatcher.id}
+                                            value={dispatcher.id}
+                                            name="name"
+                                            id="name"
+                                          >
+                                            {dispatcher.name}
+                                          </option>
+                                        )
+                                      )}
                                     </select>
                                   </div>
                                   <div className="mb-4 w-50">
@@ -1039,7 +993,7 @@ function CreateShipment() {
                                       <span className="stra-icon"></span>
                                     </label>
                                     <input
-                                    placeholder="Write Drop Location"
+                                      placeholder="Write Drop Location"
                                       type="text"
                                       value={dispatcherData3.address}
                                       onChange={(e) =>
@@ -1048,17 +1002,17 @@ function CreateShipment() {
                                     />
                                   </div>
                                   <div className="mb-4 w-50">
-                              <label className="form-label">
-                                Google Map Link
-                                <span className="stra-icon"></span>
-                              </label>
-                              <input
-                                type="text"
-                                placeholder="Google Maps link"
-                                value={link}
-                                onChange={handleLinkChange}
-                              />
-                            </div>
+                                    <label className="form-label">
+                                      Google Map Link
+                                      <span className="stra-icon"></span>
+                                    </label>
+                                    <input
+                                      type="text"
+                                      placeholder="Google Maps link"
+                                      value={link}
+                                      onChange={handleLinkChange}
+                                    />
+                                  </div>
 
                                   <div className="mb-4 w-50">
                                     <label className="form-label">
@@ -1066,8 +1020,8 @@ function CreateShipment() {
                                       <span className="stra-icon"></span>{" "}
                                     </label>
                                     <input
-                                    // className="p-3"
-                                    placeholder="Write Description"
+                                      // className="p-3"
+                                      placeholder="Write Description"
                                       type="text"
                                       value={adddescriptiondrop1}
                                       onChange={(e) =>
@@ -1076,21 +1030,21 @@ function CreateShipment() {
                                     />
                                   </div>
                                   <div className="mb-4 w-50">
-                              <label className="form-label">
-                                Drop Before
-                                <span className="stra-icon"></span>{" "}
-                              </label>
-                              <input
-                                name="dropdate1"
-                                value={dropdate1}
-                                onChange={(e) => setDropdate1(e.target.value)}
-                                id="dropdate1"
-                                placeholder="Drop Location"
-                                type="datetime-local"
-                              />
-
-            
-                            </div>
+                                    <label className="form-label">
+                                      Drop Before
+                                      <span className="stra-icon"></span>{" "}
+                                    </label>
+                                    <input
+                                      name="dropdate1"
+                                      value={dropdate1}
+                                      onChange={(e) =>
+                                        setDropdate1(e.target.value)
+                                      }
+                                      id="dropdate1"
+                                      placeholder="Drop Location"
+                                      type="datetime-local"
+                                    />
+                                  </div>
                                 </div>
                               </Accordion.Body>
                             </Accordion.Item>
@@ -1142,26 +1096,22 @@ function CreateShipment() {
                             </div>
                           </div>
                           <div className="row">
-                          <div className="mb-4 w-50">
+                            <div className="mb-4 w-50">
                               <label className="form-label">
                                 Helper 1<span className="stra-icon"></span>{" "}
                               </label>
-                       
 
                               <select
-          value={selectedHelper}
-          onChange={handleSelectChange4}
-        >
-          <option value="">Select Helper 1</option>
-          {helpers.map((helper) => (
-            <option
-              key={helper.id}
-              value={helper.id}
-            >
-              {helper.name}
-            </option>
-          ))}
-        </select>
+                                value={selectedHelper}
+                                onChange={handleSelectChange4}
+                              >
+                                <option value="">Select Helper 1</option>
+                                {helpers.map((helper) => (
+                                  <option key={helper.id} value={helper.id}>
+                                    {helper.name}
+                                  </option>
+                                ))}
+                              </select>
                             </div>
                             <div className="mb-4 w-50">
                               <label className="form-label">
@@ -1169,19 +1119,18 @@ function CreateShipment() {
                               </label>
 
                               <select
-          value={selectedHelper1}
-          onChange={handleSelectChange5}
-        >
-          <option value="">Select Helper 2</option>
-          {availableHelpersForSelectedHelper1.map((helper) => (
-            <option
-              key={helper.id}
-              value={helper.id}
-            >
-              {helper.name}
-            </option>
-          ))}
-        </select>
+                                value={selectedHelper1}
+                                onChange={handleSelectChange5}
+                              >
+                                <option value="">Select Helper 2</option>
+                                {availableHelpersForSelectedHelper1.map(
+                                  (helper) => (
+                                    <option key={helper.id} value={helper.id}>
+                                      {helper.name}
+                                    </option>
+                                  )
+                                )}
+                              </select>
 
                               {/* <select
                                 value={selectedHelper2}
@@ -1197,20 +1146,22 @@ function CreateShipment() {
                                 ))}
                               </select> */}
                             </div>
-                           
                           </div>
 
                           <button
                             type="submit"
                             // className="submit-btn"
                             value="Send Message"
-                            className={`submit-btn btn ${isLoading ? 'btn-disabled' : 'btn-primary'}`}
-        disabled={isLoading} // Disable the button while loading
-          
+                            className={`submit-btn btn ${
+                              isLoading ? "btn-disabled" : "btn-primary"
+                            }`}
+                            disabled={isLoading} // Disable the button while loading
                           >
- {isLoading ? <span>Loading...</span> : <span>Create Task</span>}
-
-                            
+                            {isLoading ? (
+                              <span>Loading...</span>
+                            ) : (
+                              <span>Create Task</span>
+                            )}
                           </button>
                         </form>
                       </div>
@@ -1239,11 +1190,9 @@ function CreateShipment() {
       </Modal>
       <div className="d-flex create-dispatcher-01 align-items-center">
         <div className="plus-icon">
-          <button type="submit" 
-          onClick={() => setModalIsOpen(true)}
-          >
+          <button type="submit" onClick={() => setModalIsOpen(true)}>
             <img src="/Assets/dash/plus.png" />
-           Create New Shipment
+            Create New Shipment
           </button>
         </div>
       </div>
