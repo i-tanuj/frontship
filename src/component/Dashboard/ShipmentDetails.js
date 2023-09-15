@@ -67,7 +67,7 @@ function ShipmentDetails() {
  
 
   const confirmDelete = () => {
-    axios.delete(`http://localhost:5000/api/deleteShipmentsby/${deleteId}`)
+    axios.delete(`https://shippingbackend-production.up.railway.app/api/deleteShipmentsby/${deleteId}`)
       .then(() => {
         setCustomerData((prevData) => prevData.filter((customer) => customer.shipment_id !== deleteId));
         toast.success('Shipment deleted successfully!');
