@@ -90,7 +90,7 @@ thead.tableheading{
 } */
 .driver-view-list {
     background-color: #efefef;
-    z-index: 9;
+    z-index: 8;
     position: relative;
     display: flex;
     justify-content: space-between;
