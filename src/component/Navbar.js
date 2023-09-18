@@ -100,7 +100,39 @@ function Navbar() {
             </div>
           </Form>
         </Modal>
+        
+   {/* <Link>
+                  <img className='Notification-img' src="/Assets/Navbar/bell.png"/>
+                  </Link>  */}
+                    <span className='Notification-img'>
 
+                  <div className="menusidebar">
+      <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        <ul>
+                 
+          {notification.map((notification) => (
+          <li key={notification.id}>{notification.message}</li>
+        ))}
+         
+        </ul>
+      </div>
+
+      <div className="content">
+        <button onClick={toggleSidebar} className="toggle-button">
+               <p className='notty-label-home'>Notification</p>
+          {isSidebarOpen ? '' : ''}
+        </button>
+      </div>
+
+      {isSidebarOpen && (
+        <div
+          className="overlay"
+          onClick={closeSidebar}
+        ></div>
+      )}
+    </div>
+				    			   
+                  </span>
 
 
      <hrader className={isButtonClicked ? 'active' : ''}>
@@ -128,14 +160,11 @@ function Navbar() {
 
 				    		<div class="notification">
 
-                  <span className='tooltip-holder'>
-                  {/* <Link>
-                  <img className='Notification-img' src="/Assets/Navbar/bell.png"/>
-                  </Link> */}
+                  {/* <span className='tooltip-holder'>
+               
 
                   <div className="menusidebar">
       <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-        {/* Sidebar content */}
         <ul>
                  
           {notification.map((notification) => (
@@ -146,7 +175,6 @@ function Navbar() {
       </div>
 
       <div className="content">
-        {/* Content of your main page */}
         <button onClick={toggleSidebar} className="toggle-button">
           {isSidebarOpen ? '' : ''}
         </button>
@@ -160,7 +188,7 @@ function Navbar() {
       )}
     </div>
 				    			   
-                  </span>
+                  </span> */}
 
                   
 				    			{/* <ChangePass/> */}

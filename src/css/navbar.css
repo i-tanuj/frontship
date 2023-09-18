@@ -150,12 +150,14 @@ button.logout-btn{
     height: 100%;
     position: fixed;
     top: 0;
-    right: 0;
-    background-color: #000000;
+    right: -50px;
+    background-color: #ffffff;
     overflow-x: hidden;
-    transition: 0.3s; /* Sidebar sliding animation */
+    transition: 0.3s;
+    color: #131b2f;
     z-index: 9999 !important;
-  }
+    padding: 20px;
+}
   
   .sidebar.open {
     width: 438px; /* Adjust the width as needed */
@@ -169,7 +171,6 @@ button.logout-btn{
   
   .sidebar li {
     padding: 10px;
-    color: white;
   }
   
   .content {
@@ -177,15 +178,19 @@ button.logout-btn{
     padding: 20px;
   }
   
+ 
   .toggle-button {
-    /* background-color: #333;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px; */
-    background-image: url(../../public/Assets/Navbar/bell.png);
-    padding: 22px 22px;
-  }
+    background-image: url(../../public/Assets/gif/icon-light.gif);
+    padding: 15px 15px;
+    height: 15px;
+    background-size: cover;
+    /* background-color: #fff; */
+    border-radius: 50%;
+}
+.Notification-img .content {
+    flex: 1 1;
+    padding: 8px;
+}
   
 
 
@@ -201,4 +206,27 @@ button.logout-btn{
     z-index: 999; /* Ensure the overlay is on top of other content */
     cursor: pointer;
   }
+
+
+  .Notification-img {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    z-index: 9;
+    margin-top: -22px;
+    height: 155px;
+    background-color: #1b2644;
+    display: flex;
+    border-radius: 10px 0px 0px 10px;
+    width: 40px;
+}
+p.notty-label-home {
+    color: #fff;
+    transform: rotate(90deg);
+    position: ABSOLUTE;
+    left: -16px;
+    top: 50%;
+    font-weight: 400;
+    margin: 0px !important;
+}
   

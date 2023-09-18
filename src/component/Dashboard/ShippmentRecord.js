@@ -89,9 +89,9 @@ function ShipmentRecords() {
     setName(e.target.value);
   }
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  // if (loading) {
+  //   return <p>Loading...</p>;
+  // }
 
   function exportToExcel() {
     const data = contact.map((item) => [
