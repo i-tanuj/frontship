@@ -119,7 +119,7 @@ function Navbar() {
 
       <div className="content">
         <button onClick={toggleSidebar} className="toggle-button">
-               <p className='notty-label-home'>Notification</p>
+               {/* <p className='notty-label-home'>Notification</p> */}
           {isSidebarOpen ? '' : ''}
         </button>
       </div>

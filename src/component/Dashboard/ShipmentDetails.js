@@ -385,7 +385,7 @@ function ShipmentDetails() {
                             <i class="bi bi-trash delete"></i>
                           </button>
                           {/* <a href='/view'> */}
-                          <Link to={`/view/${customer.id}`}>
+                          <Link to={`/view/${customer.shipment_id}`}>
                             <button className="btn bt">
                               <i class="bi bi-eye"></i>
                             </button>
