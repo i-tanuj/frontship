@@ -29,7 +29,9 @@ function HelperList() {
   const records = contact.slice(firstIndex, lastIndex);
   const npage = Math.ceil(contact.length / recordsPerPage);
   const numbers = [...Array(npage + 1).keys()].slice(1);
-
+  const [filteredData, setFilteredData] = useState([]);
+  const [showAllData, setShowAllData] = useState(true);
+  
   const handleDataCreated = () => {
     // Refresh data after a new driver is created
     fetchData();
@@ -43,26 +45,40 @@ function HelperList() {
     address: "",
   });
 
-  const handleStartDateChange = (date) => {
-    setStartDate(date);
-  };
 
-  const handleEndDateChange = (date) => {
-    setEndDate(date);
-  };
-  
-  const filteredData = data.filter((item) => {
-    if (startDate && endDate) {
-      const itemDate = new Date(item.DateAndTime);
-      return itemDate >= startDate && itemDate <= endDate;
-    }
-    return true;
-  });
 
   useEffect(() => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    filterData();
+  }, [startDate, endDate, data]);
+
+  
+  useEffect(() => {
+    // Initially display all data
+    setFilteredData(data);
+    setShowAllData(true);
+  }, [data]); // Trigger when data changes
+
+
+  const filterData = () => {
+    const filterStartDate = new Date(startDate).getTime(); // Parse start date
+    const filterEndDate = new Date(endDate).getTime(); // Parse end date
+
+    const filteredData = data.filter((item) => {
+      const itemDate = new Date(item.DateAndTime).getTime(); // Parse DateAndTime
+
+      // Check if the item date is within the selected range
+      return itemDate >= filterStartDate && itemDate <= filterEndDate;
+    });
+
+    setFilteredData(filteredData);
+    setShowAllData(false); // Set showAllData to false after filtering
+  };
+
+  
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -73,6 +89,7 @@ function HelperList() {
       console.error("Error fetching data:", error);
     }
   };
+
 
 
   
@@ -110,7 +127,6 @@ function HelperList() {
   }
   
 
-  // const [data, setData] = useState([]);
  
   async function deleteData(id) {
     setSelectedItemId(id); // Store the selected item's ID
@@ -314,28 +330,24 @@ async function updateData() {
                 </div>
                 <div className="">
                 <div  className='datepicker-date-comm'>
-                <span className="calender-icon">
-                        <DatePicker
-                          selected={startDate}
-                          onChange={handleStartDateChange}
-                          selectsStart
-                          startDate={startDate}
-                          endDate={endDate}
-                          placeholderText="Start Date"
-                        />
-                        <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" />
-                      </span>
-                      <span className="calender-icon">
-                        <DatePicker
-                          selected={endDate}
-                          onChange={handleEndDateChange}
-                          selectsEnd
-                          startDate={startDate}
-                          endDate={endDate}
-                          placeholderText="End Date"
-                        />
-                        <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" />
-                      </span>
+                {/* <span className="calender-icon"> */}
+                <input
+          type="date"
+          id="startDate"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+                        {/* <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" /> */}
+                      {/* </span> */}
+                      {/* <span className="calender-icon"> */}
+                      <input
+          type="date"
+          id="endDate"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
+                        {/* <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" /> */}
+                      {/* </span> */}
 									</div>
                   </div>
                 
@@ -392,7 +404,78 @@ async function updateData() {
                   </tr>
                 </thead>
                 <tbody class="tbody">
-                  {filteredData.filter((item) => {
+
+                {showAllData ? (
+          filteredData.filter((item) => {
+                      return search.toLowerCase() === ""
+                        ? item
+                        : item.name.toLowerCase().includes(search);
+                    }).map((item, i) => (
+            <tr key={i}>
+                        <th scope="row">
+                          <span className="dispatcher-id">{i + 1}</span>
+                        </th>
+            <td>{item.name}</td>
+            <td>{item.address}</td>
+                        <td>{item.email}</td>
+                        <td>{item.phoneno}</td>
+                        <td>{item.DateAndTime}</td>
+                        <td>
+                          <button
+                            className="btn btn1"
+                            onClick={() => editDataItem(item)}
+                          >
+                            <i class="bi bi-pen"></i>
+                          </button>
+                          <button
+                            className="btn bt"
+                            onClick={() => {
+                                 deleteData(item.id);
+                            }}
+                          >
+                            <i class="bi bi-trash delete"></i>
+                          </button>
+                        </td>
+            </tr>
+
+          ))
+        ) : filteredData.length === 0 ? (
+          <td className="">No data found for the selected date range.</td>
+        ) : (
+          filteredData.filter((item) => {
+                      return search.toLowerCase() === ""
+                        ? item
+                        : item.name.toLowerCase().includes(search);
+                    }).map((item, i) => (
+            <tr key={i}>
+                        <th scope="row">
+                          <span className="dispatcher-id">{i + 1}</span>
+                        </th>
+            <td>{item.name}</td>
+            <td>{item.address}</td>
+                        <td>{item.email}</td>
+                        <td>{item.phoneno}</td>
+                        <td>{item.DateAndTime}</td>
+                        <td>
+                          <button
+                            className="btn btn1"
+                            onClick={() => editDataItem(item)}
+                          >
+                            <i class="bi bi-pen"></i>
+                          </button>
+                          <button
+                            className="btn bt"
+                            onClick={() => {
+                                 deleteData(item.id);
+                            }}
+                          >
+                            <i class="bi bi-trash delete"></i>
+                          </button>
+                        </td>
+            </tr>
+          ))
+        )}
+                  {/* {filteredData.filter((item) => {
                       return search.toLowerCase() === ""
                         ? item
                         : item.name.toLowerCase().includes(search);
@@ -425,7 +508,7 @@ async function updateData() {
                           </button>
                         </td>
                       </tr>
-                    ))}
+                    ))} */}
                 </tbody>
                 <tbody>
         </tbody>

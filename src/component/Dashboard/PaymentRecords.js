@@ -91,6 +91,8 @@ function PaymentRecords() {
   const records = contact.slice(firstIndex, lastIndex);
   const npage = Math.ceil(contact.length / recordsPerPage)
   const numbers = [...Array(npage + 1).keys()].slice(1)
+  const [filteredData, setFilteredData] = useState([]);
+  const [showAllData, setShowAllData] = useState(true);
 
     useEffect(() => {
       ContactData(getContact,DefaultgetContact)   
@@ -133,22 +135,33 @@ function PaymentRecords() {
     return buf;
   }
   
+  useEffect(() => {
+    filterData();
+  }, [startDate, endDate, data]);
 
-  const handleStartDateChange = (date) => {
-    setStartDate(date);
-  };
-
-  const handleEndDateChange = (date) => {
-    setEndDate(date);
-  };
   
-  const filteredData = data.filter((item) => {
-    if (startDate && endDate) {
-      const itemDate = new Date(item.DateAndTime);
-      return itemDate >= startDate && itemDate <= endDate;
-    }
-    return true;
-  });
+  useEffect(() => {
+    // Initially display all data
+    setFilteredData(data);
+    setShowAllData(true);
+  }, [data]); // Trigger when data changes
+
+
+  const filterData = () => {
+    const filterStartDate = new Date(startDate).getTime(); // Parse start date
+    const filterEndDate = new Date(endDate).getTime(); // Parse end date
+
+    const filteredData = data.filter((item) => {
+      const itemDate = new Date(item.DateAndTime).getTime(); // Parse DateAndTime
+
+      // Check if the item date is within the selected range
+      return itemDate >= filterStartDate && itemDate <= filterEndDate;
+    });
+
+    setFilteredData(filteredData);
+    setShowAllData(false); // Set showAllData to false after filtering
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -261,28 +274,18 @@ function PaymentRecords() {
 
 
                       <div  className='datepicker-date-comm'>
-                <span className="calender-icon">
-                        <DatePicker
-                          selected={startDate}
-                          onChange={handleStartDateChange}
-                          selectsStart
-                          startDate={startDate}
-                          endDate={endDate}
-                          placeholderText="Start Date"
-                        />
-                        <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" />
-                      </span>
-                      <span className="calender-icon">
-                        <DatePicker
-                          selected={endDate}
-                          onChange={handleEndDateChange}
-                          selectsEnd
-                          startDate={startDate}
-                          endDate={endDate}
-                          placeholderText="End Date"
-                        />
-                        <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" />
-                      </span>
+                      <input
+          type="date"
+          id="startDate"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+                                 <input
+          type="date"
+          id="endDate"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
 									</div>
 
 
@@ -317,7 +320,57 @@ function PaymentRecords() {
                         </thead>
                       <tbody class="tbody">
   
-        {
+                      {showAllData ? (
+          filteredData.filter((item) => {
+                      return search.toLowerCase() === ""
+                        ? item
+                        : item.full_name.toLowerCase().includes(search);
+                    }).map((item, i) => (
+                      <tr key={i}>
+                 <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
+            <td>{item.full_name}</td>
+            <td>{item.shipment_id}</td>
+            
+            <td>{item.amount}</td>
+           
+            <td>
+              <div className='Successful-py-01'>{"Success"}</div></td>
+            <td>{item.DateAndTime}</td>
+            
+            <td>
+            </td>
+            
+          </tr>
+
+          ))
+        ) : filteredData.length === 0 ? (
+          <td className="">No data found for the selected date range.</td>
+        ) : (
+          filteredData.filter((item) => {
+                      return search.toLowerCase() === ""
+                        ? item
+                        : item.full_name.toLowerCase().includes(search);
+                    }).map((item, i) => (
+                      <tr key={i}>
+                 <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
+            <td>{item.full_name}</td>
+            <td>{item.shipment_id}</td>
+            
+            <td>{item.amount}</td>
+           
+            <td>
+              <div className='Successful-py-01'>{"Success"}</div></td>
+            <td>{item.DateAndTime}</td>
+            
+            <td>
+            </td>
+            
+          </tr>
+          ))
+        )}
+
+
+        {/* {
           filteredData.filter((item)=>{
             return search.toLowerCase() === '' ? item : item.full_name.toLowerCase().includes(search)
           }).map((item,i)=>
@@ -327,7 +380,7 @@ function PaymentRecords() {
             <td>{item.shipment_id}</td>
             
             <td>{item.amount}</td>
-            {/* <td>{"Success"}</td> */}
+           
             <td>
               <div className='Successful-py-01'>{"Success"}</div></td>
             <td>{item.DateAndTime}</td>
@@ -337,7 +390,7 @@ function PaymentRecords() {
             
           </tr>
           )
-        }
+        } */}
                     </tbody>
                   </table>
                <nav>

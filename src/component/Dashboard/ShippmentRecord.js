@@ -45,7 +45,8 @@ function ShipmentRecords() {
   const [customerData, setCustomerData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
-  
+  const [filteredData, setFilteredData] = useState([]);
+  const [showAllData, setShowAllData] = useState(true);
   
   useEffect(() => {
     fetchData();
@@ -139,21 +140,33 @@ function ShipmentRecords() {
     return buf;
   }
 
-  const handleStartDateChange = (date) => {
-    setStartDate(date);
+  useEffect(() => {
+    filterData();
+  }, [startDate, endDate, data]);
+
+  
+  useEffect(() => {
+    // Initially display all data
+    setFilteredData(data);
+    setShowAllData(true);
+  }, [data]); // Trigger when data changes
+
+
+  const filterData = () => {
+    const filterStartDate = new Date(startDate).getTime(); // Parse start date
+    const filterEndDate = new Date(endDate).getTime(); // Parse end date
+
+    const filteredData = data.filter((item) => {
+      const itemDate = new Date(item.DateAndTime).getTime(); // Parse DateAndTime
+
+      // Check if the item date is within the selected range
+      return itemDate >= filterStartDate && itemDate <= filterEndDate;
+    });
+
+    setFilteredData(filteredData);
+    setShowAllData(false); // Set showAllData to false after filtering
   };
 
-  const handleEndDateChange = (date) => {
-    setEndDate(date);
-  };
-
-  const filteredData = data.filter((item) => {
-    if (startDate && endDate) {
-      const itemDate = new Date(item.DateAndTime);
-      return itemDate >= startDate && itemDate <= endDate;
-    }
-    return true;
-  });
 
 
   return (
@@ -239,28 +252,18 @@ function ShipmentRecords() {
               </div>
 
               <div  className='datepicker-date-comm w-auto'>
-                <span className="calender-icon">
-                        <DatePicker
-                          selected={startDate}
-                          onChange={handleStartDateChange}
-                          selectsStart
-                          startDate={startDate}
-                          endDate={endDate}
-                          placeholderText="Start Date"
-                        />
-                        <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" />
-                      </span>
-                      <span className="calender-icon">
-                        <DatePicker
-                          selected={endDate}
-                          onChange={handleEndDateChange}
-                          selectsEnd
-                          startDate={startDate}
-                          endDate={endDate}
-                          placeholderText="End Date"
-                        />
-                        <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" />
-                      </span>
+              <input
+          type="date"
+          id="startDate"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+                             <input
+          type="date"
+          id="endDate"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
 									</div>
 
 
@@ -311,43 +314,28 @@ function ShipmentRecords() {
                     })
                     .map((customer, i) => 
             <tr key={i}>
-                 {/* <th scope="row"><span className="dispatcher-id">{i+1}</span></th> */}
             <td>{customer.driver_id}</td>
             <td>{customer.customer_name}</td>
             <td className="Pickup-Location-table">{customer.pick_up_location+ " , " +   customer.drop_location}</td>
             <td>{customer.helper1}</td>
             <td>{customer.helper2}</td>
-            {/* <td>{"pending"}</td> */}
             <td>{customer.drop_date}</td>
             <td>{customer.vehicleplate}</td>
-            {/* <td className="dis-email text-left">{item.droplocation}<br></br>{item.dropdate}<br></br></td> */}
-            {/* <td>{"Manager Dashboard"}</td> */}
+          
 
             <td>
-            {/* <button className='btn btn1' onClick={()=>{setModalIsOpenEdit(true); setIds(item.id)}}><i class="bi bi-pen"></i></button> */}
+
             <button className='btn bt' 
                                        onClick={() => handleDelete(customer.shipment_id)}
             ><i class="bi bi-trash delete"></i></button>
-            {/* <Link to='/testdispatcher/${shipment.id}'
-            >
-            <button className='btn bt' >
-            
-            <i class="bi bi-eye">
-            </i>
-            </button>
-            </Link> */}
-            {/* {data.map((shipment) => ( */}
-          {/* <a key={shipment.id}> */}
-            <Link to={`/view/${customer.id}`}>
-              {/* {shipment.customer_name}'s Shipment */}
+         
+            <Link to={`/view/${customer.shipment_id}`}>
               <button className='btn bt' >
             
             <i class="bi bi-eye">
             </i>
             </button>
             </Link>
-          {/* </a> */}
-        {/* ))} */}
             </td>
             
           </tr>
