@@ -79,6 +79,7 @@ function CreateShipment() {
 
   const [drivers, setDrivers] = useState([]);
   const [selectedDriver, setSelectedDriver] = useState("");
+  // const [selectedDrivers, setSelectedDrivers] = useState("");
 
   useEffect(() => {
     // Fetch driver data from the API and populate the state
@@ -243,7 +244,6 @@ function CreateShipment() {
   }, []);
 
   const [name, setName] = useState("");
-  const [name1, setName1] = useState("");
   const [email, setEmail] = useState("");
   const [email1, setEmail1] = useState("");
   const [altphone, setAltphone] = useState("");
@@ -332,6 +332,7 @@ function CreateShipment() {
           helper1: helperData.name,
           helper2: helperData1.name,
           driver_id: selectedDriver,
+          driver_name : selectedDriver,
           customer_name1: dispatcherData2.name,
           customer_contact1: dispatcherData2.phoneno,
           customer_email1: dispatcherData2.email,
@@ -344,15 +345,15 @@ function CreateShipment() {
           drop_location1: dispatcherData3.address,
           drop_description1: adddescriptiondrop1,
         },
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setModalIsOpen(false);
-
-      // Show Toastify notification for success
+        // {
+          //   headers: {
+            //     authorization: `Bearer ${localStorage.getItem("token")}`,
+            //   },
+            // }
+            );
+            
+            // Show Toastify notification for success
+            setModalIsOpen(false);
       toast.success("Shipment successfully created!", {
         position: "top-right",
         autoClose: 3000,
@@ -1093,6 +1094,8 @@ function CreateShipment() {
                                   </option>
                                 ))}
                               </select>
+                            
+                             
                             </div>
                           </div>
                           <div className="row">
@@ -1132,25 +1135,12 @@ function CreateShipment() {
                                 )}
                               </select>
 
-                              {/* <select
-                                value={selectedHelper2}
-                                onChange={(e) =>
-                                  setSelectedHelper2(e.target.value)
-                                }
-                              >
-                                <option value="">Select a Helper</option>
-                                {availableHelperForSelectedHelper.map((helper) => (
-                                  <option key={helper.id} value={helper.name}>
-                                    {helper.name}
-                                  </option>
-                                ))}
-                              </select> */}
+                          
                             </div>
                           </div>
 
                           <button
                             type="submit"
-                            // className="submit-btn"
                             value="Send Message"
                             className={`submit-btn btn ${
                               isLoading ? "btn-disabled" : "btn-primary"

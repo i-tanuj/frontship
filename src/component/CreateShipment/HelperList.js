@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 import "../../css/dispatchlist.css";
-import DatePicker from "react-datepicker";
 import Navbar from "../Navbar";
 import CreateHelper from "../CreateShipment/CreateHelper";
 import { toast, ToastContainer } from 'react-toastify';
@@ -20,7 +19,6 @@ function HelperList() {
   const [contact, getContact] = useState([]);
   const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-  const [ids, setIds] = useState("");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
@@ -33,7 +31,6 @@ function HelperList() {
   const [showAllData, setShowAllData] = useState(true);
   
   const handleDataCreated = () => {
-    // Refresh data after a new driver is created
     fetchData();
   };
 
