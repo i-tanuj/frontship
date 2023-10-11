@@ -314,7 +314,7 @@ function ShipmentRecords() {
                     })
                     .map((customer, i) => 
             <tr key={i}>
-            <td>{customer.driver_id}</td>
+            <td>{customer.driver_name}</td>
             <td>{customer.customer_name}</td>
             <td className="Pickup-Location-table">{customer.pick_up_location+ " , " +   customer.drop_location}</td>
             <td>{customer.helper1}</td>

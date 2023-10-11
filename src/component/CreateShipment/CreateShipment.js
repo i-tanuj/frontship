@@ -345,14 +345,9 @@ function CreateShipment() {
           drop_location1: dispatcherData3.address,
           drop_description1: adddescriptiondrop1,
         },
-        // {
-          //   headers: {
-            //     authorization: `Bearer ${localStorage.getItem("token")}`,
-            //   },
-            // }
+       
             );
-            
-            // Show Toastify notification for success
+           
             setModalIsOpen(false);
       toast.success("Shipment successfully created!", {
         position: "top-right",
@@ -362,10 +357,6 @@ function CreateShipment() {
         pauseOnHover: false,
         draggable: true,
       });
-
-      // You can display a success message or perform any other actions here
-
-      // Clear form fields after successful submission
       setDispatcherData(initialDispatcherData);
       setName("");
       setPhone("");
@@ -397,7 +388,6 @@ function CreateShipment() {
       phone("");
     } catch (error) {
       console.error("Error submitting data:", error);
-      // You can display an error message or perform any other error handling here
     } finally {
       setIsLoading(false);
     }
@@ -644,17 +634,6 @@ function CreateShipment() {
                                 placeholder="Drop Location"
                                 type="datetime-local"
                               />
-
-                              {/* {error && pickupbeforedate.length <= 0 ? (
-                                <span
-                                  className="valid-form"
-                                  style={{ color: "red" }}
-                                >
-                                  Please Enter Pick Up location*
-                                </span>
-                              ) : (
-                                ""
-                              )} */}
                             </div>
                           </div>
                           <div className="row">
@@ -775,17 +754,6 @@ function CreateShipment() {
                                 placeholder="Drop Location"
                                 type="datetime-local"
                               />
-
-                              {/* {error && pickupbeforedate.length <= 0 ? (
-                                <span
-                                  className="valid-form"
-                                  style={{ color: "red" }}
-                                >
-                                  Please Enter Pick Up location*
-                                </span>
-                              ) : (
-                                ""
-                              )} */}
                             </div>
                           </div>
 

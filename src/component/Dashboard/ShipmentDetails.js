@@ -433,36 +433,37 @@ function ShipmentDetails() {
     setEditData(customer);
     setModalIsOpenEdit(true);
   }
-  async function updateData() {
-    try {
-      await axios.put(
-        `https://shippingbackend-production.up.railway.app/api/updatehelperapi/${editData.id}`,
-        {
-          driver_id: editData.driver_id,
-          customer_name: editData.customer_name,
-          pick_up_location: editData.pick_up_location,
-          helper1: editData.helper1,
-          helper2: editData.helper2,
-          drop_date: editData.drop_date,
-          vehicleplate: editData.vehicleplate,
-        }
-      );
-      toast.success("Shipment Details Updated Successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-      });
+  
+  const saveEditedData = () => {
+    const updatedData = {
+      customer_name: selectedCustomerName,
+      customer_contact: customerContact,
+      customer_email: customerEmail, // Add this line for customer email
+      helper1: selectedHelper1,
+      helper2: selectedHelper2,
+      driver_id: selectedDriverId,
+      customer_alt_num: customerAltNum,
+    };
+
+    // Make a PUT request to update the data
+    axios.put(`https://shippingbackend-production.up.railway.app/api/updatecustomer/${editItem.id}`, updatedData)
+      .then((response) => {
+        console.log('Data updated successfully:', response.data);
+        toast.success("Shipment Details Updated Successfully!", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+              });
       setModalIsOpenEdit(false);
-      fetchData(); // Refresh data after update
-    } catch (error) {
-      console.error("Error updating data:", error);
-    }
-  }
 
-
+      })
+      .catch((error) => {
+        console.error('Error updating data:', error);
+      });
+  };
   
   const openEditModal = (item) => {
     setEditItem(item);
@@ -475,10 +476,8 @@ function ShipmentDetails() {
     setSelectedHelper2(item.helper2);
     setPickupDate(item.pick_up_before);
 
-    // Find the selected customer by name
     const selectedCustomer = data.find((customer) => customer.customer_name === item.customer_name);
 
-    // Populate customer-related fields
     if (selectedCustomer) {
       setCustomerContact(selectedCustomer.customer_contact);
       setCustomerAltNum(selectedCustomer.customer_alt_num);
@@ -655,7 +654,7 @@ function ShipmentDetails() {
             variant="contained"
             className="main_botton"
             style={{ backgroundColor: "#6A3187" }}
-            onClick={updateData}
+            onClick={saveEditedData}
           >
             Update Shipment List
           </Button>
@@ -815,7 +814,7 @@ function ShipmentDetails() {
                         <br></br> {item.customer_contact2}, <br></br>{" "}
                         {item.drop_location}
                       </td>
-                      <td>{item.driver_id}</td>
+                      <td>{item.driver_name}</td>
                       <td>{item.helper1}</td>
                       <td>{item.helper2}</td>
                       <td>{item.vehicleplate}</td>
