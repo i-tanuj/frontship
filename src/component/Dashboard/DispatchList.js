@@ -16,7 +16,7 @@ import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 async function ContactData(getContact) {
   await axios
     .get(
-      "https://shippingbackend-production.up.railway.app/api/dispatcher",
+      "https://shipment-backend.onrender.com/api/dispatcher",
       // { inst_hash: localStorage.getItem('inst_hash_manual') },
       {
         headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -39,7 +39,7 @@ async function updateBatch(
 ) {
   if (name !== "" && email !== "" && phone !== "" && password !== "") {
     await axios.post(
-      "https://shippingbackend-production.up.railway.app/api/updatedispatcher",
+      "https://shipment-backend.onrender.com/api/updatedispatcher",
       {
         inst_hash: localStorage.getItem("inst_hash"),
         id: id,
@@ -117,7 +117,7 @@ function DispatchList() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/dispatcher"
+        "https://shipment-backend.onrender.com/api/dispatcher"
       );
       setData(response.data);
     } catch (error) {
@@ -135,7 +135,7 @@ function DispatchList() {
 
 async function confirmDelete(id) {
   try {
-    await axios.delete(`https://shippingbackend-production.up.railway.app/api/dispatcherdelete/${selectedItemId}`);
+    await axios.delete(`https://shipment-backend.onrender.com/api/dispatcherdelete/${selectedItemId}`);
     // Remove the deleted item from the local state
     const updatedData = data.filter((item) => item.id !== selectedItemId);
     setData(updatedData);
@@ -162,7 +162,7 @@ function editDataItem(item) {
 async function updateData() {
   try {
     await axios.put(
-      `https://shippingbackend-production.up.railway.app/api/updatedispatchersby/${editData.id}`,
+      `https://shipment-backend.onrender.com/api/updatedispatchersby/${editData.id}`,
       {
         name: editData.name,
         email: editData.email,

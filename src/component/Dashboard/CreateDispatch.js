@@ -31,7 +31,7 @@ function CreateDispatch({ onDataCreated }) {
 
     try {
       const response = await axios.post(
-        'https://shippingbackend-production.up.railway.app/api/addispatcher',
+        'https://shipment-backend.onrender.com/api/addispatcher',
         {
           name,
       email,

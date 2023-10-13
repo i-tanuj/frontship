@@ -8,7 +8,7 @@ function DetailView() {
 
   useEffect(() => {
     // Fetch data for the specific ID from the API
-    axios.get(`https://shippingbackend-production.up.railway.app/api/mergeapidata/${id}`)
+    axios.get(`https://shipment-backend.onrender.com/api/mergeapidata/${id}`)
       .then((response) => {
         setCustomerDetails(response.data);
       })

@@ -20,7 +20,7 @@ function VerifyOTP() {
   async function handleSendOTP() {
     if(username!=''){
      const sendOTP = await axios
-     .post("https://shippingbackend-production.up.railway.app/api/otpsendusrname", {
+     .post("https://shipment-backend.onrender.com/api/otpsendusrname", {
        username: `${username}`,
      })
      .then(
@@ -44,7 +44,7 @@ function VerifyOTP() {
      
     if(username!='' && otp!=''){
      const verifyOTP = await axios
-     .post("https://shippingbackend-production.up.railway.app/api/verify-otp", {
+     .post("https://shipment-backend.onrender.com/api/verify-otp", {
        username: `${username}`,
        otp: `${otp}`,
      })

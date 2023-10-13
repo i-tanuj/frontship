@@ -11,7 +11,7 @@ import * as FileSaver from 'file-saver';
 
 async function ContactData(getContact){
 
-  await axios.get('https://shippingbackend-production.up.railway.app/api/sattlementrecord',
+  await axios.get('https://shipment-backend.onrender.com/api/sattlementrecord',
   // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -65,7 +65,7 @@ function SettlementRecords() {
     });
     console.log("dr"+driver_id);
     axios.post(
-      'https://shippingbackend-production.up.railway.app/api/updateAmount',
+      'https://shipment-backend.onrender.com/api/updateAmount',
       {
         inst_hash: localStorage.getItem('inst_hash'),
         id: id,
@@ -161,7 +161,7 @@ function SettlementRecords() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/sattlementrecord"
+        "https://shipment-backend.onrender.com/api/sattlementrecord"
       );
       setData(response.data);
     } catch (error) {

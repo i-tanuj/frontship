@@ -11,7 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 async function ContactData(getContact, id) {
   await axios
     .get(
-      "https://shippingbackend-production.up.railway.app/api/creatcustomer",
+      "https://shipment-backend.onrender.com/api/creatcustomer",
       {
         headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
       }
@@ -39,7 +39,7 @@ function CreateShipment() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/vehicledetails"
+        "https://shipment-backend.onrender.com/api/vehicledetails"
       );
       setVehicleDetails(response.data); // Assuming the API returns an array of vehicle details
     } catch (error) {
@@ -63,7 +63,7 @@ function CreateShipment() {
     async function fetchHelpers() {
       try {
         const response = await axios.get(
-          "https://shippingbackend-production.up.railway.app/api/createhelper"
+          "https://shipment-backend.onrender.com/api/createhelper"
         );
         setHelpers(response.data);
       } catch (error) {
@@ -89,7 +89,7 @@ function CreateShipment() {
   const fetchDrivers = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/driver"
+        "https://shipment-backend.onrender.com/api/driver"
       );
       const driversData = response.data;
       setDrivers(driversData);
@@ -116,7 +116,7 @@ function CreateShipment() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData = response.data;
         setDispatcherData(selectedDispatcherData);
@@ -134,7 +134,7 @@ function CreateShipment() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData1 = response.data;
         setDispatcherData1(selectedDispatcherData1);
@@ -151,7 +151,7 @@ function CreateShipment() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData2 = response.data;
         setDispatcherData2(selectedDispatcherData2);
@@ -166,7 +166,7 @@ function CreateShipment() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData3 = response.data;
         setDispatcherData3(selectedDispatcherData3);
@@ -185,7 +185,7 @@ function CreateShipment() {
     if (selectedVehicleValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/vehicledata/${selectedVehicleValue}`
+          `https://shipment-backend.onrender.com/api/vehicledata/${selectedVehicleValue}`
         );
         const selectedVehicleData = response.data;
         setVehicleData(selectedVehicleData);
@@ -208,7 +208,7 @@ function CreateShipment() {
   const fetchDispatchers = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/creatcustomer"
+        "https://shipment-backend.onrender.com/api/creatcustomer"
       );
       const dispatcherData = response.data;
       setDispatchers(dispatcherData);
@@ -224,7 +224,7 @@ function CreateShipment() {
   const fetchVehicle = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/vehicledetails"
+        "https://shipment-backend.onrender.com/api/vehicledetails"
       );
       const vehicleData = response.data;
       setVehicle(vehicleData);
@@ -309,7 +309,7 @@ function CreateShipment() {
 
     try {
       const response = await axios.post(
-        "https://shippingbackend-production.up.railway.app/api/newidshipment",
+        "https://shipment-backend.onrender.com/api/newidshipment",
         {
           customer_name: dispatcherData.name,
           customer_contact: dispatcherData.phoneno,
@@ -466,7 +466,7 @@ function CreateShipment() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/helperdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
         );
         const selectedHelperData = response.data;
         setHelperData(selectedHelperData);
@@ -483,7 +483,7 @@ function CreateShipment() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/helperdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
         );
         const selectedHelperData1 = response.data;
         setHelperData1(selectedHelperData1);

@@ -46,7 +46,7 @@ function CreateCustomer({ onDataCreated }) {
     } else {
       setError(false);
       setSuccbtn('');
-      axios.post('https://shippingbackend-production.up.railway.app/api/addcustomer', dataToSubmit)
+      axios.post('https://shipment-backend.onrender.com/api/addcustomer', dataToSubmit)
         .then((response) => {
           console.log(response.data);
           setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);

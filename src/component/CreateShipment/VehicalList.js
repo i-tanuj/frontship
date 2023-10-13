@@ -54,7 +54,7 @@ function VehicalList() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/creatvehical"
+        "https://shipment-backend.onrender.com/api/creatvehical"
       );
       setData(response.data);
     } catch (error) {
@@ -72,7 +72,7 @@ function VehicalList() {
 
 async function confirmDelete(id) {
   try {
-    await axios.delete(`https://shippingbackend-production.up.railway.app/api/vehicledelete/${selectedItemId}`);
+    await axios.delete(`https://shipment-backend.onrender.com/api/vehicledelete/${selectedItemId}`);
     // Remove the deleted item from the local state
     const updatedData = data.filter((item) => item.id !== selectedItemId);
     setData(updatedData);
@@ -99,7 +99,7 @@ function editDataItem(item) {
 async function updateData() {
   try {
     await axios.put(
-      `https://shippingbackend-production.up.railway.app/api/updatevehicleapi/${editData.id}`,
+      `https://shipment-backend.onrender.com/api/updatevehicleapi/${editData.id}`,
       {
         name: editData.name,
         vehicalplate: editData.vehicalplate,

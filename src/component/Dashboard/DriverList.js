@@ -56,7 +56,7 @@ function DriverList() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/driver"
+        "https://shipment-backend.onrender.com/api/driver"
       );
       setData(response.data);
     } catch (error) {
@@ -74,7 +74,7 @@ function DriverList() {
 
 async function confirmDelete(id) {
   try {
-    await axios.delete(`https://shippingbackend-production.up.railway.app/api/driverdelete/${selectedItemId}`);
+    await axios.delete(`https://shipment-backend.onrender.com/api/driverdelete/${selectedItemId}`);
     // Remove the deleted item from the local state
     const updatedData = data.filter((item) => item.id !== selectedItemId);
     setData(updatedData);
@@ -101,7 +101,7 @@ function editDataItem(item) {
 async function updateData() {
   try {
     await axios.put(
-      `https://shippingbackend-production.up.railway.app/api/updatedriver/${editData.id}`,
+      `https://shipment-backend.onrender.com/api/updatedriver/${editData.id}`,
       {
         full_name: editData.full_name,
         email: editData.email,

@@ -29,7 +29,7 @@ function EditProfile() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("https://shippingbackend-production.up.railway.app/api/identities");
+      const response = await axios.get("https://shipment-backend.onrender.com/api/identities");
       setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -42,7 +42,7 @@ function EditProfile() {
   }
   async function updateData() {
     try {
-      await axios.put(`https://shippingbackend-production.up.railway.app/api/updateadminapi/${editData.id}`, {
+      await axios.put(`https://shipment-backend.onrender.com/api/updateadminapi/${editData.id}`, {
         username: editData.username,
         password: editData.password,
         contact: editData.contact,

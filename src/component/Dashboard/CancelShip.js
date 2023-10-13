@@ -56,7 +56,7 @@ function CancelShip() {
 
   useEffect(() => {
     // Fetch data from your API endpoint
-    axios.get('https://shippingbackend-production.up.railway.app/api/mergeapidata')
+    axios.get('https://shipment-backend.onrender.com/api/mergeapidata')
       .then((response) => {
         setCustomerData(response.data);
         setLoading(false);
@@ -79,7 +79,7 @@ function CancelShip() {
 
 async function confirmDelete(id) {
   try {
-    await axios.delete(`https://shippingbackend-production.up.railway.app/Api/customerdelete/${selectedItemId}`);
+    await axios.delete(`https://shipment-backend.onrender.com/Api/customerdelete/${selectedItemId}`);
     // Remove the deleted item from the local state
     const updatedData = data.filter((item) => item.id !== selectedItemId);
     setData(updatedData);

@@ -110,7 +110,7 @@ function ShipmentDetails() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData1 = response.data;
         setDispatcherData1(selectedDispatcherData1);
@@ -125,7 +125,7 @@ function ShipmentDetails() {
   }, []);
 
   useEffect(() => {
-    axios.get('https://shippingbackend-production.up.railway.app/api/mergeapidata')
+    axios.get('https://shipment-backend.onrender.com/api/mergeapidata')
       .then((response) => {
         setData(response.data);
         const names = response.data.map((item) => item.customer_name);
@@ -175,7 +175,7 @@ function ShipmentDetails() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData2 = response.data;
         setDispatcherData2(selectedDispatcherData2);
@@ -190,7 +190,7 @@ function ShipmentDetails() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData3 = response.data;
         setDispatcherData3(selectedDispatcherData3);
@@ -208,7 +208,7 @@ function ShipmentDetails() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData = response.data;
         setDispatcherData(selectedDispatcherData);
@@ -245,7 +245,7 @@ function ShipmentDetails() {
   const fetchDispatchers = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/creatcustomer"
+        "https://shipment-backend.onrender.com/api/creatcustomer"
       );
       const dispatcherData = response.data;
       setDispatchers(dispatcherData);
@@ -262,7 +262,7 @@ function ShipmentDetails() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/helperdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
         );
         const selectedHelperData1 = response.data;
         setHelperData1(selectedHelperData1);
@@ -287,7 +287,7 @@ function ShipmentDetails() {
     async function fetchHelpers() {
       try {
         const response = await axios.get(
-          "https://shippingbackend-production.up.railway.app/api/createhelper"
+          "https://shipment-backend.onrender.com/api/createhelper"
         );
         setHelpers(response.data);
       } catch (error) {
@@ -300,7 +300,7 @@ function ShipmentDetails() {
   const fetchDrivers = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/driver"
+        "https://shipment-backend.onrender.com/api/driver"
       );
       const driversData = response.data;
       setDrivers(driversData);
@@ -319,7 +319,7 @@ function ShipmentDetails() {
 
   const fetchData = () => {
     axios
-      .get("https://shippingbackend-production.up.railway.app/api/mergeapidata")
+      .get("https://shipment-backend.onrender.com/api/mergeapidata")
       .then((response) => {
         setCustomerData(response.data);
         // console.log(data.customer_contact);
@@ -343,7 +343,7 @@ function ShipmentDetails() {
   const confirmDelete = () => {
     axios
       .delete(
-        `https://shippingbackend-production.up.railway.app/api/deleteShipmentsby/${deleteId}`
+        `https://shipment-backend.onrender.com/api/deleteShipmentsby/${deleteId}`
       )
       .then(() => {
         setCustomerData((prevData) =>
@@ -419,7 +419,7 @@ function ShipmentDetails() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shippingbackend-production.up.railway.app/api/helperdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
         );
         const selectedHelperData = response.data;
         setHelperData(selectedHelperData);
@@ -446,7 +446,7 @@ function ShipmentDetails() {
     };
 
     // Make a PUT request to update the data
-    axios.put(`https://shippingbackend-production.up.railway.app/api/updatecustomer/${editItem.id}`, updatedData)
+    axios.put(`https://shipment-backend.onrender.com/api/updatecustomer/${editItem.id}`, updatedData)
       .then((response) => {
         console.log('Data updated successfully:', response.data);
         toast.success("Shipment Details Updated Successfully!", {

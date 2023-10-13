@@ -19,7 +19,7 @@ function ForgetPassword() {
       e.preventDefault();
       // Make a POST request to the change-password endpoint
       try {
-        const response = await fetch('https://shippingbackend-production.up.railway.app/api/reset-password1', {
+        const response = await fetch('https://shipment-backend.onrender.com/api/reset-password1', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

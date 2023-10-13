@@ -24,7 +24,7 @@ function ChangePass() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://shippingbackend-production.up.railway.app/api/change-password', {
+      const response = await axios.post('https://shipment-backend.onrender.com/api/change-password', {
         // username:,
         // oldPassword,
         // newPassword,

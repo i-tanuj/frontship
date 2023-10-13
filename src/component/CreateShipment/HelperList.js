@@ -79,7 +79,7 @@ function HelperList() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/createhelper"
+        "https://shipment-backend.onrender.com/api/createhelper"
       );
       setData(response.data);
     } catch (error) {
@@ -133,7 +133,7 @@ function HelperList() {
 
 async function confirmDelete(id) {
   try {
-    await axios.delete(`https://shippingbackend-production.up.railway.app/api/helperdelete/${selectedItemId}`);
+    await axios.delete(`https://shipment-backend.onrender.com/api/helperdelete/${selectedItemId}`);
     // Remove the deleted item from the local state
     const updatedData = data.filter((item) => item.id !== selectedItemId);
     setData(updatedData);
@@ -160,7 +160,7 @@ function editDataItem(item) {
 async function updateData() {
   try {
     await axios.put(
-      `https://shippingbackend-production.up.railway.app/api/updatehelperapi/${editData.id}`,
+      `https://shipment-backend.onrender.com/api/updatehelperapi/${editData.id}`,
       {
         name: editData.name,
         email: editData.email,

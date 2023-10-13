@@ -53,7 +53,7 @@ function ShipmentRecords() {
   }, []);
 
   const fetchData = () => {
-    axios.get('https://shippingbackend-production.up.railway.app/api/mergeapidata')
+    axios.get('https://shipment-backend.onrender.com/api/mergeapidata')
       .then((response) => {
         setCustomerData(response.data);
         setLoading(false);
@@ -71,7 +71,7 @@ function ShipmentRecords() {
 
 
   const confirmDelete = () => {
-    axios.delete(`https://shippingbackend-production.up.railway.app/api/deleteShipmentsby/${deleteId}`)
+    axios.delete(`https://shipment-backend.onrender.com/api/deleteShipmentsby/${deleteId}`)
       .then(() => {
         setCustomerData((prevData) => prevData.filter((customer) => customer.shipment_id !== deleteId));
         toast.success('Shipment deleted successfully!');

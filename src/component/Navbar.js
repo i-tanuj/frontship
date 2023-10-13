@@ -40,7 +40,7 @@ function Navbar() {
   
     useEffect(() => {
       // Fetch usernames from the API
-      axios.get('https://shippingbackend-production.up.railway.app/api/getidentities')
+      axios.get('https://shipment-backend.onrender.com/api/getidentities')
         .then((response) => {
           setUsers(response.data);
           setLoading(false);
@@ -53,7 +53,7 @@ function Navbar() {
 
     useEffect(() => {
       // Fetch usernames from the API
-      axios.get('https://shippingbackend-production.up.railway.app/api/getnotifications')
+      axios.get('https://shipment-backend.onrender.com/api/getnotifications')
         .then((response) => {
           setNotification(response.data);
           setLoading(false);

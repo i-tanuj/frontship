@@ -56,7 +56,7 @@ function CustomerList() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://shippingbackend-production.up.railway.app/api/creatcustomer"
+        "https://shipment-backend.onrender.com/api/creatcustomer"
       );
       setData(response.data);
     } catch (error) {
@@ -72,7 +72,7 @@ function CustomerList() {
   async function confirmDelete(id) {
     try {
       await axios.delete(
-        `https://shippingbackend-production.up.railway.app/api/customerdelete/${selectedItemId}`
+        `https://shipment-backend.onrender.com/api/customerdelete/${selectedItemId}`
       );
       // Remove the deleted item from the local state
       const updatedData = data.filter((item) => item.id !== selectedItemId);
@@ -98,7 +98,7 @@ function CustomerList() {
   async function updateData() {
     try {
       await axios.put(
-        `https://shippingbackend-production.up.railway.app/api/customerupdate/${editData.id}`,
+        `https://shipment-backend.onrender.com/api/customerupdate/${editData.id}`,
         {
           name: editData.name,
           email: editData.email,
