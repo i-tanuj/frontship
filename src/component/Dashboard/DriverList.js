@@ -31,6 +31,7 @@ function DriverList() {
   const [filteredData, setFilteredData] = useState([]);
   const [showAllData, setShowAllData] = useState(true);
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [searchText, setSearchText] = useState(""); // Search text for filtering by customer name
 
   const handleDataCreated = () => {
     fetchData();
@@ -129,66 +130,44 @@ async function updateData() {
 
 
 useEffect(() => {
-  filterData();
-}, [startDate, endDate, data]);
-
-
-useEffect(() => {
   // Initially display all data
   setFilteredData(data);
   setShowAllData(true);
 }, [data]); // Trigger when data changes
 
-const filterData = () => {
-  const filterStartDate = new Date(startDate).getTime(); // Parse start date
-  const filterEndDate = new Date(endDate).getTime(); // Parse end date
+useEffect(() => {
+  // Filter data based on the search and date filter
+  const filtered = data.filter((item) => {
+    const itemDate = new Date(item.DateAndTime);
+    const customerName = item.full_name.toLowerCase();
+    const searchTextLower = searchText.toLowerCase();
 
-  const filteredData = data.filter((item) => {
-    const itemDate = new Date(item.DateAndTime).getTime(); // Parse DateAndTime
+    const dateCondition = !startDate || !endDate || (itemDate >= new Date(startDate) && itemDate <= new Date(endDate));
+    const searchCondition = !searchText || customerName.includes(searchTextLower);
 
-    // Check if the item date is within the selected range
-    return itemDate >= filterStartDate && itemDate <= filterEndDate;
+    return dateCondition && searchCondition;
   });
 
-  setFilteredData(filteredData);
-  setShowAllData(false); // Set showAllData to false after filtering
+  setFilteredData(filtered);
+}, [data, startDate, endDate, searchText]);
+
+
+const exportToExcel = () => {
+  const dataToExport = filteredData.map((item) => ({
+    'Full Name': item.driver_name,
+    'Email Id': item.email,
+    'Phone Number': item.phone,
+    'Address': item.address,
+    'Password': item.altpassword,
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(dataToExport);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Data');
+  const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  FileSaver.saveAs(blob, 'Driver_List.xlsx');
 };
-
-
-
-  function exportToExcel() {
-    const data = contact.map((item) => [
-      item.full_name,
-      item.email,
-      item.phone,
-      item.address,
-      item.altpassword,
-    ]);
-  
-    const ws = XLSX.utils.aoa_to_sheet([
-      ['Driver Name', 'Email', 'Phone Number', 'Address', 'Password'],
-      ...data,
-    ]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Driver Records');
-  
-    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
-      type: 'application/octet-stream',
-    });
-  
-    FileSaver.saveAs(blob, 'DriverRecords.xlsx');
-  }
-  
-  // Convert data to array buffer
-  function s2ab(s) {
-    const buf = new ArrayBuffer(s.length);
-    const view = new Uint8Array(buf);
-    for (let i = 0; i < s.length; i++) {
-      view[i] = s.charCodeAt(i) & 0xff;
-    }
-    return buf;
-  }
-  
   
 
   return (
@@ -328,9 +307,10 @@ const filterData = () => {
                   style={{ fontSize: "15px" }}
                   className="form-control me-2 serch-filed"
                   type="search"
-                  placeholder="Search Here"
                   aria-label="Search"
-                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search by Driver Name"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
                 />
               </div>
             </div>
@@ -348,20 +328,17 @@ const filterData = () => {
                 <div className='datepicker-date-comm'>
                 {/* <span className="calender-icon"> */}
                 <input
-          type="date"
-          id="startDate"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-                        {/* <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" /> */}
-                      {/* </span> */}
-                      {/* <span className="calender-icon"> */}
+                    type="date"
+                    id="startDate"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                       
                       <input
-          type="date"
-          id="endDate"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
                         {/* <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" /> */}
                       {/* </span> */}
 									</div>
@@ -379,13 +356,14 @@ const filterData = () => {
                       <i class="bi bi-search"></i>
                     </span>
                     <input
-                      style={{ fontSize: "15px" }}
-                      className="form-control me-2 serch-filed"
-                      type="search"
-                      placeholder="Search Here"
-                      aria-label="Search"
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
+                  style={{ fontSize: "15px" }}
+                  className="form-control me-2 serch-filed"
+                  type="search"
+                  aria-label="Search"
+                  placeholder="Search by Driver Name"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                />
                   </div>
                 </div>
                 <div className="d-flex">
@@ -418,6 +396,7 @@ const filterData = () => {
                     <th scope="col">Address</th>
                     <th scope="col">password</th>
                     <th scope="col">Total Orders</th>
+                    <th scope="col">Create Date</th>
 
                     <th scope="col" class="borderre1">
                       Action
@@ -443,6 +422,7 @@ const filterData = () => {
                         <td>{item.altpassword}</td>
 
                         <td>10</td>
+                        <td>{item.DateAndTime}</td>
                         <td>
                           <button
                             className="btn btn1"

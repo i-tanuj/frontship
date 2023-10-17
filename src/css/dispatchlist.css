@@ -330,7 +330,7 @@ span.ship-delayed:after {
     background-color: #C29700;
     border-radius: 50%;
 }
-.ship-cancel{
+span.ship-cancel{
     position: relative;
     font-size: 12px;
     font-weight: 500;

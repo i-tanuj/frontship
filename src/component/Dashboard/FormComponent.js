@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
-import '../Dashboard/Demo.css'; // Adjust the path to your CSS file
-
-Modal.setAppElement('#root');
+// import XLSX from 'xlsx'; // Import XLSX library
+import * as XLSX from "xlsx/xlsx";
+import FileSaver from 'file-saver'; // Import FileSaver library
+import './Demo.css'; // Adjust the path to your CSS file
 
 function FormComponent() {
   const [data, setData] = useState([]);
@@ -110,6 +111,25 @@ function FormComponent() {
 
   const saveEditedData = () => {
     // Implement the save functionality here
+  };
+
+  const exportToExcel = () => {
+    const dataToExport = filteredData.map((item) => ({
+      ID: item.id,
+      'Customer Name': item.customer_name,
+      'Shipment ID': item.shipment_id,
+      'Customer Contact': item.customer_contact,
+      'Customer Address': item.pick_up_location,
+      'Customer Alternate Number': item.customer_alt_num,
+      Date: item.created_at,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(dataToExport);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    FileSaver.saveAs(blob, 'table_data.xlsx');
   };
 
   return (
@@ -284,6 +304,9 @@ function FormComponent() {
         <button onClick={saveEditedData}>Save</button>
         <button onClick={closeEditModal}>Cancel</button>
       </Modal>
+
+      {/* Export to Excel button */}
+      <button onClick={exportToExcel}>Export to Excel</button>
     </div>
   );
 }

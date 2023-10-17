@@ -13,7 +13,6 @@ import { Link } from "react-router-dom";
 
 function ShipmentDetails() {
   const [pickUpLocation, setPickUpLocation] = useState(''); // Pick-up Location
-
   const [contact, getContact] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -50,7 +49,6 @@ function ShipmentDetails() {
   const [selectedDriverId, setSelectedDriverId] = useState("");
   const [customerNames, setCustomerNames] = useState([]);
   const [driverIds, setDriverIds] = useState([]); // To store all driver IDs
-  // const [selectedHelper1, setSelectedHelper1] = useState(''); // Helper 1 dropdown
   const [selectedHelper2, setSelectedHelper2] = useState("");
   const [helper1Options, setHelper1Options] = useState([]); // Helper 1 options
   const [helper2Options, setHelper2Options] = useState([]);
@@ -64,11 +62,6 @@ function ShipmentDetails() {
   function handleInput(e) {
     setName(e.target.value);
   }
-  const [altphone, setAltphone] = useState("");
-  // const [filteredData, setFilteredData] = useState([]);
-  const [showAllData, setShowAllData] = useState(true);
-
-  const [selectedDriver, setSelectedDriver] = useState("");
   const [drivers, setDrivers] = useState([]);
   const [dispatchers, setDispatchers] = useState([]);
 
@@ -151,25 +144,6 @@ function ShipmentDetails() {
         setLoading(false);
       });
   }, []);
-
-  // const filteredData = data.filter((item) => {
-  //   const itemDate = new Date(item.created_at); // Assuming there's a 'date' field in your data
-  //   // const customerName = item.customer_name.toLowerCase();
-  //   // const searchTextLower = searchText.toLowerCase();
-  //   console.log("tanuj "+data);
-
-  //   const dateCondition =
-  //     !startDate ||
-  //     !endDate ||
-  //     (itemDate >= new Date(startDate) && itemDate <= new Date(endDate));
-
-  //   // const searchCondition =
-  //   //   !searchText || customerName.includes(searchTextLower);
-
-  //   return dateCondition 
-  //   // && searchCondition;
-  // });
-
 
   
   useEffect(() => {
@@ -385,51 +359,34 @@ function ShipmentDetails() {
       });
   };
 
-  function exportToExcel() {
-    const data = contact.map((item) => [
-      item.driver_id,
-      item.customer_name,
-      item.pick_up_location,
-      item.helper1,
-      item.helper2,
-      item.drop_date,
-      item.vehicleplate,
-    ]);
+  const exportToExcel = () => {
+    const dataToExport = filteredData.map((item) => ({
+      'Customer Name': item.customer_name,
+      'Pickup Date': item.pick_up_before,
+      'Customer Contact': item.customer_contact,
+      'Customer Alternate Number': item.customer_alt_num,
+      'Customer Email': item.customer_email,
+      'Pickup Location': item.pick_up_location,
+      'Customer Name 1': item.customer_name2,
+      'Customer Contact 1': item.customer_contact2,
+      'Drop Location': item.drop_location,
+      'Drop Date': item.drop_date,
+     'Vehicle Plate No.': item.vehicleplate,
+     'Helper 1': item.helper1,
+     'Helper 2': item.helper2,
+     'Driver Name': item.driver_name,
+     'Shipment Id': item.shipment_id,
+     'Create Date': item.created_at,
 
-    const ws = XLSX.utils.aoa_to_sheet([
-      [
-        "Driver Name",
-        "Customer Name.",
-        "Delivery Details",
-        "Helper 1",
-        "Helper 2",
-        "Date & Time Of Delivery",
-        "Vehicle Plate No.",
-      ],
-      ...data,
-    ]);
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(dataToExport);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Shipment Records");
-
-    const blob = new Blob(
-      [s2ab(XLSX.write(wb, { bookType: "xlsx", type: "binary" }))],
-      {
-        type: "application/octet-stream",
-      }
-    );
-
-    FileSaver.saveAs(blob, "ShipmentRecords.xlsx");
-  }
-
-  // Convert data to array buffer
-  function s2ab(s) {
-    const buf = new ArrayBuffer(s.length);
-    const view = new Uint8Array(buf);
-    for (let i = 0; i < s.length; i++) {
-      view[i] = s.charCodeAt(i) & 0xff;
-    }
-    return buf;
-  }
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    FileSaver.saveAs(blob, 'Shipment_Details.xlsx');
+  };
 
   const handleSelectChange4 = async (event) => {
     const selectedOptionValue = event.target.value;
