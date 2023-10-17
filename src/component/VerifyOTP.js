@@ -23,7 +23,7 @@ function VerifyOTP() {
      .post("https://shipment-backend.onrender.com/api/otpsendusrname", {
        username: `${username}`,
      })
-     .then(
+     .then( 
        (response) => {
          document.getElementById("success-OTPid").innerHTML =
          "OTP Send Successfully.";

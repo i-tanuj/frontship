@@ -296,14 +296,12 @@ function ShipmentRecords() {
                             <th scope="col">Helper2</th>
                             <th scope="col">Date & Time of Delivery</th>
                             <th scope="col">Vehicle Plate No.</th>
-                            {/* <th scope="col">Creation Date & Time</th> */}
-                            {/* <th scope="col">Created By</th> */}
                             <th scope="col" class="borderre1">Action</th>
                           </tr>
                         </thead>
                       <tbody class="tbody">
   
-                      {customerData
+                      {data
                     .filter((customer) => {
                       return (
                         search.trim() === "" ||

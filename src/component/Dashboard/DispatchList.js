@@ -4,83 +4,20 @@ import axios from "axios";
 import "../../css/dispatchlist.css";
 import Navbar from "../Navbar";
 import CreateDispatch from "./CreateDispatch";
-import DatePicker from "react-datepicker";
-import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+import * as XLSX from "xlsx";
+import * as FileSaver from "file-saver";
 import "react-datepicker/dist/react-datepicker.css";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
-
-async function ContactData(getContact) {
-  await axios
-    .get(
-      "https://shipment-backend.onrender.com/api/dispatcher",
-      // { inst_hash: localStorage.getItem('inst_hash_manual') },
-      {
-        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-      }
-    )
-    .then((res) => {
-      getContact(res.data);
-    });
-}
-//************************************************************** */
-
-async function updateBatch(
-  id,
-  name,
-  email,
-  phone,
-  password,
-  setModalIsOpenEdit,
-  getBatchList
-) {
-  if (name !== "" && email !== "" && phone !== "" && password !== "") {
-    await axios.post(
-      "https://shipment-backend.onrender.com/api/updatedispatcher",
-      {
-        inst_hash: localStorage.getItem("inst_hash"),
-        id: id,
-        name: name,
-        email: email,
-        phone: phone,
-        password: password,
-      },
-      { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } }
-    );
-    ContactData(getBatchList);
-    setModalIsOpenEdit(false);
-    toast.success('Dispatcher Updated Successfully!', {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-    });
-  } else {
-    document.getElementById("edit-validate-batch").innerHTML =
-      "*Please fill required field!";
-    console.log("Error :", "Please fill required field");
-  }
-}
 
 function DispatchList() {
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [contact, getContact] = useState([]);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [batchList, getBatchList] = useState([]);
   const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-  const [defaultcontact, DefaultgetContact] = useState([]);
-  const [ids, setIds] = useState("");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
@@ -92,14 +29,13 @@ function DispatchList() {
   const [filteredData, setFilteredData] = useState([]);
   const [showAllData, setShowAllData] = useState(true);
 
-  
   const [selectedItemId, setSelectedItemId] = useState(null);
 
   const handleDataCreated = () => {
     // Refresh data after a new driver is created
     fetchData();
   };
-  
+
   const [editData, setEditData] = useState({
     id: null,
     full_name: "",
@@ -108,7 +44,6 @@ function DispatchList() {
     address: "",
     altpassword: "",
   });
-
 
   useEffect(() => {
     fetchData();
@@ -124,98 +59,89 @@ function DispatchList() {
       console.error("Error fetching data:", error);
     }
   };
-  
 
-  
   async function deleteData(id) {
     setSelectedItemId(id); // Store the selected item's ID
     setModalIsOpenDelete(true); // Open the modal
   }
 
-
-async function confirmDelete(id) {
-  try {
-    await axios.delete(`https://shipment-backend.onrender.com/api/dispatcherdelete/${selectedItemId}`);
-    // Remove the deleted item from the local state
-    const updatedData = data.filter((item) => item.id !== selectedItemId);
-    setData(updatedData);
-    setModalIsOpenDelete(false); // Close the modal
-    toast.success('Dispatcher Deleted Successfully!', {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-    });
-  } catch (error) {
-    console.error("Error deleting data:", error);
+  async function confirmDelete(id) {
+    try {
+      await axios.delete(
+        `https://shipment-backend.onrender.com/api/dispatcherdelete/${selectedItemId}`
+      );
+      // Remove the deleted item from the local state
+      const updatedData = data.filter((item) => item.id !== selectedItemId);
+      setData(updatedData);
+      setModalIsOpenDelete(false); // Close the modal
+      toast.success("Dispatcher Deleted Successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+      });
+    } catch (error) {
+      console.error("Error deleting data:", error);
+    }
   }
-}
 
-
-
-function editDataItem(item) {
-  setEditData(item );
-  setModalIsOpenEdit(true);
-}
-async function updateData() {
-  try {
-    await axios.put(
-      `https://shipment-backend.onrender.com/api/updatedispatchersby/${editData.id}`,
-      {
-        name: editData.name,
-        email: editData.email,
-        phone: editData.phone,
-        password : editData.password,
-      }
-    );
-    toast.success('Dispatcher Updated Successfully!', {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-    });
-    setModalIsOpenEdit(false);
-    fetchData(); // Refresh data after update
-  } catch (error) {
-    console.error("Error updating data:", error);
+  function editDataItem(item) {
+    setEditData(item);
+    setModalIsOpenEdit(true);
   }
-}
+  async function updateData() {
+    try {
+      await axios.put(
+        `https://shipment-backend.onrender.com/api/updatedispatchersby/${editData.id}`,
+        {
+          name: editData.name,
+          email: editData.email,
+          phone: editData.phone,
+          password: editData.password,
+        }
+      );
+      toast.success("Dispatcher Updated Successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+      });
+      setModalIsOpenEdit(false);
+      fetchData(); // Refresh data after update
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
+  }
 
-useEffect(() => {
-  filterData();
-}, [startDate, endDate, data]);
+  useEffect(() => {
+    filterData();
+  }, [startDate, endDate, data]);
 
+  useEffect(() => {
+    // Initially display all data
+    setFilteredData(data);
+    setShowAllData(true);
+  }, [data]); // Trigger when data changes
 
-useEffect(() => {
-  // Initially display all data
-  setFilteredData(data);
-  setShowAllData(true);
-}, [data]); // Trigger when data changes
+  const filterData = () => {
+    const filterStartDate = new Date(startDate).getTime(); // Parse start date
+    const filterEndDate = new Date(endDate).getTime(); // Parse end date
 
+    const filteredData = data.filter((item) => {
+      const itemDate = new Date(item.DateAndTime).getTime(); // Parse DateAndTime
 
-const filterData = () => {
-  const filterStartDate = new Date(startDate).getTime(); // Parse start date
-  const filterEndDate = new Date(endDate).getTime(); // Parse end date
+      // Check if the item date is within the selected range
+      return itemDate >= filterStartDate && itemDate <= filterEndDate;
+    });
 
-  const filteredData = data.filter((item) => {
-    const itemDate = new Date(item.DateAndTime).getTime(); // Parse DateAndTime
+    setFilteredData(filteredData);
+    setShowAllData(false); // Set showAllData to false after filtering
+  };
 
-    // Check if the item date is within the selected range
-    return itemDate >= filterStartDate && itemDate <= filterEndDate;
-  });
-
-  setFilteredData(filteredData);
-  setShowAllData(false); // Set showAllData to false after filtering
-};
-
-
-
-
-  
   function exportToExcel() {
     const data = contact.map((item) => [
       item.name,
@@ -223,21 +149,24 @@ const filterData = () => {
       item.password,
       item.phone,
     ]);
-  
+
     const ws = XLSX.utils.aoa_to_sheet([
-      ['Dispatcher Name', 'Email', 'Password', 'Phone No'],
+      ["Dispatcher Name", "Email", "Password", "Phone No"],
       ...data,
     ]);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Driver Records');
-  
-    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
-      type: 'application/octet-stream',
-    });
-  
-    FileSaver.saveAs(blob, 'DriverRecords.xlsx');
+    XLSX.utils.book_append_sheet(wb, ws, "Driver Records");
+
+    const blob = new Blob(
+      [s2ab(XLSX.write(wb, { bookType: "xlsx", type: "binary" }))],
+      {
+        type: "application/octet-stream",
+      }
+    );
+
+    FileSaver.saveAs(blob, "DriverRecords.xlsx");
   }
-  
+
   // Convert data to array buffer
   function s2ab(s) {
     const buf = new ArrayBuffer(s.length);
@@ -247,8 +176,6 @@ const filterData = () => {
     }
     return buf;
   }
-  
-
 
   return (
     <section class="homedive ">
@@ -271,7 +198,9 @@ const filterData = () => {
               id="name"
               placeholder="Edit Name"
               value={editData.name}
-          onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+              onChange={(e) =>
+                setEditData({ ...editData, name: e.target.value })
+              }
             />
           </FormGroup>
           <FormGroup>
@@ -281,7 +210,9 @@ const filterData = () => {
               id="email"
               placeholder="Edit Email"
               value={editData.email}
-          onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+              onChange={(e) =>
+                setEditData({ ...editData, email: e.target.value })
+              }
             />
           </FormGroup>
           <FormGroup>
@@ -291,7 +222,9 @@ const filterData = () => {
               id="phone"
               placeholder="Edit Phone Number "
               value={editData.phone}
-          onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+              onChange={(e) =>
+                setEditData({ ...editData, phone: e.target.value })
+              }
             />
           </FormGroup>
           <FormGroup>
@@ -301,7 +234,9 @@ const filterData = () => {
               id="password"
               placeholder="Edit Password "
               value={editData.password}
-          onChange={(e) => setEditData({ ...editData, password: e.target.value })}
+              onChange={(e) =>
+                setEditData({ ...editData, password: e.target.value })
+              }
             />
           </FormGroup>
           <p id="edit-validate-batch" style={{ color: "red" }}></p>
@@ -332,11 +267,7 @@ const filterData = () => {
             className="d-flex justify-content-center"
             style={{ marginBottom: "50px" }}
           >
-            <Button
-              outline
-              onClick={confirmDelete}
-
-            >
+            <Button outline onClick={confirmDelete}>
               Yes
             </Button>
             &nbsp;
@@ -385,25 +316,21 @@ const filterData = () => {
                 <div className="">
                   <h2>All Dispatchers List</h2>
                 </div>
-                <div  className='datepicker-date-comm'>
-                <input
-          type="date"
-          id="startDate"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-                            <input
-          type="date"
-          id="endDate"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-									</div>
+                <div className="datepicker-date-comm">
+                  <input
+                    type="date"
+                    id="startDate"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                  <input
+                    type="date"
+                    id="endDate"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </div>
                 <div class="w-20 col-sm-12 col-md-12 col-lg-3 col-xl-3 col-xxl-3">
-                 
-                 
-                 
-                 
                   <div class="input-group input-group-lg">
                     <span
                       style={{ backgroundColor: "#fff" }}
@@ -423,12 +350,17 @@ const filterData = () => {
                   </div>
                 </div>
                 <div className="d-flex">
-                <div className="add-new-form-btn">
-                    <CreateDispatch onDataCreated={handleDataCreated}/>
+                  <div className="add-new-form-btn">
+                    <CreateDispatch onDataCreated={handleDataCreated} />
                   </div>
                   <div className="export-btn">
-            <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
-          </div>
+                    <button
+                      className="create-dispatcher p-3 mt-0 mx-3"
+                      onClick={exportToExcel}
+                    >
+                      Export to Excel
+                    </button>
+                  </div>
                   <div className="Back-btn-01">
                     <a href="/">Back</a>
                   </div>
@@ -456,123 +388,85 @@ const filterData = () => {
                   </tr>
                 </thead>
                 <tbody class="tbody">
+                  {showAllData ? (
+                    filteredData
+                      .filter((item) => {
+                        return search.toLowerCase() === ""
+                          ? item
+                          : item.name.toLowerCase().includes(search);
+                      })
+                      .map((item, i) => (
+                        <tr key={i}>
+                          <th scope="row">
+                            <span className="dispatcher-id">{i + 1}</span>
+                          </th>
 
+                          <td>{item.id}</td>
+                          <td>{item.name}</td>
+                          <td className="dis-email text-left">{item.email}</td>
+                          <td>{item.password}</td>
+                          <td>{item.phone}</td>
+                          <td>{item.DateAndTime}</td>
+                          <td>
+                            <button
+                              className="btn btn1"
+                              onClick={() => editDataItem(item)}
+                            >
+                              <i class="bi bi-pen"></i>
+                            </button>
+                            <button
+                              className="btn bt"
+                              onClick={() => {
+                                deleteData(item.id);
+                              }}
+                            >
+                              <i class="bi bi-trash delete"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                  ) : filteredData.length === 0 ? (
+                    <td className="">
+                      No data found for the selected date range.
+                    </td>
+                  ) : (
+                    filteredData
+                      .filter((item) => {
+                        return search.toLowerCase() === ""
+                          ? item
+                          : item.name.toLowerCase().includes(search);
+                      })
+                      .map((item, i) => (
+                        <tr key={i}>
+                          <th scope="row">
+                            <span className="dispatcher-id">{i + 1}</span>
+                          </th>
 
-                {showAllData ? (
-          filteredData.filter((item) => {
-                      return search.toLowerCase() === ""
-                        ? item
-                        : item.name.toLowerCase().includes(search);
-                    }).map((item, i) => (
-                      <tr key={i}>
-                        <th scope="row">
-                          <span className="dispatcher-id">{i + 1}</span>
-                        </th>
-                    
-                        <td>{item.id}</td>
-                        <td>{item.name}</td>
-                        <td className="dis-email text-left">{item.email}</td>
-                        <td>{item.password}</td>
-                        <td>{item.phone}</td>
-                        <td>{item.DateAndTime}</td>
-                        <td>
-
-                          <button
-                            className="btn btn1"
-                            onClick={() => editDataItem(item)}
-                          >
-                            <i class="bi bi-pen"></i>
-                          </button>
-                          <button
-                            className="btn bt"
-                            onClick={() => {
-                                 deleteData(item.id);
-                            }}
-                          >
-                            <i class="bi bi-trash delete"></i>
-                          </button>
-                        </td>
-                      </tr>
-
-          ))
-        ) : filteredData.length === 0 ? (
-          <td className="">No data found for the selected date range.</td>
-        ) : (
-          filteredData.filter((item) => {
-                      return search.toLowerCase() === ""
-                        ? item
-                        : item.name.toLowerCase().includes(search);
-                    }).map((item, i) => (
-                      <tr key={i}>
-                        <th scope="row">
-                          <span className="dispatcher-id">{i + 1}</span>
-                        </th>
-                    
-                        <td>{item.id}</td>
-                        <td>{item.name}</td>
-                        <td className="dis-email text-left">{item.email}</td>
-                        <td>{item.password}</td>
-                        <td>{item.phone}</td>
-                        <td>{item.DateAndTime}</td>
-                        <td>
-
-                          <button
-                            className="btn btn1"
-                            onClick={() => editDataItem(item)}
-                          >
-                            <i class="bi bi-pen"></i>
-                          </button>
-                          <button
-                            className="btn bt"
-                            onClick={() => {
-                                 deleteData(item.id);
-                            }}
-                          >
-                            <i class="bi bi-trash delete"></i>
-                          </button>
-                        </td>
-                      </tr>
-          ))
-        )}
-
-
-                  {/* {filteredData
-                    .filter((item) => {
-                      return search.toLowerCase() === ""
-                        ? item
-                        : item.name.toLowerCase().includes(search);
-                    })
-                    .map((item, i) => (
-                      <tr key={i}>
-                        <th scope="row">
-                          <span className="dispatcher-id">{i + 1}</span>
-                        </th>
-                    
-                        <td>{item.id}</td>
-                        <td>{item.name}</td>
-                        <td className="dis-email text-left">{item.email}</td>
-                        <td>{item.password}</td>
-                        <td>{item.phone}</td>
-                        <td>{item.DateAndTime}</td>
-                        <td>
-
-                          <button
-                            className="btn btn1"
-                            onClick={() => editDataItem(item)}
-                          >
-                            <i class="bi bi-pen"></i>
-                          </button>
-                          <button
-                            className="btn bt"
-                            onClick={() => {
-                                 deleteData(item.id);
-                            }}
-                          >
-                            <i class="bi bi-trash delete"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    ))} */}
+                          <td>{item.id}</td>
+                          <td>{item.name}</td>
+                          <td className="dis-email text-left">{item.email}</td>
+                          <td>{item.password}</td>
+                          <td>{item.phone}</td>
+                          <td>{item.DateAndTime}</td>
+                          <td>
+                            <button
+                              className="btn btn1"
+                              onClick={() => editDataItem(item)}
+                            >
+                              <i class="bi bi-pen"></i>
+                            </button>
+                            <button
+                              className="btn bt"
+                              onClick={() => {
+                                deleteData(item.id);
+                              }}
+                            >
+                              <i class="bi bi-trash delete"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                  )}
                 </tbody>
               </table>
               <nav>
@@ -609,10 +503,8 @@ const filterData = () => {
           </div>
         </div>
       </div>
-      <ToastContainer/>
-
+      <ToastContainer />
     </section>
-    
   );
 
   function prePage() {

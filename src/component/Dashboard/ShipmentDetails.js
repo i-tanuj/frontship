@@ -110,7 +110,7 @@ function ShipmentDetails() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
+          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData1 = response.data;
         setDispatcherData1(selectedDispatcherData1);
@@ -125,7 +125,7 @@ function ShipmentDetails() {
   }, []);
 
   useEffect(() => {
-    axios.get('https://shipment-backend.onrender.com/api/mergeapidata')
+    axios.get('http://localhost:5000/api/mergeapidata')
       .then((response) => {
         setData(response.data);
         const names = response.data.map((item) => item.customer_name);
@@ -153,18 +153,20 @@ function ShipmentDetails() {
 
   const filteredData = data.filter((item) => {
     const itemDate = new Date(item.created_at); // Assuming there's a 'date' field in your data
-    const customerName = item.customer_name.toLowerCase();
-    const searchTextLower = searchText.toLowerCase();
+    // const customerName = item.customer_name.toLowerCase();
+    // const searchTextLower = searchText.toLowerCase();
+    console.log("tanuj "+data);
 
     const dateCondition =
       !startDate ||
       !endDate ||
       (itemDate >= new Date(startDate) && itemDate <= new Date(endDate));
 
-    const searchCondition =
-      !searchText || customerName.includes(searchTextLower);
+    // const searchCondition =
+    //   !searchText || customerName.includes(searchTextLower);
 
-    return dateCondition && searchCondition;
+    return dateCondition 
+    // && searchCondition;
   });
 
   const handleSelectChange2 = async (event) => {
@@ -175,7 +177,7 @@ function ShipmentDetails() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
+          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData2 = response.data;
         setDispatcherData2(selectedDispatcherData2);
@@ -190,7 +192,7 @@ function ShipmentDetails() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
+          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData3 = response.data;
         setDispatcherData3(selectedDispatcherData3);
@@ -208,7 +210,7 @@ function ShipmentDetails() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
+          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData = response.data;
         setDispatcherData(selectedDispatcherData);
@@ -245,7 +247,7 @@ function ShipmentDetails() {
   const fetchDispatchers = async () => {
     try {
       const response = await axios.get(
-        "https://shipment-backend.onrender.com/api/creatcustomer"
+        "http://localhost:5000/api/creatcustomer"
       );
       const dispatcherData = response.data;
       setDispatchers(dispatcherData);
@@ -262,7 +264,7 @@ function ShipmentDetails() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
+          `http://localhost:5000/api/helperdata/${selectedOptionValue}`
         );
         const selectedHelperData1 = response.data;
         setHelperData1(selectedHelperData1);
@@ -287,7 +289,7 @@ function ShipmentDetails() {
     async function fetchHelpers() {
       try {
         const response = await axios.get(
-          "https://shipment-backend.onrender.com/api/createhelper"
+          "http://localhost:5000/api/createhelper"
         );
         setHelpers(response.data);
       } catch (error) {
@@ -300,7 +302,7 @@ function ShipmentDetails() {
   const fetchDrivers = async () => {
     try {
       const response = await axios.get(
-        "https://shipment-backend.onrender.com/api/driver"
+        "http://localhost:5000/api/driver"
       );
       const driversData = response.data;
       setDrivers(driversData);
@@ -319,7 +321,7 @@ function ShipmentDetails() {
 
   const fetchData = () => {
     axios
-      .get("https://shipment-backend.onrender.com/api/mergeapidata")
+      .get("http://localhost:5000/api/mergeapidata")
       .then((response) => {
         setCustomerData(response.data);
         // console.log(data.customer_contact);
@@ -343,7 +345,7 @@ function ShipmentDetails() {
   const confirmDelete = () => {
     axios
       .delete(
-        `https://shipment-backend.onrender.com/api/deleteShipmentsby/${deleteId}`
+        `http://localhost:5000/api/deleteShipmentsby/${deleteId}`
       )
       .then(() => {
         setCustomerData((prevData) =>
@@ -419,7 +421,7 @@ function ShipmentDetails() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
+          `http://localhost:5000/api/helperdata/${selectedOptionValue}`
         );
         const selectedHelperData = response.data;
         setHelperData(selectedHelperData);
@@ -446,7 +448,7 @@ function ShipmentDetails() {
     };
 
     // Make a PUT request to update the data
-    axios.put(`https://shipment-backend.onrender.com/api/updatecustomer/${editItem.id}`, updatedData)
+    axios.put(`http://localhost:5000/api/updatecustomer/${editItem.id}`, updatedData)
       .then((response) => {
         console.log('Data updated successfully:', response.data);
         toast.success("Shipment Details Updated Successfully!", {
