@@ -500,7 +500,7 @@ function ShipmentRecords() {
         isOpen={modalIsOpenEdit}
         className="main_modal_body dispatcher-list-form"
       >
-        <ModalBody className="modal_body">
+        <ModalBody className="modal_body new-icon">
           <AiOutlineClose
             className="main_AiOutlineClose close-icon"
             onClick={() => setModalIsOpenEdit(false)}

@@ -49,6 +49,14 @@
     cursor: pointer;
     z-index: 99;
 }
+.new-icon .close-icon {
+    position: absolute;
+    right: 30;
+    top: 20px;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 99;
+}
 .close-icon {
     position: absolute;
     right: 30;

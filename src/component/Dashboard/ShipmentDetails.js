@@ -513,7 +513,7 @@ function ShipmentDetails() {
         isOpen={modalIsOpenEdit}
         className="main_modal_body dispatcher-list-form"
       >
-        <ModalBody className="modal_body">
+        <ModalBody className="modal_body new-icon">
           <AiOutlineClose
             className="main_AiOutlineClose close-icon"
             onClick={() => setModalIsOpenEdit(false)}
@@ -814,7 +814,7 @@ function ShipmentDetails() {
                     <th scope="col">Helper 1</th>
                     <th scope="col">Helper 2</th>
                     <th scope="col">Vehicle Plate No.</th>
-                    <th scope="col">Task Status</th>
+                    <th scope="col">Created Date</th>
                     <th scope="col" class="borderre1">
                       Action
                     </th>
@@ -839,7 +839,7 @@ function ShipmentDetails() {
                       <td>{item.helper1}</td>
                       <td>{item.helper2}</td>
                       <td>{item.vehicleplate}</td>
-                      <td>{item.pick_up_status}</td>
+                      <td>{item.created_at}</td>
                       <td>
                         <button
                           className="btn btn1"

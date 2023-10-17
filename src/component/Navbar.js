@@ -101,9 +101,7 @@ function Navbar() {
           </Form>
         </Modal>
         
-   {/* <Link>
-                  <img className='Notification-img' src="/Assets/Navbar/bell.png"/>
-                  </Link>  */}
+   
                     <span className='Notification-img'>
 
                   <div className="menusidebar">
@@ -111,7 +109,7 @@ function Navbar() {
         <ul>
                  
           {notification.map((notification) => (
-          <li key={notification.id}>{notification.message}</li>
+          <li key={notification.id}>{notification.id +"."}{notification.message}</li>
         ))}
          
         </ul>

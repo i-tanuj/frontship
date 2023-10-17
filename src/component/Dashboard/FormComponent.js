@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
+import '../Dashboard/Demo.css'; // Adjust the path to your CSS file
 
 Modal.setAppElement('#root');
 
@@ -62,10 +63,11 @@ function FormComponent() {
       const customerName = item.customer_name.toLowerCase();
       const searchTextLower = searchText.toLowerCase();
 
-      const dateCondition = !startDate || !endDate || (itemDate >= new Date(startDate) && itemDate <= new Date(endDate));
+      const startDateMatch = !startDate || itemDate >= new Date(startDate);
+      const endDateMatch = !endDate || itemDate <= new Date(endDate);
       const searchCondition = !searchText || customerName.includes(searchTextLower);
 
-      return dateCondition && searchCondition;
+      return startDateMatch && endDateMatch && searchCondition;
     });
 
     setFilteredData(filtered);
