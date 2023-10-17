@@ -66,6 +66,7 @@ function ShipmentRecords() {
   const [customerAltNum, setCustomerAltNum] = useState(''); // Customer Alternate Number
   const [customerEmail, setCustomerEmail] = useState(''); // Customer Alternate Number
   const [pickupDate, setPickupDate] = useState(''); // Customer Alternate Number
+  const [filteredData, setFilteredData] = useState([]); // Filtered data
 
   function handleInput(e) {
     setName(e.target.value);
@@ -158,23 +159,21 @@ function ShipmentRecords() {
       });
   }, []);
 
-  const filteredData = data.filter((item) => {
-    const itemDate = new Date(item.created_at); // Assuming there's a 'date' field in your data
-    // const customerName = item.customer_name.toLowerCase();
-    // const searchTextLower = searchText.toLowerCase();
-    console.log("tanuj "+data);
+  useEffect(() => {
+    // Filter data based on the search and date filter
+    const filtered = data.filter((item) => {
+      const itemDate = new Date(item.created_at);
+      const customerName = item.customer_name.toLowerCase();
+      const searchTextLower = searchText.toLowerCase();
 
-    const dateCondition =
-      !startDate ||
-      !endDate ||
-      (itemDate >= new Date(startDate) && itemDate <= new Date(endDate));
+      const dateCondition = !startDate || !endDate || (itemDate >= new Date(startDate) && itemDate <= new Date(endDate));
+      const searchCondition = !searchText || customerName.includes(searchTextLower);
 
-    // const searchCondition =
-    //   !searchText || customerName.includes(searchTextLower);
+      return dateCondition && searchCondition;
+    });
 
-    return dateCondition 
-    // && searchCondition;
-  });
+    setFilteredData(filtered);
+  }, [data, startDate, endDate, searchText]);
 
   const handleSelectChange2 = async (event) => {
     const selectedOptionValue = event.target.value;
@@ -733,7 +732,17 @@ function ShipmentRecords() {
               <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                   <div class="input-group input-group-lg">
                     <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
-                    <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search By Helper Name" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
+                    {/* <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search By Helper Name" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} /> */}
+
+                    <input
+                      style={{ fontSize: "15px" }}
+                      className="form-control me-2 serch-filed"
+                      type="search"
+                      aria-label="Search"
+                      placeholder="Search by Customer Name"
+                      value={searchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                    />
                     <div className="export-btn">
             <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
           </div>

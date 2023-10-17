@@ -59,6 +59,7 @@ function ShipmentDetails() {
   const [customerAltNum, setCustomerAltNum] = useState(''); // Customer Alternate Number
   const [customerEmail, setCustomerEmail] = useState(''); // Customer Alternate Number
   const [pickupDate, setPickupDate] = useState(''); // Customer Alternate Number
+  const [filteredData, setFilteredData] = useState([]); // Filtered data
 
   function handleInput(e) {
     setName(e.target.value);
@@ -151,23 +152,41 @@ function ShipmentDetails() {
       });
   }, []);
 
-  const filteredData = data.filter((item) => {
-    const itemDate = new Date(item.created_at); // Assuming there's a 'date' field in your data
-    // const customerName = item.customer_name.toLowerCase();
-    // const searchTextLower = searchText.toLowerCase();
-    console.log("tanuj "+data);
+  // const filteredData = data.filter((item) => {
+  //   const itemDate = new Date(item.created_at); // Assuming there's a 'date' field in your data
+  //   // const customerName = item.customer_name.toLowerCase();
+  //   // const searchTextLower = searchText.toLowerCase();
+  //   console.log("tanuj "+data);
 
-    const dateCondition =
-      !startDate ||
-      !endDate ||
-      (itemDate >= new Date(startDate) && itemDate <= new Date(endDate));
+  //   const dateCondition =
+  //     !startDate ||
+  //     !endDate ||
+  //     (itemDate >= new Date(startDate) && itemDate <= new Date(endDate));
 
-    // const searchCondition =
-    //   !searchText || customerName.includes(searchTextLower);
+  //   // const searchCondition =
+  //   //   !searchText || customerName.includes(searchTextLower);
 
-    return dateCondition 
-    // && searchCondition;
-  });
+  //   return dateCondition 
+  //   // && searchCondition;
+  // });
+
+
+  
+  useEffect(() => {
+    // Filter data based on the search and date filter
+    const filtered = data.filter((item) => {
+      const itemDate = new Date(item.created_at);
+      const customerName = item.customer_name.toLowerCase();
+      const searchTextLower = searchText.toLowerCase();
+
+      const dateCondition = !startDate || !endDate || (itemDate >= new Date(startDate) && itemDate <= new Date(endDate));
+      const searchCondition = !searchText || customerName.includes(searchTextLower);
+
+      return dateCondition && searchCondition;
+    });
+
+    setFilteredData(filtered);
+  }, [data, startDate, endDate, searchText]);
 
   const handleSelectChange2 = async (event) => {
     const selectedOptionValue = event.target.value;
