@@ -11,9 +11,12 @@ import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import "react-datepicker/dist/react-datepicker.css";
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
+import { DateTime } from 'luxon'; // Import the DateTime class from luxon
 
 
 function DriverList() {
+  const [searchTerm, setSearchTerm] = useState(''); // Initialize search term as empty
+
   const [contact, getContact] = useState([]);
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState(null);
@@ -31,7 +34,7 @@ function DriverList() {
   const [filteredData, setFilteredData] = useState([]);
   const [showAllData, setShowAllData] = useState(true);
   const [selectedItemId, setSelectedItemId] = useState(null);
-  const [searchText, setSearchText] = useState(""); // Search text for filtering by customer name
+  const [searchText, setSearchText] = useState("");
 
   const handleDataCreated = () => {
     fetchData();
@@ -128,37 +131,43 @@ async function updateData() {
 
 
 
-
 useEffect(() => {
-  // Initially display all data
-  setFilteredData(data);
-  setShowAllData(true);
-}, [data]); // Trigger when data changes
+  if (!startDate || !endDate) {
+    setFilteredData(data); // If either start or end date is empty, show all data
+  } else {
+    const filtered = data.filter(customer => {
+      const formattedDate = DateTime.fromISO(customer.DateAndTime, { zone: 'UTC' }); // Assuming the database time is in UTC
+      const start = DateTime.fromISO(startDate, { zone: 'UTC' });
+      const end = DateTime.fromISO(endDate, { zone: 'UTC' });
 
+      // Include dates within the selected date range, including the start and end dates
+      return start.startOf('day') <= formattedDate.startOf('day') && formattedDate.startOf('day') <= end.startOf('day');
+    });
+    setFilteredData(filtered);
+  }
+}, [startDate, endDate, data]);
+
+// Function to handle the search filter
 useEffect(() => {
-  // Filter data based on the search and date filter
-  const filtered = data.filter((item) => {
-    const itemDate = new Date(item.DateAndTime);
-    const customerName = item.full_name.toLowerCase();
-    const searchTextLower = searchText.toLowerCase();
-
-    const dateCondition = !startDate || !endDate || (itemDate >= new Date(startDate) && itemDate <= new Date(endDate));
-    const searchCondition = !searchText || customerName.includes(searchTextLower);
-
-    return dateCondition && searchCondition;
-  });
-
-  setFilteredData(filtered);
-}, [data, startDate, endDate, searchText]);
+  if (!searchTerm) {
+    setFilteredData(data); // If search term is empty, show all data
+  } else {
+    const filtered = data.filter(customer =>
+      customer.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredData(filtered);
+  }
+}, [searchTerm, data]);
 
 
 const exportToExcel = () => {
   const dataToExport = filteredData.map((item) => ({
-    'Full Name': item.driver_name,
+    'Full Name': item.full_name,
     'Email Id': item.email,
     'Phone Number': item.phone,
     'Address': item.address,
     'Password': item.altpassword,
+    'Created At': item.DateAndTime,
   }));
 
   const ws = XLSX.utils.json_to_sheet(dataToExport);
@@ -306,11 +315,11 @@ const exportToExcel = () => {
                 <input
                   style={{ fontSize: "15px" }}
                   className="form-control me-2 serch-filed"
-                  type="search"
                   aria-label="Search"
-                  placeholder="Search by Driver Name"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
+                           type="text"
+          placeholder="Search by Name Driver Name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
             </div>
@@ -358,11 +367,11 @@ const exportToExcel = () => {
                     <input
                   style={{ fontSize: "15px" }}
                   className="form-control me-2 serch-filed"
-                  type="search"
                   aria-label="Search"
-                  placeholder="Search by Driver Name"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
+                           type="text"
+          placeholder="Search by Name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
                 />
                   </div>
                 </div>
@@ -395,7 +404,7 @@ const exportToExcel = () => {
                     <th scope="col">Phone number</th>
                     <th scope="col">Address</th>
                     <th scope="col">password</th>
-                    <th scope="col">Total Orders</th>
+                    {/* <th scope="col">Total Orders</th> */}
                     <th scope="col">Create Date</th>
 
                     <th scope="col" class="borderre1">
@@ -421,8 +430,10 @@ const exportToExcel = () => {
                         <td>{item.address}</td>
                         <td>{item.altpassword}</td>
 
-                        <td>10</td>
-                        <td>{item.DateAndTime}</td>
+                        {/* <td>10</td> */}
+                        {/* <td>{item.DateAndTime}</td> */}
+              <td>{DateTime.fromISO(item.DateAndTime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td>
+
                         <td>
                           <button
                             className="btn btn1"
@@ -461,6 +472,8 @@ const exportToExcel = () => {
                         <td>{item.phone}</td>
                         <td>{item.address}</td>
                         <td>{item.altpassword}</td>
+              <td>{DateTime.fromISO(item.DateAndTime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td>
+
 
                         <td>10</td>
                         <td>

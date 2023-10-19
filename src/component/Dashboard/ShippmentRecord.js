@@ -118,7 +118,7 @@ function ShipmentRecords() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData1 = response.data;
         setDispatcherData1(selectedDispatcherData1);
@@ -133,7 +133,7 @@ function ShipmentRecords() {
   }, []);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/mergeapidata')
+    axios.get('https://shipment-backend.onrender.com/api/mergeapidata')
       .then((response) => {
         setData(response.data);
         const names = response.data.map((item) => item.customer_name);
@@ -183,7 +183,7 @@ function ShipmentRecords() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData2 = response.data;
         setDispatcherData2(selectedDispatcherData2);
@@ -198,7 +198,7 @@ function ShipmentRecords() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData3 = response.data;
         setDispatcherData3(selectedDispatcherData3);
@@ -216,7 +216,7 @@ function ShipmentRecords() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData = response.data;
         setDispatcherData(selectedDispatcherData);
@@ -253,7 +253,7 @@ function ShipmentRecords() {
   const fetchDispatchers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/creatcustomer"
+        "https://shipment-backend.onrender.com/api/creatcustomer"
       );
       const dispatcherData = response.data;
       setDispatchers(dispatcherData);
@@ -270,7 +270,7 @@ function ShipmentRecords() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/helperdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
         );
         const selectedHelperData1 = response.data;
         setHelperData1(selectedHelperData1);
@@ -295,7 +295,7 @@ function ShipmentRecords() {
     async function fetchHelpers() {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/createhelper"
+          "https://shipment-backend.onrender.com/api/createhelper"
         );
         setHelpers(response.data);
       } catch (error) {
@@ -308,7 +308,7 @@ function ShipmentRecords() {
   const fetchDrivers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/driver"
+        "https://shipment-backend.onrender.com/api/driver"
       );
       const driversData = response.data;
       setDrivers(driversData);
@@ -327,7 +327,7 @@ function ShipmentRecords() {
 
   const fetchData = () => {
     axios
-      .get("http://localhost:5000/api/mergeapidata")
+      .get("https://shipment-backend.onrender.com/api/mergeapidata")
       .then((response) => {
         setCustomerData(response.data);
         // console.log(data.customer_contact);
@@ -351,7 +351,7 @@ function ShipmentRecords() {
   const confirmDelete = () => {
     axios
       .delete(
-        `http://localhost:5000/api/deleteShipmentsby/${deleteId}`
+        `https://shipment-backend.onrender.com/api/deleteShipmentsby/${deleteId}`
       )
       .then(() => {
         setCustomerData((prevData) =>
@@ -427,7 +427,7 @@ function ShipmentRecords() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/helperdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
         );
         const selectedHelperData = response.data;
         setHelperData(selectedHelperData);
@@ -454,7 +454,7 @@ function ShipmentRecords() {
     };
 
     // Make a PUT request to update the data
-    axios.put(`http://localhost:5000/api/updatecustomer/${editItem.id}`, updatedData)
+    axios.put(`https://shipment-backend.onrender.com/api/updatecustomer/${editItem.id}`, updatedData)
       .then((response) => {
         console.log('Data updated successfully:', response.data);
         toast.success("Shipment Details Updated Successfully!", {

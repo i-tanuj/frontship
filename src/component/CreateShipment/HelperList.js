@@ -10,8 +10,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
-
+import { DateTime } from 'luxon'; // Import the DateTime class from luxon
 function HelperList() {
+  const [searchTerm, setSearchTerm] = useState(''); // Initialize search term as empty
+
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState(null);
@@ -29,6 +31,7 @@ function HelperList() {
   const numbers = [...Array(npage + 1).keys()].slice(1);
   const [filteredData, setFilteredData] = useState([]);
   const [showAllData, setShowAllData] = useState(true);
+  const [searchText, setSearchText] = useState("");
   
   const handleDataCreated = () => {
     fetchData();
@@ -49,31 +52,51 @@ function HelperList() {
   }, []);
 
   useEffect(() => {
-    filterData();
+    if (!startDate || !endDate) {
+      setFilteredData(data); // If either start or end date is empty, show all data
+    } else {
+      const filtered = data.filter(customer => {
+        const formattedDate = DateTime.fromISO(customer.DateAndTime, { zone: 'UTC' }); // Assuming the database time is in UTC
+        const start = DateTime.fromISO(startDate, { zone: 'UTC' });
+        const end = DateTime.fromISO(endDate, { zone: 'UTC' });
+
+        // Include dates within the selected date range, including the start and end dates
+        return start.startOf('day') <= formattedDate.startOf('day') && formattedDate.startOf('day') <= end.startOf('day');
+      });
+      setFilteredData(filtered);
+    }
   }, [startDate, endDate, data]);
 
-  
+  // Function to handle the search filter
   useEffect(() => {
-    // Initially display all data
-    setFilteredData(data);
-    setShowAllData(true);
-  }, [data]); // Trigger when data changes
+    if (!searchTerm) {
+      setFilteredData(data); // If search term is empty, show all data
+    } else {
+      const filtered = data.filter(customer =>
+        customer.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  }, [searchTerm, data]);
 
 
-  const filterData = () => {
-    const filterStartDate = new Date(startDate).getTime(); // Parse start date
-    const filterEndDate = new Date(endDate).getTime(); // Parse end date
-
-    const filteredData = data.filter((item) => {
-      const itemDate = new Date(item.DateAndTime).getTime(); // Parse DateAndTime
-
-      // Check if the item date is within the selected range
-      return itemDate >= filterStartDate && itemDate <= filterEndDate;
-    });
-
-    setFilteredData(filteredData);
-    setShowAllData(false); // Set showAllData to false after filtering
+  const exportToExcel = () => {
+    const dataToExport = filteredData.map((item) => ({
+      'Helper Name': item.name,
+      'Helper Address': item.address,
+      'Helper Email': item.email,
+      'Helper Contact No': item.phoneno,
+      'Created At': item.DateAndTime,
+    }));
+  
+    const ws = XLSX.utils.json_to_sheet(dataToExport);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    FileSaver.saveAs(blob, 'Helper_List.xlsx');
   };
+    
 
   
   const fetchData = async () => {
@@ -87,49 +110,10 @@ function HelperList() {
     }
   };
 
-
-
-  
-  function exportToExcel() {
-    const data = contact.map((item) => [
-      item.name,
-      item.address,
-      item.email,
-      item.phoneno,
-      item.DateAndTime,
-    ]);
-  
-    const ws = XLSX.utils.aoa_to_sheet([
-      ['Helper Name', 'Helper Address', 'Helper Email', 'Helper Phone number', 'Registration Date'],
-      ...data,
-    ]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Helper Records');
-  
-    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
-      type: 'application/octet-stream',
-    });
-  
-    FileSaver.saveAs(blob, 'HelperRecords.xlsx');
-  }
-  
-  // Convert data to array buffer
-  function s2ab(s) {
-    const buf = new ArrayBuffer(s.length);
-    const view = new Uint8Array(buf);
-    for (let i = 0; i < s.length; i++) {
-      view[i] = s.charCodeAt(i) & 0xff;
-    }
-    return buf;
-  }
-  
-
- 
   async function deleteData(id) {
     setSelectedItemId(id); // Store the selected item's ID
     setModalIsOpenDelete(true); // Open the modal
   }
-
 
 async function confirmDelete(id) {
   try {
@@ -208,9 +192,6 @@ async function updateData() {
               placeholder="Edit Helper Name"
           value={editData.name}
           onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-
-              // onChange={(e) => handleInput(e)}
-              // value={name}
             />
           </FormGroup>
           <FormGroup>
@@ -334,17 +315,12 @@ async function updateData() {
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
         />
-                        {/* <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" /> */}
-                      {/* </span> */}
-                      {/* <span className="calender-icon"> */}
                       <input
           type="date"
           id="endDate"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
         />
-                        {/* <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" /> */}
-                      {/* </span> */}
 									</div>
                   </div>
                 
@@ -358,13 +334,14 @@ async function updateData() {
                       <i class="bi bi-search"></i>
                     </span>
                     <input
-                      style={{ fontSize: "15px" }}
-                      className="form-control me-2 serch-filed"
-                      type="search"
-                      placeholder="Search Here"
-                      aria-label="Search"
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
+                  style={{ fontSize: "15px" }}
+                  className="form-control me-2 serch-filed"
+                  aria-label="Search"
+                           type="text"
+          placeholder="Search by Name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+                />
                   </div>
                 </div>
                 <div className="d-flex">
@@ -416,7 +393,8 @@ async function updateData() {
             <td>{item.address}</td>
                         <td>{item.email}</td>
                         <td>{item.phoneno}</td>
-                        <td>{item.DateAndTime}</td>
+                        <td>{DateTime.fromISO(item.DateAndTime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td>
+                       
                         <td>
                           <button
                             className="btn btn1"
@@ -452,7 +430,9 @@ async function updateData() {
             <td>{item.address}</td>
                         <td>{item.email}</td>
                         <td>{item.phoneno}</td>
-                        <td>{item.DateAndTime}</td>
+                       
+              <td>{DateTime.fromISO(item.DateAndTime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td>
+                       
                         <td>
                           <button
                             className="btn btn1"

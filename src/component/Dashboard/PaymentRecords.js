@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
+import { DateTime } from 'luxon'; 
 
 import {
   Form,
@@ -70,6 +71,7 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function PaymentRecords() {
+  const [searchTerm, setSearchTerm] = useState(''); // Initialize search term as empty
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -136,31 +138,34 @@ function PaymentRecords() {
   }
   
   useEffect(() => {
-    filterData();
+    if (!startDate || !endDate) {
+      setFilteredData(data); // If either start or end date is empty, show all data
+    } else {
+      const filtered = data.filter(customer => {
+        const formattedDate = DateTime.fromISO(customer.DateAndTime, { zone: 'UTC' }); // Assuming the database time is in UTC
+        const start = DateTime.fromISO(startDate, { zone: 'UTC' });
+        const end = DateTime.fromISO(endDate, { zone: 'UTC' });
+
+        // Include dates within the selected date range, including the start and end dates
+        return start.startOf('day') <= formattedDate.startOf('day') && formattedDate.startOf('day') <= end.startOf('day');
+      });
+      setFilteredData(filtered);
+    }
   }, [startDate, endDate, data]);
 
-  
+  // Function to handle the search filter
   useEffect(() => {
-    // Initially display all data
-    setFilteredData(data);
-    setShowAllData(true);
-  }, [data]); // Trigger when data changes
+    if (!searchTerm) {
+      setFilteredData(data); // If search term is empty, show all data
+    } else {
+      const filtered = data.filter(customer =>
+        customer.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  }, [searchTerm, data]);
 
 
-  const filterData = () => {
-    const filterStartDate = new Date(startDate).getTime(); // Parse start date
-    const filterEndDate = new Date(endDate).getTime(); // Parse end date
-
-    const filteredData = data.filter((item) => {
-      const itemDate = new Date(item.DateAndTime).getTime(); // Parse DateAndTime
-
-      // Check if the item date is within the selected range
-      return itemDate >= filterStartDate && itemDate <= filterEndDate;
-    });
-
-    setFilteredData(filteredData);
-    setShowAllData(false); // Set showAllData to false after filtering
-  };
 
   useEffect(() => {
     fetchData();
@@ -175,11 +180,6 @@ function PaymentRecords() {
       console.error("Error fetching data:", error);
     }
   };
-
-  
-  
-  
-  
 
   return (
     <section class="homedive ">
@@ -248,8 +248,6 @@ function PaymentRecords() {
             <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser">
                 <h2>Payment Records List</h2>
-    
-        {/* <p>May 22, 2023</p>  */}
                 </div>
                 <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                     <div class="input-group input-group-lg">
@@ -292,12 +290,19 @@ function PaymentRecords() {
                       <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                   <div class="input-group input-group-lg">
                     <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
-                    <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search Here" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
+                    <input
+                  style={{ fontSize: "15px" }}
+                  className="form-control me-2 serch-filed"
+                  aria-label="Search"
+                           type="text"
+          placeholder="Search by Name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+                />
                   </div>
               </div>
                       <div className='d-flex'>
                         <div className='add-new-form-btn'>
-                            {/* <CreateHelper/> */}
                         </div>
                         <div className="export-btn">
             <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
@@ -335,7 +340,9 @@ function PaymentRecords() {
            
             <td>
               <div className='Successful-py-01'>{"Success"}</div></td>
-            <td>{item.DateAndTime}</td>
+            {/* <td>{item.DateAndTime}</td> */}
+            <td>{DateTime.fromISO(item.DateAndTime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td>
+
             
             <td>
             </td>
@@ -360,7 +367,9 @@ function PaymentRecords() {
            
             <td>
               <div className='Successful-py-01'>{"Success"}</div></td>
-            <td>{item.DateAndTime}</td>
+            {/* <td>{item.DateAndTime}</td> */}
+            <td>{DateTime.fromISO(item.DateAndTime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td>
+
             
             <td>
             </td>

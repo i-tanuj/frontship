@@ -10,6 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
+import { DateTime } from 'luxon'; // Import the DateTime class from luxon
 
 function DispatchList() {
   const [data, setData] = useState([]);
@@ -28,6 +29,8 @@ function DispatchList() {
   const numbers = [...Array(npage + 1).keys()].slice(1);
   const [filteredData, setFilteredData] = useState([]);
   const [showAllData, setShowAllData] = useState(true);
+  const [searchText, setSearchText] = useState(""); // Search text for filtering by customer name
+  const [searchTerm, setSearchTerm] = useState(''); // Initialize search term as empty
 
   const [selectedItemId, setSelectedItemId] = useState(null);
 
@@ -44,7 +47,7 @@ function DispatchList() {
     address: "",
     altpassword: "",
   });
-
+  
   useEffect(() => {
     fetchData();
   }, []);
@@ -118,64 +121,52 @@ function DispatchList() {
   }
 
   useEffect(() => {
-    filterData();
+    if (!startDate || !endDate) {
+      setFilteredData(data); // If either start or end date is empty, show all data
+    } else {
+      const filtered = data.filter(customer => {
+        const formattedDate = DateTime.fromISO(customer.DateAndTime, { zone: 'UTC' }); // Assuming the database time is in UTC
+        const start = DateTime.fromISO(startDate, { zone: 'UTC' });
+        const end = DateTime.fromISO(endDate, { zone: 'UTC' });
+
+        // Include dates within the selected date range, including the start and end dates
+        return start.startOf('day') <= formattedDate.startOf('day') && formattedDate.startOf('day') <= end.startOf('day');
+      });
+      setFilteredData(filtered);
+    }
   }, [startDate, endDate, data]);
 
+  // Function to handle the search filter
   useEffect(() => {
-    // Initially display all data
-    setFilteredData(data);
-    setShowAllData(true);
-  }, [data]); // Trigger when data changes
-
-  const filterData = () => {
-    const filterStartDate = new Date(startDate).getTime(); // Parse start date
-    const filterEndDate = new Date(endDate).getTime(); // Parse end date
-
-    const filteredData = data.filter((item) => {
-      const itemDate = new Date(item.DateAndTime).getTime(); // Parse DateAndTime
-
-      // Check if the item date is within the selected range
-      return itemDate >= filterStartDate && itemDate <= filterEndDate;
-    });
-
-    setFilteredData(filteredData);
-    setShowAllData(false); // Set showAllData to false after filtering
-  };
-
-  function exportToExcel() {
-    const data = contact.map((item) => [
-      item.name,
-      item.email,
-      item.password,
-      item.phone,
-    ]);
-
-    const ws = XLSX.utils.aoa_to_sheet([
-      ["Dispatcher Name", "Email", "Password", "Phone No"],
-      ...data,
-    ]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Driver Records");
-
-    const blob = new Blob(
-      [s2ab(XLSX.write(wb, { bookType: "xlsx", type: "binary" }))],
-      {
-        type: "application/octet-stream",
-      }
-    );
-
-    FileSaver.saveAs(blob, "DriverRecords.xlsx");
-  }
-
-  // Convert data to array buffer
-  function s2ab(s) {
-    const buf = new ArrayBuffer(s.length);
-    const view = new Uint8Array(buf);
-    for (let i = 0; i < s.length; i++) {
-      view[i] = s.charCodeAt(i) & 0xff;
+    if (!searchTerm) {
+      setFilteredData(data); // If search term is empty, show all data
+    } else {
+      const filtered = data.filter(customer =>
+        customer.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredData(filtered);
     }
-    return buf;
-  }
+  }, [searchTerm, data]);
+
+
+  const exportToExcel = () => {
+    const dataToExport = filteredData.map((item) => ({
+      'Dispatcher ID': item.id,
+      'Dispatcher Name': item.name,
+      'Email Id': item.email,
+      'Phone Number': item.phone,
+      'Password': item.password,
+      'Created At': item.DateAndTime,
+    }));
+  
+    const ws = XLSX.utils.json_to_sheet(dataToExport);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    FileSaver.saveAs(blob, 'Dispatcher_List.xlsx');
+  };
+    
 
   return (
     <section class="homedive ">
@@ -317,15 +308,14 @@ function DispatchList() {
                   <h2>All Dispatchers List</h2>
                 </div>
                 <div className="datepicker-date-comm">
-                  <input
+                <input
                     type="date"
                     id="startDate"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                   />
-                  <input
+                    <input
                     type="date"
-                    id="endDate"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                   />
@@ -340,13 +330,14 @@ function DispatchList() {
                       <i class="bi bi-search"></i>
                     </span>
                     <input
-                      style={{ fontSize: "15px" }}
-                      className="form-control me-2 serch-filed"
-                      type="search"
-                      placeholder="Search Here"
-                      aria-label="Search"
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
+                  style={{ fontSize: "15px" }}
+                  className="form-control me-2 serch-filed"
+                  aria-label="Search"
+                           type="text"
+          placeholder="Search by Name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+                />
                   </div>
                 </div>
                 <div className="d-flex">
@@ -406,7 +397,9 @@ function DispatchList() {
                           <td className="dis-email text-left">{item.email}</td>
                           <td>{item.password}</td>
                           <td>{item.phone}</td>
-                          <td>{item.DateAndTime}</td>
+                          {/* <td>{item.DateAndTime}</td> */}
+              <td>{DateTime.fromISO(item.DateAndTime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td>
+
                           <td>
                             <button
                               className="btn btn1"
@@ -447,7 +440,9 @@ function DispatchList() {
                           <td className="dis-email text-left">{item.email}</td>
                           <td>{item.password}</td>
                           <td>{item.phone}</td>
-                          <td>{item.DateAndTime}</td>
+                          {/* <td>{item.DateAndTime}</td> */}
+              <td>{DateTime.fromISO(item.DateAndTime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td>
+                          
                           <td>
                             <button
                               className="btn btn1"

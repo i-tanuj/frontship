@@ -10,6 +10,7 @@ import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import "react-toastify/dist/ReactToastify.css";
 import "react-datepicker/dist/react-datepicker.css";
+import { DateTime } from 'luxon'; // Import the DateTime class from luxon
 
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 
@@ -36,6 +37,9 @@ function VehicalList() {
   const [endDate, setEndDate] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const [showAllData, setShowAllData] = useState(true);
+  const [searchText, setSearchText] = useState("");
+  const [searchTerm, setSearchTerm] = useState(''); // Initialize search term as empty
+
   const handleDataCreated = () => {
     fetchData();
   };
@@ -122,66 +126,51 @@ async function updateData() {
 
  
 
-
 useEffect(() => {
-  filterData();
+  if (!startDate || !endDate) {
+    setFilteredData(data); // If either start or end date is empty, show all data
+  } else {
+    const filtered = data.filter(customer => {
+      const formattedDate = DateTime.fromISO(customer.DateAndTime, { zone: 'UTC' }); // Assuming the database time is in UTC
+      const start = DateTime.fromISO(startDate, { zone: 'UTC' });
+      const end = DateTime.fromISO(endDate, { zone: 'UTC' });
+
+      // Include dates within the selected date range, including the start and end dates
+      return start.startOf('day') <= formattedDate.startOf('day') && formattedDate.startOf('day') <= end.startOf('day');
+    });
+    setFilteredData(filtered);
+  }
 }, [startDate, endDate, data]);
 
-
+// Function to handle the search filter
 useEffect(() => {
-  // Initially display all data
-  setFilteredData(data);
-  setShowAllData(true);
-}, [data]); // Trigger when data changes
+  if (!searchTerm) {
+    setFilteredData(data); // If search term is empty, show all data
+  } else {
+    const filtered = data.filter(customer =>
+      customer.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredData(filtered);
+  }
+}, [searchTerm, data]);
 
 
-const filterData = () => {
-  const filterStartDate = new Date(startDate).getTime(); // Parse start date
-  const filterEndDate = new Date(endDate).getTime(); // Parse end date
+const exportToExcel = () => {
+  const dataToExport = filteredData.map((item) => ({
+    'Vehicle Name': item.name,
+    'Vehicle Plate No.': item.vehicalplate,
+    'Created At': item.DateAndTime,
+  }));
 
-  const filteredData = data.filter((item) => {
-    const itemDate = new Date(item.DateAndTime).getTime(); // Parse DateAndTime
-
-    // Check if the item date is within the selected range
-    return itemDate >= filterStartDate && itemDate <= filterEndDate;
-  });
-
-  setFilteredData(filteredData);
-  setShowAllData(false); // Set showAllData to false after filtering
+  const ws = XLSX.utils.json_to_sheet(dataToExport);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Data');
+  const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  FileSaver.saveAs(blob, 'Vehicle_List.xlsx');
 };
 
-  
-  function exportToExcel() {
-    const data = contact.map((item) => [
-      item.name,
-      item.vehicalplate,
-      item.DateAndTime,
-    ]);
-  
-    const ws = XLSX.utils.aoa_to_sheet([
-      ['Vehicle Name', 'Vehicle Plate', 'Registration Date'],
-      ...data,
-    ]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Vehicle Records');
-  
-    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
-      type: 'application/octet-stream',
-    });
-  
-    FileSaver.saveAs(blob, 'VehicleRecords.xlsx');
-  }
-  
-  // Convert data to array buffer
-  function s2ab(s) {
-    const buf = new ArrayBuffer(s.length);
-    const view = new Uint8Array(buf);
-    for (let i = 0; i < s.length; i++) {
-      view[i] = s.charCodeAt(i) & 0xff;
-    }
-    return buf;
-  }
-  
+
   
 
   return (
@@ -307,17 +296,13 @@ const filterData = () => {
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
         />
-                        {/* <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" /> */}
-                      {/* </span> */}
-                      {/* <span className="calender-icon"> */}
                       <input
           type="date"
           id="endDate"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
         />
-                        {/* <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" /> */}
-                      {/* </span> */}
+                    
 									</div>
                 <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                   <div class="input-group input-group-lg">
@@ -329,13 +314,14 @@ const filterData = () => {
                       <i class="bi bi-search"></i>
                     </span>
                     <input
-                      style={{ fontSize: "15px" }}
-                      className="form-control me-2 serch-filed"
-                      type="search"
-                      placeholder="Search Here"
-                      aria-label="Search"
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
+                  style={{ fontSize: "15px" }}
+                  className="form-control me-2 serch-filed"
+                  aria-label="Search"
+                           type="text"
+          placeholder="Search by Name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+                />
                   </div>
                 </div>
                 <div className="d-flex">
@@ -360,8 +346,6 @@ const filterData = () => {
                       No.
                     </th>
                     <th scope="col">vehicle Name</th>
-                    {/* <th scope="col">Vehical Email</th> */}
-                    {/* <th scope="col">Vehical Phone number</th> */}
                     <th scope="col">vehicle plate</th>
                     <th scope="col">Registration Date</th>
 
@@ -385,7 +369,9 @@ const filterData = () => {
                         </th>
                         <td>{item.name}</td>
                         <td>{`#` + item.vehicalplate}</td>
-                        <td>{item.DateAndTime}</td>
+                        {/* <td>{item.DateAndTime}</td> */}
+              <td>{DateTime.fromISO(item.DateAndTime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td>
+                        
                         <td>
                           <button
                             className="btn btn1"
@@ -419,7 +405,9 @@ const filterData = () => {
                         </th>
                         <td>{item.name}</td>
                         <td>{`#` + item.vehicalplate}</td>
-                        <td>{item.DateAndTime}</td>
+                        {/* <td>{item.DateAndTime}</td> */}
+              <td>{DateTime.fromISO(item.DateAndTime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td>
+                        
                         <td>
                           <button
                             className="btn btn1"
@@ -441,37 +429,7 @@ const filterData = () => {
         )}
 
 
-                  {/* {filteredData.filter((item) => {
-                      return search.toLowerCase() === ""
-                        ? item
-                        : item.name.toLowerCase().includes(search);
-                    })
-                    .map((item, i) => (
-                      <tr key={i}>
-                        <th scope="row">
-                          <span className="dispatcher-id">{i + 1}</span>
-                        </th>
-                        <td>{item.name}</td>
-                        <td>{`#` + item.vehicalplate}</td>
-                        <td>{item.DateAndTime}</td>
-                        <td>
-                          <button
-                            className="btn btn1"
-                            onClick={() => editDataItem(item)}
-                          >
-                            <i class="bi bi-pen"></i>
-                          </button>
-                          <button
-                            className="btn bt"
-                            onClick={() => {
-                                 deleteData(item.id);
-                            }}
-                          >
-                            <i class="bi bi-trash delete"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    ))} */}
+                 
                 </tbody>
               </table>
               <nav>

@@ -7,10 +7,10 @@ import CreateHelper from '../CreateShipment/CreateHelper'
 import DatePicker from "react-datepicker";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
+import { DateTime } from 'luxon'; 
+
 import "react-datepicker/dist/react-datepicker.css";
 import {
-  Nav,
-  NavItem,
   Form,
   FormGroup,
   Input,
@@ -19,13 +19,9 @@ import {
   ModalBody,
 } from "reactstrap";
 
-import { Link } from "react-router-dom";
-import { AiTwotoneDelete } from "react-icons/ai";
-
 async function ContactData(getContact){
 
   await axios.get('https://shipment-backend.onrender.com/api/summoney',
-  // { inst_hash: localStorage.getItem('inst_hash_manual') },
   {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
   }
@@ -74,14 +70,15 @@ async function deleteContact(ids,getContact,DefaultgetContact ){
 
 
 function SettlementHistory() {
+  const [searchTerm, setSearchTerm] = useState(''); // Initialize search term as empty
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [batchList,getBatchList] = useState([]);
-
-
+    const [filteredData, setFilteredData] = useState([]);
+    const [showAllData, setShowAllData] = useState(true);
     const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
     const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
     const [defaultcontact, DefaultgetContact] = useState([]);
@@ -97,6 +94,7 @@ function SettlementHistory() {
   const records = contact.slice(firstIndex, lastIndex);
   const npage = Math.ceil(contact.length / recordsPerPage)
   const numbers = [...Array(npage + 1).keys()].slice(1)
+  const [searchText, setSearchText] = useState("");
 
     useEffect(() => {
       ContactData(getContact,DefaultgetContact)   
@@ -110,54 +108,51 @@ function SettlementHistory() {
 
 
   
-  function exportToExcel() {
-    const data = contact.map((item) => [
-      item.full_name,
-      item.total_amount,
-      item.updateddatetime,
-      'Success',
-    ]);
+  const exportToExcel = () => {
+    const dataToExport = filteredData.map((item) => ({
+      'Driver Name': item.full_name,
+      'Settled Amount': item.total_amount,
+      'Payment Transfer Time': item.updateddatetime,
+      'Status': "successfully",
+    }));
   
-    const ws = XLSX.utils.aoa_to_sheet([
-      ['Driver Name', 'Settled Amount', 'Payment Details', 'Settlemenet Status'],
-      ...data,
-    ]);
+    const ws = XLSX.utils.json_to_sheet(dataToExport);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Settlemenet Records');
-  
-    const blob = new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'binary' }))], {
-      type: 'application/octet-stream',
-    });
-  
-    FileSaver.saveAs(blob, 'SettlemenetRecords.xlsx');
-  }
-  
-  // Convert data to array buffer
-  function s2ab(s) {
-    const buf = new ArrayBuffer(s.length);
-    const view = new Uint8Array(buf);
-    for (let i = 0; i < s.length; i++) {
-      view[i] = s.charCodeAt(i) & 0xff;
-    }
-    return buf;
-  }
-  
-
-  const handleStartDateChange = (date) => {
-    setStartDate(date);
-  };
-
-  const handleEndDateChange = (date) => {
-    setEndDate(date);
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    FileSaver.saveAs(blob, 'Settlement_History.xlsx');
   };
   
-  const filteredData = data.filter((item) => {
-    if (startDate && endDate) {
-      const itemDate = new Date(item.DateAndTime);
-      return itemDate >= startDate && itemDate <= endDate;
+
+  useEffect(() => {
+    if (!startDate || !endDate) {
+      setFilteredData(data); // If either start or end date is empty, show all data
+    } else {
+      const filtered = data.filter(customer => {
+        const formattedDate = DateTime.fromISO(customer.updateddatetime, { zone: 'UTC' }); // Assuming the database time is in UTC
+        const start = DateTime.fromISO(startDate, { zone: 'UTC' });
+        const end = DateTime.fromISO(endDate, { zone: 'UTC' });
+
+        // Include dates within the selected date range, including the start and end dates
+        return start.startOf('day') <= formattedDate.startOf('day') && formattedDate.startOf('day') <= end.startOf('day');
+      });
+      setFilteredData(filtered);
     }
-    return true;
-  });
+  }, [startDate, endDate, data]);
+
+  // Function to handle the search filter
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredData(data); // If search term is empty, show all data
+    } else {
+      const filtered = data.filter(customer =>
+        customer.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  }, [searchTerm, data]);
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -244,7 +239,7 @@ function SettlementHistory() {
                 <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                     <div class="input-group input-group-lg">
                     <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
-                 <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search Here" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
+                 <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search Here f" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
                       </div>
                 </div>
              
@@ -264,28 +259,17 @@ function SettlementHistory() {
 
 
                       <div  className='datepicker-date-comm'>
-                <span className="calender-icon">
-                        <DatePicker
-                          selected={startDate}
-                          onChange={handleStartDateChange}
-                          selectsStart
-                          startDate={startDate}
-                          endDate={endDate}
-                          placeholderText="Start Date"
-                        />
-                        <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" />
-                      </span>
-                      <span className="calender-icon">
-                        <DatePicker
-                          selected={endDate}
-                          onChange={handleEndDateChange}
-                          selectsEnd
-                          startDate={startDate}
-                          endDate={endDate}
-                          placeholderText="End Date"
-                        />
-                        <img class="calender-icon" src="assets/dashboard/calendar.png" alt="" />
-                      </span>
+                      <input
+                    type="date"
+                    id="startDate"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                       <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
 									</div>
 
 
@@ -293,7 +277,16 @@ function SettlementHistory() {
                       <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
                           <div class="input-group input-group-lg">
                             <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
-                            <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search Here" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} />
+                            {/* <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search h Here" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} /> */}
+                            <input
+                  style={{ fontSize: "15px" }}
+                  className="form-control me-2 serch-filed"
+                  aria-label="Search"
+                           type="text"
+          placeholder="Search by Name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+                />
                           </div>
                       </div>
                       <div className='d-flex'>
@@ -323,7 +316,9 @@ function SettlementHistory() {
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             <td>{item.full_name}</td>
             <td>{item.total_amount}</td>
-            <td>{item.updateddatetime}</td>
+            <td>{DateTime.fromISO(item.updateddatetime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td>
+
+            {/* <td>{item.updateddatetime}</td> */}
             {/* <td className="dis-email text-left">{item.full_name}</td> */}
             {/* <td>{item.phone}</td> */}
             <td><div className='Successful-py-01'>Successful</div></td>

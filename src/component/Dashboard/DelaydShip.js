@@ -8,7 +8,7 @@ import DatePicker from "react-datepicker";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import { toast, ToastContainer } from "react-toastify";
-
+import { DateTime } from 'luxon'; 
 
 import {
   Form,
@@ -25,6 +25,7 @@ function DelaydShip() {
     const [contact, getContact] = useState([]);
     const [name, setName] = useState('');
   const [deleteId, setDeleteId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(''); // Initialize search term as empty
 
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
@@ -77,9 +78,6 @@ function DelaydShip() {
   const [pickupDate, setPickupDate] = useState(''); // Customer Alternate Number
   const [filteredData, setFilteredData] = useState([]); // Filtered data
 
-
-
-
   function handleInput(e) {
     setName(e.target.value);
   }
@@ -125,7 +123,7 @@ function DelaydShip() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData1 = response.data;
         setDispatcherData1(selectedDispatcherData1);
@@ -140,7 +138,7 @@ function DelaydShip() {
   }, []);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/mergeapidata')
+    axios.get('https://shipment-backend.onrender.com/api/mergeapidata')
       .then((response) => {
         setData(response.data);
         const names = response.data.map((item) => item.customer_name);
@@ -168,20 +166,31 @@ function DelaydShip() {
 
   
   useEffect(() => {
-    // Filter data based on the search and date filter
-    const filtered = data.filter((item) => {
-      const itemDate = new Date(item.created_at);
-      const customerName = item.customer_name.toLowerCase();
-      const searchTextLower = searchText.toLowerCase();
+    if (!startDate || !endDate) {
+      setFilteredData(data); // If either start or end date is empty, show all data
+    } else {
+      const filtered = data.filter(customer => {
+        const formattedDate = DateTime.fromISO(customer.created_at, { zone: 'UTC' }); // Assuming the database time is in UTC
+        const start = DateTime.fromISO(startDate, { zone: 'UTC' });
+        const end = DateTime.fromISO(endDate, { zone: 'UTC' });
+        // Include dates within the selected date range, including the start and end dates
+        return start.startOf('day') <= formattedDate.startOf('day') && formattedDate.startOf('day') <= end.startOf('day');
+      });
+      setFilteredData(filtered);
+    }
+  }, [startDate, endDate, data]);
 
-      const dateCondition = !startDate || !endDate || (itemDate >= new Date(startDate) && itemDate <= new Date(endDate));
-      const searchCondition = !searchText || customerName.includes(searchTextLower);
-
-      return dateCondition && searchCondition;
-    });
-
-    setFilteredData(filtered);
-  }, [data, startDate, endDate, searchText]);
+  // Function to handle the search filter
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredData(data); // If search term is empty, show all data
+    } else {
+      const filtered = data.filter(customer =>
+        customer.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  }, [searchTerm, data]);
 
   const handleSelectChange2 = async (event) => {
     const selectedOptionValue = event.target.value;
@@ -191,7 +200,7 @@ function DelaydShip() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData2 = response.data;
         setDispatcherData2(selectedDispatcherData2);
@@ -206,7 +215,7 @@ function DelaydShip() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData3 = response.data;
         setDispatcherData3(selectedDispatcherData3);
@@ -224,7 +233,7 @@ function DelaydShip() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData = response.data;
         setDispatcherData(selectedDispatcherData);
@@ -261,7 +270,7 @@ function DelaydShip() {
   const fetchDispatchers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/creatcustomer"
+        "https://shipment-backend.onrender.com/api/creatcustomer"
       );
       const dispatcherData = response.data;
       setDispatchers(dispatcherData);
@@ -278,7 +287,7 @@ function DelaydShip() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/helperdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
         );
         const selectedHelperData1 = response.data;
         setHelperData1(selectedHelperData1);
@@ -303,7 +312,7 @@ function DelaydShip() {
     async function fetchHelpers() {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/createhelper"
+          "https://shipment-backend.onrender.com/api/createhelper"
         );
         setHelpers(response.data);
       } catch (error) {
@@ -316,7 +325,7 @@ function DelaydShip() {
   const fetchDrivers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/driver"
+        "https://shipment-backend.onrender.com/api/driver"
       );
       const driversData = response.data;
       setDrivers(driversData);
@@ -335,7 +344,7 @@ function DelaydShip() {
 
   const fetchData = () => {
     axios
-      .get("http://localhost:5000/api/mergeapidata")
+      .get("https://shipment-backend.onrender.com/api/mergeapidata")
       .then((response) => {
         setCustomerData(response.data);
         // console.log(data.customer_contact);
@@ -359,7 +368,7 @@ function DelaydShip() {
   const confirmDelete = () => {
     axios
       .delete(
-        `http://localhost:5000/api/deleteShipmentsby/${deleteId}`
+        `https://shipment-backend.onrender.com/api/deleteShipmentsby/${deleteId}`
       )
       .then(() => {
         setCustomerData((prevData) =>
@@ -419,7 +428,7 @@ function DelaydShip() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/helperdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
         );
         const selectedHelperData = response.data;
         setHelperData(selectedHelperData);
@@ -446,7 +455,7 @@ function DelaydShip() {
     };
 
     // Make a PUT request to update the data
-    axios.put(`http://localhost:5000/api/updatecustomer/${editItem.id}`, updatedData)
+    axios.put(`https://shipment-backend.onrender.com/api/updatecustomer/${editItem.id}`, updatedData)
       .then((response) => {
         console.log('Data updated successfully:', response.data);
         toast.success("Shipment Details Updated Successfully!", {
@@ -575,20 +584,18 @@ function DelaydShip() {
 
 
                 <div  className='datepicker-date-comm'>
-                {/* <span className="calender-icon"> */}
                 <input
-                    type="date"
-                    id="startDate"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                  />
-                        {/* <img className="calender-icon" src="assets/dashboard/calendar.png" alt="" /> */}
-                      {/* </span> */}
-                      <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                  />
+          type="date"
+          id="startDate"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+                       <input
+          type="date"
+          id="endDate"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
 									</div>
 
 
@@ -597,14 +604,14 @@ function DelaydShip() {
                       <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
                      
                       <input
-                      style={{ fontSize: "15px" }}
-                      className="form-control me-2 serch-filed"
-                      type="search"
-                      aria-label="Search"
-                      placeholder="Search by Customer Name"
-                      value={searchText}
-                      onChange={(e) => setSearchText(e.target.value)}
-                    />
+                  style={{ fontSize: "15px" }}
+                  className="form-control me-2 serch-filed"
+                  aria-label="Search"
+                           type="text"
+          placeholder="Search by Name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+                />
                     </div>
                 </div>
                 <div className='d-flex'>
@@ -652,6 +659,8 @@ function DelaydShip() {
                       <td>{item.vehicleplate}</td>
                       <td className=''>Delay</td>
                       <td>{item.created_at}</td>
+              {/* <td>{DateTime.fromISO(item.DateAndTime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td> */}
+
                       <td>
                         {/* <button
                           className="btn btn1"

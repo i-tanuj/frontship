@@ -5,21 +5,19 @@ import "../../css/dispatchlist.css";
 import Navbar from "../Navbar";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import DatePicker from "react-datepicker";
 import * as XLSX from "xlsx";
 import "react-datepicker/dist/react-datepicker.css";
 import * as FileSaver from "file-saver";
-
+import { DateTime } from 'luxon'; 
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
-
 import CreateCustomer from "./CreateCustomer";
 
 function CustomerList() {
+  const [searchTerm, setSearchTerm] = useState(''); // Initialize search term as empty
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [contact, getContact] = useState([]);
-
   const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
   const [defaultcontact, DefaultgetContact] = useState([]);
@@ -34,6 +32,7 @@ function CustomerList() {
   const [filteredData, setFilteredData] = useState([]);
   const [showAllData, setShowAllData] = useState(true);
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [searchText, setSearchText] = useState("");
 
   const handleDataCreated = () => {
     // Refresh data after a new driver is created
@@ -122,69 +121,54 @@ function CustomerList() {
     }
   }
 
+
   useEffect(() => {
-    filterData();
+    if (!startDate || !endDate) {
+      setFilteredData(data); // If either start or end date is empty, show all data
+    } else {
+      const filtered = data.filter(customer => {
+        const formattedDate = DateTime.fromISO(customer.DateAndTime, { zone: 'UTC' }); // Assuming the database time is in UTC
+        const start = DateTime.fromISO(startDate, { zone: 'UTC' });
+        const end = DateTime.fromISO(endDate, { zone: 'UTC' });
+
+        // Include dates within the selected date range, including the start and end dates
+        return start.startOf('day') <= formattedDate.startOf('day') && formattedDate.startOf('day') <= end.startOf('day');
+      });
+      setFilteredData(filtered);
+    }
   }, [startDate, endDate, data]);
 
-  
+  // Function to handle the search filter
   useEffect(() => {
-    // Initially display all data
-    setFilteredData(data);
-    setShowAllData(true);
-  }, [data]); // Trigger when data changes
-
-
-  
-  const filterData = () => {
-    const filterStartDate = new Date(startDate).getTime(); // Parse start date
-    const filterEndDate = new Date(endDate).getTime(); // Parse end date
-
-    const filteredData = data.filter((item) => {
-      const itemDate = new Date(item.DateAndTime).getTime(); // Parse DateAndTime
-
-      // Check if the item date is within the selected range
-      return itemDate >= filterStartDate && itemDate <= filterEndDate;
-    });
-
-    setFilteredData(filteredData);
-    setShowAllData(false); // Set showAllData to false after filtering
-  };
-
-  function exportToExcel() {
-    const data = contact.map((item) => [
-      item.name,
-      item.phoneno,
-      item.email,
-      item.address,
-      item.DateAndTime,
-    ]);
-
-    const ws = XLSX.utils.aoa_to_sheet([
-      ["Customer Name", "Phone No.", "Email", "Address", "Date And Time"],
-      ...data,
-    ]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Customer Records");
-
-    const blob = new Blob(
-      [s2ab(XLSX.write(wb, { bookType: "xlsx", type: "binary" }))],
-      {
-        type: "application/octet-stream",
-      }
-    );
-
-    FileSaver.saveAs(blob, "CustomerRecords.xlsx");
-  }
-
-  // Convert data to array buffer
-  function s2ab(s) {
-    const buf = new ArrayBuffer(s.length);
-    const view = new Uint8Array(buf);
-    for (let i = 0; i < s.length; i++) {
-      view[i] = s.charCodeAt(i) & 0xff;
+    if (!searchTerm) {
+      setFilteredData(data); // If search term is empty, show all data
+    } else {
+      const filtered = data.filter(customer =>
+        customer.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredData(filtered);
     }
-    return buf;
-  }
+  }, [searchTerm, data]);
+
+
+
+  const exportToExcel = () => {
+    const dataToExport = filteredData.map((item) => ({
+      'Customer Name': item.name,
+      'Customer ID': item.id,
+      'Email Id': item.email,
+      'Phone Number': item.phoneno,
+      'Address': item.address,
+      'Created At': item.DateAndTime,
+    }));
+  
+    const ws = XLSX.utils.json_to_sheet(dataToExport);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    FileSaver.saveAs(blob, 'Customer_List.xlsx');
+  };
 
   return (
     <section class="homedive ">
@@ -346,13 +330,15 @@ function CustomerList() {
                       <i class="bi bi-search"></i>
                     </span>
                     <input
-                      style={{ fontSize: "15px" }}
-                      className="form-control me-2 serch-filed"
-                      type="search"
-                      placeholder="Search Here"
-                      aria-label="Search"
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
+                  style={{ fontSize: "15px" }}
+                  className="form-control me-2 serch-filed"
+                  aria-label="Search"
+                           type="text"
+          placeholder="Search by Name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+                />
+
                   </div>
                 </div>
                 <div className="d-flex">
@@ -410,7 +396,8 @@ function CustomerList() {
                         <td>{item.phoneno}</td>
                         <td className="dis-email text-left">{item.email}</td>
                         <td>{item.address}</td>
-                        <td>{item.DateAndTime}</td>
+              <td>{DateTime.fromISO(item.DateAndTime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td>
+
                         <td>
                           <button
                             className="btn btn1"
@@ -447,7 +434,8 @@ function CustomerList() {
                         <td>{item.phoneno}</td>
                         <td className="dis-email text-left">{item.email}</td>
                         <td>{item.address}</td>
-                        <td>{item.DateAndTime}</td>
+              <td>{DateTime.fromISO(item.DateAndTime, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td>
+
                         <td>
                           <button
                             className="btn btn1"
@@ -469,41 +457,6 @@ function CustomerList() {
         )}
 
 
-                  {/* {filteredData
-                    .filter((item) => {
-                      return search.toLowerCase() === ""
-                        ? item
-                        : item.name.toLowerCase().includes(search);
-                    })
-                    .map((item, i) => (
-                      <tr key={i}>
-                        <th scope="row">
-                          <span className="dispatcher-id">{i + 1}</span>
-                        </th>
-                        <td>{item.id}</td>
-                        <td>{item.name}</td>
-                        <td>{item.phoneno}</td>
-                        <td className="dis-email text-left">{item.email}</td>
-                        <td>{item.address}</td>
-                        <td>{item.DateAndTime}</td>
-                        <td>
-                          <button
-                            className="btn btn1"
-                            onClick={() => editDataItem(item)}
-                          >
-                            <i class="bi bi-pen"></i>
-                          </button>
-                          <button
-                            className="btn bt"
-                            onClick={() => {
-                              deleteData(item.id);
-                            }}
-                          >
-                            <i class="bi bi-trash delete"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    ))} */}
                 </tbody>
               </table>
               <nav>

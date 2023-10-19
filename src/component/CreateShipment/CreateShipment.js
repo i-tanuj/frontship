@@ -306,7 +306,7 @@ function CreateShipment() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
+console.log()
     try {
       const response = await axios.post(
         "https://shipment-backend.onrender.com/api/newidshipment",
@@ -331,8 +331,8 @@ function CreateShipment() {
           vehicleplate: selectedVehicle,
           helper1: helperData.name,
           helper2: helperData1.name,
-          driver_id: selectedDriver,
-          driver_name : selectedDriver,
+          driver_id: selectedDriver.id,
+          driver_name : selectedDriver.full_name,
           customer_name1: dispatcherData2.name,
           customer_contact1: dispatcherData2.phoneno,
           customer_email1: dispatcherData2.email,
@@ -345,6 +345,7 @@ function CreateShipment() {
           drop_location1: dispatcherData3.address,
           drop_description1: adddescriptiondrop1,
         },
+        
        
             );
            
@@ -1050,14 +1051,17 @@ function CreateShipment() {
                               </label>
 
                               <select
-                                value={selectedDriver}
+                                value={JSON.stringify(selectedDriver)}
                                 onChange={(e) =>
-                                  setSelectedDriver(e.target.value)
+                                 {
+                                  setSelectedDriver(JSON.parse(e.target.value))
+                                  console.log(e.target.value);
+                                 }
                                 }
                               >
                                 <option value="">Select Driver</option>
                                 {drivers.map((driver) => (
-                                  <option key={driver.id} value={driver.id}>
+                                  <option key={driver.id} value={JSON.stringify(driver)}>
                                     {driver.full_name}
                                   </option>
                                 ))}
