@@ -42,49 +42,6 @@ function Createvehical({ onDataCreated }) {
   });
 
 
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setIsLoading(true);
-
-  //   const dataToSubmit = {
-  //     name,
-  //     vehicalplate,
-  //     DateAndTime: currentDate, 
-  //   };
-
-
-  //   if (name === '' || vehicalplate === '') {
-  //     setError(true);
-  //     setSuccbtn(<span className="" style={{ color: 'red' }}>Please fill all the fields</span>);
-  //   } else {
-  //     setError(false);
-  //     setSuccbtn('');
-  //     axios.post('https://shipment-backend.onrender.com/api/addvehical', dataToSubmit)
-  //       .then((response) => {
-  //         console.log(response.data);
-  //         setSuccbtn(<span className="" style={{ color: 'green' }}>Submitted Successfully</span>);
-  //   setModalIsOpen(false);
-
-  //   toast.success('Vehicle Created Successfully!', {
-  //     position: "top-right",
-  //     autoClose: 3000,
-  //     hideProgressBar: true,
-  //     closeOnClick: true,
-  //     pauseOnHover: false,
-  //     draggable: true,
-  //   });
-  //   onDataCreated();
-  //       })
-  //       .catch((error) => {
-  //         console.error('Error submitting data:', error);
-  //         setSuccbtn(<span className="" style={{ color: 'red' }}>Failed to submit data</span>);
-  //       } 
-  //       );   
-  //   }
-  // };
-
-
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -159,11 +116,7 @@ function Createvehical({ onDataCreated }) {
                     <p id="validate-batch" style={{ color: 'red' }}></p>
                     <Button disabled={isLoading} variant="contained" className='main_botton  submit-btn' type='submit'>
             {isLoading ? 'Loading...' : 'Create Vehicle'}
-            {/* {isLoading ? (
-              <i className="fa fa-spinner fa-spin"></i> // Font Awesome spinner icon
-            ) : (
-              'Create Vehicle'
-            )} */}
+           
                     </Button>
 
                 </Form>

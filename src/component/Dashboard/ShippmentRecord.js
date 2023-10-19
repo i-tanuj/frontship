@@ -385,51 +385,34 @@ function ShipmentRecords() {
       });
   };
 
-  function exportToExcel() {
-    const data = contact.map((item) => [
-      item.driver_id,
-      item.customer_name,
-      item.pick_up_location,
-      item.helper1,
-      item.helper2,
-      item.drop_date,
-      item.vehicleplate,
-    ]);
+  const exportToExcel = () => {
+    const dataToExport = filteredData.map((item) => ({
+      'Customer Name': item.customer_name,
+      'Pickup Date': item.pick_up_before,
+      'Customer Contact': item.customer_contact,
+      'Customer Alternate Number': item.customer_alt_num,
+      'Customer Email': item.customer_email,
+      'Pickup Location': item.pick_up_location,
+      'Customer Name 1': item.customer_name2,
+      'Customer Contact 1': item.customer_contact2,
+      'Drop Location': item.drop_location,
+      'Drop Date': item.drop_date,
+     'Vehicle Plate No.': item.vehicleplate,
+     'Helper 1': item.helper1,
+     'Helper 2': item.helper2,
+     'Driver Name': item.driver_name,
+     'Shipment Id': item.shipment_id,
+     'Create Date': item.created_at,
 
-    const ws = XLSX.utils.aoa_to_sheet([
-      [
-        "Driver Name",
-        "Customer Name.",
-        "Delivery Details",
-        "Helper 1",
-        "Helper 2",
-        "Date & Time Of Delivery",
-        "Vehicle Plate No.",
-      ],
-      ...data,
-    ]);
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(dataToExport);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Shipment Records");
-
-    const blob = new Blob(
-      [s2ab(XLSX.write(wb, { bookType: "xlsx", type: "binary" }))],
-      {
-        type: "application/octet-stream",
-      }
-    );
-
-    FileSaver.saveAs(blob, "ShipmentRecords.xlsx");
-  }
-
-  // Convert data to array buffer
-  function s2ab(s) {
-    const buf = new ArrayBuffer(s.length);
-    const view = new Uint8Array(buf);
-    for (let i = 0; i < s.length; i++) {
-      view[i] = s.charCodeAt(i) & 0xff;
-    }
-    return buf;
-  }
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    FileSaver.saveAs(blob, 'Shipment_Details.xlsx');
+  };
 
   const handleSelectChange4 = async (event) => {
     const selectedOptionValue = event.target.value;

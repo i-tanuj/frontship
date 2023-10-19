@@ -176,7 +176,7 @@ async function updateData() {
         onRequestClose={() => setModalIsOpenEdit(false)}
         className="main_modal_body dispatcher-list-form"
       >
-        <ModalBody className="modal_body">
+        <ModalBody className="modal_body helper-close">
           <AiOutlineClose
             className="main_AiOutlineClose close-icon"
             onClick={() => setModalIsOpenEdit(false)}
