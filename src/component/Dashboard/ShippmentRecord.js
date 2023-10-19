@@ -2,6 +2,7 @@ import React,{useState,useEffect} from 'react'
 import { AiOutlineClose } from "react-icons/ai";
 import axios from 'axios';
 import '../../css/dispatchlist.css'
+import { DateTime } from 'luxon'; 
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import * as XLSX from 'xlsx';
@@ -20,7 +21,7 @@ import { toast, ToastContainer } from "react-toastify";
 
 function ShipmentRecords() {
    const [pickUpLocation, setPickUpLocation] = useState(''); // Pick-up Location
-
+   const [searchTerm, setSearchTerm] = useState(''); // Initialize search term as empty
   const [contact, getContact] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -160,20 +161,32 @@ function ShipmentRecords() {
   }, []);
 
   useEffect(() => {
-    // Filter data based on the search and date filter
-    const filtered = data.filter((item) => {
-      const itemDate = new Date(item.created_at);
-      const customerName = item.customer_name.toLowerCase();
-      const searchTextLower = searchText.toLowerCase();
+    if (!startDate || !endDate) {
+      setFilteredData(data); // If either start or end date is empty, show all data
+    } else {
+      const filtered = data.filter(customer => {
+        const formattedDate = DateTime.fromISO(customer.created_at, { zone: 'UTC' }); // Assuming the database time is in UTC
+        const start = DateTime.fromISO(startDate, { zone: 'UTC' });
+        const end = DateTime.fromISO(endDate, { zone: 'UTC' });
 
-      const dateCondition = !startDate || !endDate || (itemDate >= new Date(startDate) && itemDate <= new Date(endDate));
-      const searchCondition = !searchText || customerName.includes(searchTextLower);
+        // Include dates within the selected date range, including the start and end dates
+        return start.startOf('day') <= formattedDate.startOf('day') && formattedDate.startOf('day') <= end.startOf('day');
+      });
+      setFilteredData(filtered);
+    }
+  }, [startDate, endDate, data]);
 
-      return dateCondition && searchCondition;
-    });
-
-    setFilteredData(filtered);
-  }, [data, startDate, endDate, searchText]);
+  // Function to handle the search filter
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredData(data); // If search term is empty, show all data
+    } else {
+      const filtered = data.filter(customer =>
+        customer.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  }, [searchTerm, data]);
 
   const handleSelectChange2 = async (event) => {
     const selectedOptionValue = event.target.value;
@@ -735,14 +748,14 @@ function ShipmentRecords() {
                     {/* <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search By Helper Name" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} /> */}
 
                     <input
-                      style={{ fontSize: "15px" }}
-                      className="form-control me-2 serch-filed"
-                      type="search"
-                      aria-label="Search"
-                      placeholder="Search by Customer Name"
-                      value={searchText}
-                      onChange={(e) => setSearchText(e.target.value)}
-                    />
+                  style={{ fontSize: "15px" }}
+                  className="form-control me-2 serch-filed"
+                  aria-label="Search"
+                           type="text"
+          placeholder="Search by Name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+                />
                     <div className="export-btn">
             <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
           </div>
