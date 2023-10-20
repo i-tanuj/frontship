@@ -121,7 +121,7 @@ function ShipmentDetails() {
         const names = response.data.map((item) => item.customer_name);
         setCustomerNames(names);
 
-        const ids = response.data.map((item) => item.driver_id);
+        const ids = response.data.map((item) => item.driver_name);
         const uniqueDriverIds = [...new Set(ids)];
         setDriverIds(uniqueDriverIds);
 
@@ -451,13 +451,13 @@ function ShipmentDetails() {
       });
   };
   
-  const openEditModal = (item) => {
+  const openEditModal = ( item) => {
     setEditItem(item);
     setModalIsOpenEdit(true);
     setSelectedCustomerName(item.customer_name);
     setSelectedShipmentId(item.shipment_id);
     setSelectedVehicle(item.vehicleplate);
-    setSelectedDriverId(item.driver_id);
+    setSelectedDriverId(item.driver_name);
     setSelectedHelper1(item.helper1);
     setSelectedHelper2(item.helper2);
     setPickupDate(item.pick_up_before);
@@ -617,9 +617,9 @@ function ShipmentDetails() {
               value={selectedDriverId}
               onChange={(e) => setSelectedDriverId(e.target.value)}
             >
-              {driverIds.map((id, index) => (
-                <option key={index} value={id}>
-                  {id}
+              {driverIds.map((full_name, index) => (
+                <option key={index} value={full_name}>
+                  {full_name}
                 </option>
               ))}
             </select>

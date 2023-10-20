@@ -140,7 +140,7 @@ function ShipmentRecords() {
         const names = response.data.map((item) => item.customer_name);
         setCustomerNames(names);
 
-        const ids = response.data.map((item) => item.driver_id);
+        const ids = response.data.map((item) => item.driver_name);
         const uniqueDriverIds = [...new Set(ids)];
         setDriverIds(uniqueDriverIds);
 
@@ -357,9 +357,6 @@ function ShipmentRecords() {
     setModalIsOpenDelete(true);
   };
 
-  // if (loading) {
-  //   return <p>Loading...</p>;
-  // }
 
   const confirmDelete = () => {
     axios
@@ -418,8 +415,6 @@ function ShipmentRecords() {
     const selectedOptionValue = event.target.value;
     setSelectedHelper(selectedOptionValue);
     console.log(selectedOptionValue);
-
-    // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
@@ -449,7 +444,6 @@ function ShipmentRecords() {
       customer_alt_num: customerAltNum,
     };
 
-    // Make a PUT request to update the data
     axios.put(`https://shipment-backend.onrender.com/api/updatecustomer/${editItem.id}`, updatedData)
       .then((response) => {
         console.log('Data updated successfully:', response.data);
@@ -475,7 +469,7 @@ function ShipmentRecords() {
     setSelectedCustomerName(item.customer_name);
     setSelectedShipmentId(item.shipment_id);
     setSelectedVehicle(item.vehicleplate);
-    setSelectedDriverId(item.driver_id);
+    setSelectedDriverId(item.driver_name);
     setSelectedHelper1(item.helper1);
     setSelectedHelper2(item.helper2);
     setPickupDate(item.pick_up_before);
