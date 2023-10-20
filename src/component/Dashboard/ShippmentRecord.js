@@ -755,32 +755,43 @@ function ShipmentRecords() {
                 <div class="col p-0">
                     <table class="table align-middle bg-white rounded m-0 dwf-shipment-rec" id="table-to-xls">
                         <thead class="tableheading">
-                          <tr>
-                             <th scope="col" class="borderre">Driver Name</th>
-                             <th scope="col" class="borderre">Customers Name</th>
-                             <th scope="col" class="borderre">Delivery Detail</th>
-                            <th scope="col" >Helper1</th>
-                            <th scope="col">Helper2</th>
-                            <th scope="col">Date & Time of Delivery</th>
-                            <th scope="col">Vehicle Plate No.</th>
-                            <th scope="col" class="borderre1">Action</th>
-                          </tr>
+                        <tr>
+
+<th scope="col">Pickup Details</th>
+<th scope="col">Delivery Details</th>
+<th scope="col">Driver Name</th>
+<th scope="col">Helper 1</th>
+<th scope="col">Helper 2</th>
+<th scope="col">Vehicle Plate No.</th>
+<th scope="col">Created Date</th>
+<th scope="col" class="borderre1">
+  Action
+</th>
+</tr>
                         </thead>
                       <tbody class="tbody">
   
                       {filteredData.map((item) => (
                     <tr key={item.id}>
                       <td>
-                        {item.driver_name}
+                        {item.pick_up_before}
+                        <br></br>
+                        {item.customer_name},<br></br> {item.customer_contact},{" "}
+                        <br></br>
+                        {item.pick_up_location}
                       </td>
                       <td>
-                       {item.customer_name}                    
+                        {item.drop_date},<br></br> {item.customer_name2}
+                        <br></br> {item.customer_contact2}, <br></br>{" "}
+                        {item.drop_location}
                       </td>
-                      <td>{item.drop_location}</td>
+                      <td>{item.driver_name}</td>
                       <td>{item.helper1}</td>
                       <td>{item.helper2}</td>
-                      <td>{item.pick_up_before} <br/> {item.drop_date} </td>
                       <td>{item.vehicleplate}</td>
+                      <td>{item.created_at}</td>
+              {/* <td>{DateTime.fromISO(item.created_at, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td> */}
+
                       <td>
                         <button
                           className="btn btn1"

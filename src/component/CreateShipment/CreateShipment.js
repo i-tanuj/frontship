@@ -1038,7 +1038,7 @@ console.log()
                               >
                                 <option value="">Select a Vehicle</option>
                                 {vehicleDetails.map((vehicle) => (
-                                  <option key={vehicle.id} value={vehicle.id}>
+                                  <option key={vehicle.id} value={vehicle.vehicalplate}>
                                     {vehicle.name} - {vehicle.model}
                                   </option>
                                 ))}
