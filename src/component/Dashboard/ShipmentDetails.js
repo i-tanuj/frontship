@@ -11,7 +11,29 @@ import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 import { Link } from "react-router-dom";
 import { DateTime } from 'luxon'; 
 
+
+
+async function ContactData(getContact, id) {
+  await axios
+    .get(
+      "https://shipment-backend.onrender.com/api/creatcustomer",
+      {
+        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+      }
+    )
+    .then((res) => {
+      getContact(res.data);
+    });
+}
+
+
 function ShipmentDetails() {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  // const [contact, getContact] = useState([]);
+  const [defaultcontact, DefaultgetContact] = useState([]);
+  const [dispatchname, setDispatchName] = useState("");
+  const [discontactnum, setDiscontactnum] = useState("");
+
   const [searchTerm, setSearchTerm] = useState(''); // Initialize search term as empty
   const [pickUpLocation, setPickUpLocation] = useState(''); // Pick-up Location
   const [contact, getContact] = useState([]);
@@ -42,10 +64,12 @@ function ShipmentDetails() {
   const [searchText, setSearchText] = useState(""); // Search text for filtering by customer name
   const [editItem, setEditItem] = useState(null);
   const [selectedCustomerName, setSelectedCustomerName] = useState("");
+  const [selectedCustomerName2, setSelectedCustomerName2] = useState("");
   const [selectedShipmentId, setSelectedShipmentId] = useState("");
   const [selectedVehicle, setSelectedVehicle] = useState("");
   const [selectedDriverId, setSelectedDriverId] = useState("");
   const [customerNames, setCustomerNames] = useState([]);
+  const [customerNames2, setCustomerNames2] = useState([]);
   const [driverIds, setDriverIds] = useState([]); // To store all driver IDs
   const [selectedHelper2, setSelectedHelper2] = useState("");
   const [helper1Options, setHelper1Options] = useState([]); // Helper 1 options
@@ -55,11 +79,45 @@ function ShipmentDetails() {
   const [customerAltNum, setCustomerAltNum] = useState(''); // Customer Alternate Number
   const [customerEmail, setCustomerEmail] = useState(''); // Customer Alternate Number
   const [pickupDate, setPickupDate] = useState(''); // Customer Alternate Number
+  const [dropDate, setDropDate] = useState(''); // Customer Alternate Number
   const [filteredData, setFilteredData] = useState([]); // Filtered data
+  const [email, setEmail] = useState("");
+  const [email1, setEmail1] = useState("");
+  const [altphone, setAltphone] = useState("");
+  const [altphone1, setAltphone1] = useState("");
+  const [phone, setPhone] = useState("");
+  const [phone1, setPhone1] = useState("");
+  const [pickuplocation, setPickuplocation] = useState("");
+  const [pickuplocation1, setPickuplocation1] = useState("");
+  const [pickupdate, setPickupdate] = useState("");
+  const [dropdate, setDropdate] = useState("");
+  const [dropdate1, setDropdate1] = useState("");
+  const [pickupdate1, setPickupdate1] = useState("");
+  const [description, setDescription] = useState("");
+  const [description1, setDescription1] = useState("");
+  const [maplink, setmaplink] = useState("");
+  const [selectedDriver, setSelectedDriver] = useState("");
+  const [selectshipdrop, setSelectshipdrop] = useState("");
+  const [selectshipdrop1, setSelectshipdrop1] = useState("");
+  const [adddescriptiondrop, setAdddescriptiondrop] = useState("");
+  const [adddescriptiondrop1, setAdddescriptiondrop1] = useState("");
+  const [isEditing, setIsEditing] = useState(false); // Track if we are in edit mode
 
+  const [vehicles, setVehicle] = useState([]);
+  const [link, setLink] = useState("");
+  const [link1, setLink1] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [latitude1, setLatitude1] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [longitude1, setLongitude1] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [vehicleDetails, setVehicleDetails] = useState([]);
   function handleInput(e) {
     setName(e.target.value);
   }
+  useEffect(() => {
+    ContactData(getContact, DefaultgetContact);
+  }, []);
   const [drivers, setDrivers] = useState([]);
   const [dispatchers, setDispatchers] = useState([]);
   const [dispatcherData, setDispatcherData] = useState({
@@ -91,6 +149,12 @@ function ShipmentDetails() {
     phoneno: "",
     altphone: "",
   });
+  const [vehicleData, setVehicleData] = useState({
+    id: "",
+    name: "",
+    email: "",
+    vehicalplate: "",
+  });
 
   const handleSelectChange1 = async (event) => {
     const selectedOptionValue = event.target.value;
@@ -120,6 +184,9 @@ function ShipmentDetails() {
         setData(response.data);
         const names = response.data.map((item) => item.customer_name);
         setCustomerNames(names);
+        
+        const names2 = response.data.map((item) => item.customer_name2);
+        setCustomerNames2(names2);
 
         const ids = response.data.map((item) => item.driver_name);
         const uniqueDriverIds = [...new Set(ids)];
@@ -140,6 +207,42 @@ function ShipmentDetails() {
         setLoading(false);
       });
   }, []);
+
+  
+  const handleSelectVehicle = async (event) => {
+    const selectedVehicleValue = event.target.value;
+    setSelectedVehicle(selectedVehicleValue);
+    console.log(selectedVehicleValue);
+
+    // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
+    if (selectedVehicleValue) {
+      try {
+        const response = await axios.get(
+          `https://shipment-backend.onrender.com/api/vehicledata/${selectedVehicleValue}`
+        );
+        const selectedVehicleData = response.data;
+        setVehicleData(selectedVehicleData);
+      } catch (error) {
+        console.error("Error fetching selected dispatcher:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchDispatchers();
+  }, []);
+
+  const fetchDispatchers = async () => {
+    try {
+      const response = await axios.get(
+        "https://shipment-backend.onrender.com/api/creatcustomer"
+      );
+      const dispatcherData = response.data;
+      setDispatchers(dispatcherData);
+    } catch (error) {
+      console.error("Error fetching dispatchers:", error);
+    }
+  };
 
   
   useEffect(() => {
@@ -221,6 +324,46 @@ function ShipmentDetails() {
     }
   };
 
+
+  
+  useEffect(() => {
+    axios.get('https://shipment-backend.onrender.com/api/mergeapidata')
+      .then(response => {
+        setData(response.data);
+        setFilteredData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (!startDate || !endDate) {
+      setFilteredData(data);
+    } else {
+      const filtered = data.filter(customer => {
+        const formattedDate = DateTime.fromISO(customer.created_at, { zone: 'Asia/Dubai' });
+        const start = DateTime.fromISO(startDate, { zone: 'Asia/Dubai' });
+        const end = DateTime.fromISO(endDate, { zone: 'Asia/Dubai' });
+        return start.startOf('day') <= formattedDate.startOf('day') && formattedDate.startOf('day') <= end.startOf('day');
+      });
+      setFilteredData(filtered);
+    }
+  }, [startDate, endDate, data]);
+
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredData(data);
+    } else {
+      const filtered = data.filter(customer =>
+        customer.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  }, [searchTerm, data]);
+
+
+
   const [editData, setEditData] = useState({
     id: null,
     driver_id: "",
@@ -241,21 +384,21 @@ function ShipmentDetails() {
     altphone: "",
   });
 
-  useEffect(() => {
-    fetchDispatchers();
-  }, []);
+  // useEffect(() => {
+  //   fetchDispatchers();
+  // }, []);
 
-  const fetchDispatchers = async () => {
-    try {
-      const response = await axios.get(
-        "https://shipment-backend.onrender.com/api/creatcustomer"
-      );
-      const dispatcherData = response.data;
-      setDispatchers(dispatcherData);
-    } catch (error) {
-      console.error("Error fetching dispatchers:", error);
-    }
-  };
+  // const fetchDispatchers = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "https://shipment-backend.onrender.com/api/creatcustomer"
+  //     );
+  //     const dispatcherData = response.data;
+  //     setDispatchers(dispatcherData);
+  //   } catch (error) {
+  //     console.error("Error fetching dispatchers:", error);
+  //   }
+  // };
 
   const handleSelectChange5 = async (event) => {
     const selectedOptionValue = event.target.value;
@@ -423,6 +566,7 @@ function ShipmentDetails() {
   const saveEditedData = () => {
     const updatedData = {
       customer_name: selectedCustomerName,
+      customer_name2: selectedCustomerName2,
       customer_contact: customerContact,
       customer_email: customerEmail, // Add this line for customer email
       helper1: selectedHelper1,
@@ -455,12 +599,14 @@ function ShipmentDetails() {
     setEditItem(item);
     setModalIsOpenEdit(true);
     setSelectedCustomerName(item.customer_name);
+    setSelectedCustomerName2(item.customer_name2);
     setSelectedShipmentId(item.shipment_id);
     setSelectedVehicle(item.vehicleplate);
     setSelectedDriverId(item.driver_name);
     setSelectedHelper1(item.helper1);
     setSelectedHelper2(item.helper2);
     setPickupDate(item.pick_up_before);
+    setDropDate(item.drop_date);
 
     const selectedCustomer = data.find((customer) => customer.customer_name === item.customer_name);
 
@@ -471,6 +617,413 @@ function ShipmentDetails() {
       setCustomerEmail(selectedCustomer.customer_email);
     }
   };
+
+
+
+
+
+  
+  // const [selectedVehicle, setSelectedVehicle] = useState("");
+
+  
+
+  // const fetchData = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "https://shipment-backend.onrender.com/api/vehicledetails"
+  //     );
+  //     setVehicleDetails(response.data); // Assuming the API returns an array of vehicle details
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
+  const handleVehicleChange = (event) => {
+    setSelectedVehicle(event.target.value);
+  };
+
+  // Vehicle Dropdown end here
+
+  // Helper Dropdown login start here
+
+  // const [helpers, setHelpers] = useState([]);
+  // const [selectedHelper1, setSelectedHelper1] = useState("");
+  // const [selectedHelper2, setSelectedHelper2] = useState("");
+
+  // useEffect(() => {
+  //   async function fetchHelpers() {
+  //     try {
+  //       const response = await axios.get(
+  //         "https://shipment-backend.onrender.com/api/createhelper"
+  //       );
+  //       setHelpers(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching helpers:", error);
+  //     }
+  //   }
+  //   fetchHelpers();
+  // }, []);
+
+  // Helper Dropdown end here
+
+  // Driver Dropdown start here
+
+  // const [drivers, setDrivers] = useState([]);
+  // const [selectedDrivers, setSelectedDrivers] = useState("");
+
+  // useEffect(() => {
+  //   fetchDrivers();
+  // }, []);
+
+  // const fetchDrivers = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "https://shipment-backend.onrender.com/api/driver"
+  //     );
+  //     const driversData = response.data;
+  //     setDrivers(driversData);
+  //   } catch (error) {
+  //     console.error("Error fetching drivers:", error);
+  //   }
+  // };
+
+  // Driver Dropdown end here
+
+ 
+
+  // const handleSelectChange = async (event) => {
+  //   const selectedOptionValue = event.target.value;
+  //   setSelectedDispatcher(selectedOptionValue);
+  //   console.log(selectedOptionValue);
+
+  //   // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
+  //   if (selectedOptionValue) {
+  //     try {
+  //       const response = await axios.get(
+  //         `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
+  //       );
+  //       const selectedDispatcherData = response.data;
+  //       setDispatcherData(selectedDispatcherData);
+  //     } catch (error) {
+  //       console.error("Error fetching selected dispatcher:", error);
+  //     }
+  //   }
+  // };
+  // const handleSelectChange1 = async (event) => {
+  //   const selectedOptionValue = event.target.value;
+  //   setSelectedDispatcher1(selectedOptionValue);
+  //   console.log(selectedOptionValue);
+
+  //   // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
+  //   if (selectedOptionValue) {
+  //     try {
+  //       const response = await axios.get(
+  //         `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
+  //       );
+  //       const selectedDispatcherData1 = response.data;
+  //       setDispatcherData1(selectedDispatcherData1);
+  //     } catch (error) {
+  //       console.error("Error fetching selected dispatcher:", error);
+  //     }
+  //   }
+  // };
+  // const handleSelectChange2 = async (event) => {
+  //   const selectedOptionValue = event.target.value;
+  //   setSelectedDispatcher2(selectedOptionValue);
+  //   console.log(selectedOptionValue);
+
+  //   if (selectedOptionValue) {
+  //     try {
+  //       const response = await axios.get(
+  //         `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
+  //       );
+  //       const selectedDispatcherData2 = response.data;
+  //       setDispatcherData2(selectedDispatcherData2);
+  //     } catch (error) {
+  //       console.error("Error fetching selected dispatcher:", error);
+  //     }
+  //   }
+  // };
+  // const handleSelectChange3 = async (event) => {
+  //   const selectedOptionValue = event.target.value;
+  //   setSelectedDispatcher3(selectedOptionValue);
+  //   if (selectedOptionValue) {
+  //     try {
+  //       const response = await axios.get(
+  //         `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
+  //       );
+  //       const selectedDispatcherData3 = response.data;
+  //       setDispatcherData3(selectedDispatcherData3);
+  //     } catch (error) {
+  //       console.error("Error fetching selected dispatcher:", error);
+  //     }
+  //   }
+  // };
+
+
+  // useEffect(() => {
+  //   fetchVehicle();
+  // }, []);
+
+  // const fetchVehicle = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "https://shipment-backend.onrender.com/api/vehicledetails"
+  //     );
+  //     const vehicleData = response.data;
+  //     setVehicle(vehicleData);
+  //   } catch (error) {
+  //     console.error("Error fetching dispatchers:", error);
+  //   }
+  // };
+
+ 
+ 
+
+  // const [name, setName] = useState("");
+  
+
+  // const [dispatcherData1, setDispatcherData1] = useState({
+  //   id: "",
+  //   name: "",
+  //   email: "",
+  //   phoneno: "",
+  //   altphone: "",
+  // });
+  // const [dispatcherData2, setDispatcherData2] = useState({
+  //   id: "",
+  //   name: "",
+  //   email: "",
+  //   phoneno: "",
+  //   altphone: "",
+  // });
+  // const [dispatcherData3, setDispatcherData3] = useState({
+  //   id: "",
+  //   name: "",
+  //   email: "",
+  //   phoneno: "",
+  //   altphone: "",
+  // });
+  
+
+  const initialDispatcherData = {
+    phoneno: "",
+    email: "",
+    altphone: "",
+    phone: "",
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+console.log()
+    try {
+      const response = await axios.post(
+        "https://shipment-backend.onrender.com/api/newidshipment",
+        {
+          customer_name: dispatcherData.name,
+          customer_contact: dispatcherData.phoneno,
+          customer_email: dispatcherData.email,
+          customer_alt_num: dispatcherData.altphone,
+          pick_up_location: dispatcherData.address,
+          pick_up_before: pickupdate,
+          drop_date: dropdate,
+          drop_date1: dropdate1,
+          latitude: latitude,
+          longitude: longitude,
+          latitude1: latitude1,
+          longitude1: longitude1,
+          description: description,
+          customer_name2: dispatcherData1.name,
+          customer_contact2: dispatcherData1.phoneno,
+          drop_location: dispatcherData1.address,
+          drop_description: adddescriptiondrop,
+          vehicleplate: selectedVehicle,
+          helper1: helperData.name,
+          helper2: helperData1.name,
+          driver_id: selectedDriver.id,
+          driver_name : selectedDriver.full_name,
+          customer_name1: dispatcherData2.name,
+          customer_contact1: dispatcherData2.phoneno,
+          customer_email1: dispatcherData2.email,
+          customer_alt_num1: dispatcherData2.altphone,
+          pick_up_location1: dispatcherData2.address,
+          pick_up_before1: pickupdate1,
+          description1: description1,
+          customer_name21: dispatcherData3.name,
+          customer_contact21: dispatcherData3.phoneno,
+          drop_location1: dispatcherData3.address,
+          drop_description1: adddescriptiondrop1,
+        },
+        
+       
+            );
+           
+            setModalIsOpen(false);
+      toast.success("Shipment successfully created!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+      });
+      setDispatcherData(initialDispatcherData);
+      setName("");
+      setPhone("");
+      setPhone1("");
+      setEmail("");
+      setmaplink("");
+      setAltphone("");
+      setPickuplocation("");
+      setPickupdate("");
+      setDescription("");
+      setDescription1("");
+      setDispatchName("");
+      setDiscontactnum("");
+      setSelectshipdrop("");
+      setAdddescriptiondrop("");
+      setSelectedVehicle("");
+      setSelectedHelper1("");
+      selectedHelper1("");
+      setSelectedHelper2("");
+      setSelectedDriver("");
+      setSelectedDispatcher("");
+      setSelectedDispatcher1("");
+      setSelectedDispatcher2("");
+      setSelectedDispatcher3("");
+      setDropdate("");
+      setDropdate1("");
+      // phoneno("");
+      dispatcherData("");
+      phone("");
+    } catch (error) {
+      console.error("Error submitting data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLinkChange = (event) => {
+    const newLink = event.target.value;
+    setLink(newLink);
+
+    // Use regular expression to extract latitude and longitude
+    const match = newLink.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (match) {
+      setLatitude(match[1]);
+      setLongitude(match[2]);
+    } else {
+      setLatitude("");
+      setLongitude("");
+    }
+  };
+
+  const handleLinkChange1 = (event) => {
+    const newLink1 = event.target.value;
+    setLink1(newLink1);
+
+    // Use regular expression to extract latitude and longitude
+    const matchs = newLink1.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (matchs) {
+      setLatitude1(matchs[1]);
+      setLongitude1(matchs[2]);
+    } else {
+      setLatitude1("");
+      setLongitude1("");
+    }
+  };
+
+  const availableDispatchersForSelectedDispatcher1 = dispatchers.filter(
+    (dispatcher) => !selectedDispatcher.includes(dispatcher.id)
+  );
+  const availableDispatchersForSelectedDispatcher2 = dispatchers.filter(
+    (dispatcher) =>
+      !selectedDispatcher.includes(dispatcher.id) &&
+      !selectedDispatcher1.includes(dispatcher.id)
+  );
+  const availableDispatchersForSelectedDispatcher3 = dispatchers.filter(
+    (dispatcher) =>
+      !selectedDispatcher.includes(dispatcher.id) &&
+      !selectedDispatcher1.includes(dispatcher.id) &&
+      !selectedDispatcher2.includes(dispatcher.id)
+  );
+  // const [selectedHelper, setSelectedHelper] = useState("");
+  // const availableHelpersForSelectedHelper1 = helpers.filter(
+  //   (helper) => !selectedHelper.includes(helper.id)
+  // );
+
+  // const [helperData, setHelperData] = useState({
+  //   id: "",
+  //   name: "",
+  //   email: "",
+  //   phoneno: "",
+  //   altphone: "",
+  // });
+  // const [helperData1, setHelperData1] = useState({
+  //   id: "",
+  //   name: "",
+  //   email: "",
+  //   phoneno: "",
+  //   altphone: "",
+  // });
+
+  // const handleSelectChange4 = async (event) => {
+  //   const selectedOptionValue = event.target.value;
+  //   setSelectedHelper(selectedOptionValue);
+  //   console.log(selectedOptionValue);
+
+  //   // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
+  //   if (selectedOptionValue) {
+  //     try {
+  //       const response = await axios.get(
+  //         `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
+  //       );
+  //       const selectedHelperData = response.data;
+  //       setHelperData(selectedHelperData);
+  //     } catch (error) {
+  //       console.error("Error fetching selected dispatcher:", error);
+  //     }
+  //   }
+  // }
+  // };
+  // const handleSelectChange5 = async (event) => {
+  //   const selectedOptionValue = event.target.value;
+  //   setSelectedHelper1(selectedOptionValue);
+  //   console.log(selectedOptionValue);
+
+  //   if (selectedOptionValue) {
+  //     try {
+  //       const response = await axios.get(
+  //         `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
+  //       );
+  //       const selectedHelperData1 = response.data;
+  //       setHelperData1(selectedHelperData1);
+  //     } catch (error) {
+  //       console.error("Error fetching selected dispatcher:", error);
+  //     }
+  //   }
+  // };
+
+  
+  const handleEditClick = (customer) => {
+    setEditData({ ...customer });
+    setIsEditing(true);
+    setModalIsOpen(true);
+  };
+
+  const handleSaveEdit = () => {
+    setIsEditing(false);
+    setEditData(null);
+    setModalIsOpen(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditData(null);
+    setModalIsOpen(false);
+  };
+
 
   return (
     <section class="homedive ">
@@ -487,29 +1040,42 @@ function ShipmentDetails() {
         </ModalBody>
         <Form className="form_main ">
     <div className="row">
+    <h5 className="pb-4 text-center">Pickup Details</h5>
         <div className="col-6">
           <label>Customer Name:</label>
           <FormGroup>
-            <select
-              value={selectedCustomerName}
-              onChange={(e) => setSelectedCustomerName(e.target.value)}
-            >
-              {customerNames.map((name, index) => (
-                <option key={index} value={name}>
-                  {name}
-                </option>
-              ))}
-            </select>
+          <select
+                                value={selectedDispatcher}
+                                onChange={handleSelectChange}
+                                name="customer_name"
+                                id="customer_name"
+                              >
+                                <option value="">Select Customer</option>
+                                {dispatchers.map((dispatcher) => (
+                                  <option
+                                    key={dispatcher.id}
+                                    value={dispatcher.id}
+                                    name="customer_name"
+                                    id="customer_name"
+                                  >
+                                    {dispatcher.name}
+                                  </option>
+                                ))}
+                              </select>
           </FormGroup>
         </div>
           <div className="col-6">
           <label>Customer Contact:</label>
           <FormGroup>
           <input
-            type="text"
-            value={customerContact}
-            onChange={(e) => setCustomerContact(e.target.value)}
-          />
+                                name="phoneno"
+                                value={dispatcherData.phoneno}
+                                onChange={(e) => setPhone(e.target.value)}
+                                // readOnly
+                                id="phoneno"
+                                placeholder="Enter Contact Number"
+                                type="number"
+                              />
           </FormGroup>
           </div>
           </div>
@@ -519,34 +1085,47 @@ function ShipmentDetails() {
           <FormGroup>
           <label>Customer Alternate Number:</label>
           <input
-            type="text"
-            value={customerAltNum}
-            onChange={(e) => setCustomerAltNum(e.target.value)}
-          />
+                                name="altphone"
+                                id="altphone"
+                                value={dispatcherData.altphone}
+                                onChange={(e) => setAltphone(e.target.value)}
+                                placeholder="Enter Alternate Number"
+                                type="number"
+                              />
           </FormGroup>
           </div>
           <div className="col-6">
-          <label>Shipment ID:</label>
+          <label>Customer Email ID:</label>
           <FormGroup>
           <input
-            type="text"
-            value={selectedShipmentId}
-            onChange={(e) => setSelectedShipmentId(e.target.value)}
-          />
+                                name="email"
+                                value={dispatcherData.email}
+                                id="email"
+                                // value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter Email Address"
+                                type="email"
+                              />
           </FormGroup>
           </div>
           </div>
 
           <div className="row">
         <div className="col-6">
-          <label>Customer Email:</label>
+          <label> Pick up Location</label>
 
           <FormGroup>
           <input
-            type="text"
-            value={customerEmail}
-            onChange={(e) => setCustomerEmail(e.target.value)}
-          />
+                                name="pickuplocation"
+                                // value={pickuplocation}
+                                value={dispatcherData.address}
+                                onChange={(e) =>
+                                  setPickuplocation(e.target.value)
+                                }
+                                id="pickuplocation"
+                                placeholder="Enter Pickup Location"
+                                type="text"
+                              />
           </FormGroup>
           </div>
           <div className="col-6">
@@ -562,6 +1141,120 @@ function ShipmentDetails() {
           </FormGroup>
           </div>
           </div>
+
+      
+          <label>Pick-up Location:</label>
+          <FormGroup>
+          <input
+            type="text"
+            value={pickUpLocation}
+            onChange={(e) => setPickUpLocation(e.target.value)}
+          />
+          </FormGroup>
+    <h5 className="p-4 text-center">Delivery Details</h5>
+<div className="row">
+    <div className="col-6">
+          <label>Customer Name:</label>
+          <FormGroup>
+          <select
+                                value={selectedDispatcher}
+                                onChange={handleSelectChange}
+                                name="customer_name"
+                                id="customer_name"
+                              >
+                                <option value="">Select Customer</option>
+                                {dispatchers.map((dispatcher) => (
+                                  <option
+                                    key={dispatcher.id}
+                                    value={dispatcher.id}
+                                    name="customer_name"
+                                    id="customer_name"
+                                  >
+                                    {dispatcher.name}
+                                  </option>
+                                ))}
+                              </select>
+          </FormGroup>
+        </div>
+          <div className="col-6">
+          <label>Customer Contact:</label>
+          <FormGroup>
+          <input
+                                name="phoneno"
+                                value={dispatcherData.phoneno}
+                                onChange={(e) => setPhone(e.target.value)}
+                                // readOnly
+                                id="phoneno"
+                                placeholder="Enter Contact Number"
+                                type="number"
+                              />
+          </FormGroup>
+          </div>
+          </div>
+          
+
+          <div className="row">
+        <div className="col-6">
+          <FormGroup>
+          <label>Customer Alternate Number:</label>
+          <input
+                                name="altphone"
+                                id="altphone"
+                                value={dispatcherData.altphone}
+                                onChange={(e) => setAltphone(e.target.value)}
+                                placeholder="Enter Alternate Number"
+                                type="number"
+                              />
+          </FormGroup>
+          </div>
+          <div className="col-6">
+          <label>Customer Email ID:</label>
+          <FormGroup>
+          <input
+                                name="email"
+                                value={dispatcherData.email}
+                                id="email"
+                                // value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter Email Address"
+                                type="email"
+                              />
+          </FormGroup>
+          </div>
+          </div>
+
+          <div className="row">
+        <div className="col-6">
+          <label> Pick up Location</label>
+
+          <FormGroup>
+          <input
+                                name="pickuplocation"
+                                // value={pickuplocation}
+                                value={dispatcherData.address}
+                                onChange={(e) =>
+                                  setPickuplocation(e.target.value)
+                                }
+                                id="pickuplocation"
+                                placeholder="Enter Pickup Location"
+                                type="text"
+                              />
+          </FormGroup>
+          </div>
+          <div className="col-6">
+
+          <label>Drop Date:</label>
+
+          <FormGroup>
+          <input
+            type="text"
+            value={dropDate}
+            onChange={(e) => setDropDate(e.target.value)}
+          />
+          </FormGroup>
+          </div>
+          </div>
+    <h5 className="p-4 text-center">Driver and Helpers Details</h5>
 
           <div className="row">
         <div className="col-6">
@@ -626,14 +1319,8 @@ function ShipmentDetails() {
           </FormGroup>
           </div>
           </div>
-          <label>Pick-up Location:</label>
-          <FormGroup>
-          <input
-            type="text"
-            value={pickUpLocation}
-            onChange={(e) => setPickUpLocation(e.target.value)}
-          />
-          </FormGroup>
+          
+
 
           <p id="edit-validate-batch" style={{ color: "red" }}></p>
           <Button
