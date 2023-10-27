@@ -36,6 +36,7 @@ function ShipmentDetails() {
 
   const [searchTerm, setSearchTerm] = useState(''); // Initialize search term as empty
   const [pickUpLocation, setPickUpLocation] = useState(''); // Pick-up Location
+  const [dropLocation, setDropLocation] = useState(''); // Pick-up Location
   const [contact, getContact] = useState([]);
   const [name, setName] = useState("");
   const [data, setData] = useState([]);
@@ -75,9 +76,11 @@ function ShipmentDetails() {
   const [helper1Options, setHelper1Options] = useState([]); // Helper 1 options
   const [helper2Options, setHelper2Options] = useState([]);
   const [customerContact, setCustomerContact] = useState(''); // Customer Contact
+  const [customerContact2, setCustomerContact2] = useState(''); // Customer Contact
   const [customerAddress, setCustomerAddress] = useState('');
   const [customerAltNum, setCustomerAltNum] = useState(''); // Customer Alternate Number
   const [customerEmail, setCustomerEmail] = useState(''); // Customer Alternate Number
+  const [customerEmail1, setCustomerEmail1] = useState(''); // Customer Alternate Number
   const [pickupDate, setPickupDate] = useState(''); // Customer Alternate Number
   const [dropDate, setDropDate] = useState(''); // Customer Alternate Number
   const [filteredData, setFilteredData] = useState([]); // Filtered data
@@ -98,7 +101,6 @@ function ShipmentDetails() {
   const [maplink, setmaplink] = useState("");
   const [selectedDriver, setSelectedDriver] = useState("");
   const [selectshipdrop, setSelectshipdrop] = useState("");
-  const [selectshipdrop1, setSelectshipdrop1] = useState("");
   const [adddescriptiondrop, setAdddescriptiondrop] = useState("");
   const [adddescriptiondrop1, setAdddescriptiondrop1] = useState("");
   const [isEditing, setIsEditing] = useState(false); // Track if we are in edit mode
@@ -573,10 +575,11 @@ function ShipmentDetails() {
       helper2: selectedHelper2,
       driver_id: selectedDriverId,
       customer_alt_num: customerAltNum,
+      customerContact2
     };
 
     // Make a PUT request to update the data
-    axios.put(`https://shipment-backend.onrender.com/api/updatecustomer/${editItem.id}`, updatedData)
+    axios.put(`http://localhost:5000/api/updatecustomer/${editItem.id}`, updatedData)
       .then((response) => {
         console.log('Data updated successfully:', response.data);
         toast.success("Shipment Details Updated Successfully!", {
@@ -602,19 +605,29 @@ function ShipmentDetails() {
     setSelectedCustomerName2(item.customer_name2);
     setSelectedShipmentId(item.shipment_id);
     setSelectedVehicle(item.vehicleplate);
+    // customer_email customer_contact
     setSelectedDriverId(item.driver_name);
     setSelectedHelper1(item.helper1);
     setSelectedHelper2(item.helper2);
     setPickupDate(item.pick_up_before);
     setDropDate(item.drop_date);
-
+    setSelectedDispatcher(item.customer_name);
+    setSelectedDispatcher1(item.customer_name2);
+    setCustomerContact2(item.customer_contact2)
+    console.log("2nd "+ item.customer_contact);
+    
+    
     const selectedCustomer = data.find((customer) => customer.customer_name === item.customer_name);
-
+    
     if (selectedCustomer) {
       setCustomerContact(selectedCustomer.customer_contact);
+      setCustomerContact2(selectedCustomer.customer_contact2);
+      console.log("3nd "+ selectedCustomer.customer_contact);
       setCustomerAltNum(selectedCustomer.customer_alt_num);
       setPickUpLocation(selectedCustomer.pick_up_location);
+      setDropLocation(selectedCustomer.drop_location);
       setCustomerEmail(selectedCustomer.customer_email);
+      setCustomerEmail1(selectedCustomer.customer_email1);
     }
   };
 
@@ -1010,7 +1023,12 @@ console.log()
     setEditData({ ...customer });
     setIsEditing(true);
     setModalIsOpen(true);
+
+    // Set the selected value for the "Customer Name" dropdown
+    setSelectedDispatcher(customer.customer_name);
+    setSelectedDispatcher1(customer.customer_name2);
   };
+
 
   const handleSaveEdit = () => {
     setIsEditing(false);
@@ -1045,23 +1063,21 @@ console.log()
           <label>Customer Name:</label>
           <FormGroup>
           <select
-                                value={selectedDispatcher}
-                                onChange={handleSelectChange}
-                                name="customer_name"
-                                id="customer_name"
-                              >
-                                <option value="">Select Customer</option>
-                                {dispatchers.map((dispatcher) => (
-                                  <option
-                                    key={dispatcher.id}
-                                    value={dispatcher.id}
-                                    name="customer_name"
-                                    id="customer_name"
-                                  >
-                                    {dispatcher.name}
-                                  </option>
-                                ))}
-                              </select>
+                value={selectedDispatcher} // Autofill the dropdown
+                onChange={handleSelectChange}
+                name="customer_name"
+                id="customer_name"
+              >
+                <option value="">Select Customer</option>
+                {dispatchers.map((dispatcher) => (
+                  <option
+                    key={dispatcher.id}
+                    value={dispatcher.name}
+                  >
+                    {dispatcher.name}
+                  </option>
+                ))}
+              </select>
           </FormGroup>
         </div>
           <div className="col-6">
@@ -1069,7 +1085,7 @@ console.log()
           <FormGroup>
           <input
                                 name="phoneno"
-                                value={dispatcherData.phoneno}
+                                value={customerContact}
                                 onChange={(e) => setPhone(e.target.value)}
                                 // readOnly
                                 id="phoneno"
@@ -1087,7 +1103,7 @@ console.log()
           <input
                                 name="altphone"
                                 id="altphone"
-                                value={dispatcherData.altphone}
+                                value={customerAltNum}
                                 onChange={(e) => setAltphone(e.target.value)}
                                 placeholder="Enter Alternate Number"
                                 type="number"
@@ -1099,7 +1115,7 @@ console.log()
           <FormGroup>
           <input
                                 name="email"
-                                value={dispatcherData.email}
+                                value={customerEmail}
                                 id="email"
                                 // value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -1117,11 +1133,11 @@ console.log()
           <FormGroup>
           <input
                                 name="pickuplocation"
-                                // value={pickuplocation}
-                                value={dispatcherData.address}
-                                onChange={(e) =>
-                                  setPickuplocation(e.target.value)
-                                }
+                                value={pickUpLocation}
+                                    // onChange={(e) =>
+                                    //   setPickuplocation(e.target.value)
+                                    // }
+                                
                                 id="pickuplocation"
                                 placeholder="Enter Pickup Location"
                                 type="text"
@@ -1143,37 +1159,35 @@ console.log()
           </div>
 
       
-          <label>Pick-up Location:</label>
+          {/* <label>Pick-up Location:</label>
           <FormGroup>
           <input
             type="text"
             value={pickUpLocation}
             onChange={(e) => setPickUpLocation(e.target.value)}
           />
-          </FormGroup>
+          </FormGroup> */}
     <h5 className="p-4 text-center">Delivery Details</h5>
 <div className="row">
     <div className="col-6">
           <label>Customer Name:</label>
           <FormGroup>
           <select
-                                value={selectedDispatcher}
-                                onChange={handleSelectChange}
-                                name="customer_name"
-                                id="customer_name"
-                              >
-                                <option value="">Select Customer</option>
-                                {dispatchers.map((dispatcher) => (
-                                  <option
-                                    key={dispatcher.id}
-                                    value={dispatcher.id}
-                                    name="customer_name"
-                                    id="customer_name"
-                                  >
-                                    {dispatcher.name}
-                                  </option>
-                                ))}
-                              </select>
+                value={selectedDispatcher1} // Autofill the dropdown
+                onChange={handleSelectChange1}
+                name="customer_name"
+                id="customer_name"
+              >
+                <option value="">Select Customer</option>
+                {dispatchers.map((dispatcher) => (
+                  <option
+                    key={dispatcher.id}
+                    value={dispatcher.name}
+                  >
+                    {dispatcher.name}
+                  </option>
+                ))}
+              </select>
           </FormGroup>
         </div>
           <div className="col-6">
@@ -1181,7 +1195,7 @@ console.log()
           <FormGroup>
           <input
                                 name="phoneno"
-                                value={dispatcherData.phoneno}
+                                value={customerContact2}
                                 onChange={(e) => setPhone(e.target.value)}
                                 // readOnly
                                 id="phoneno"
@@ -1191,52 +1205,19 @@ console.log()
           </FormGroup>
           </div>
           </div>
-          
-
           <div className="row">
         <div className="col-6">
-          <FormGroup>
-          <label>Customer Alternate Number:</label>
-          <input
-                                name="altphone"
-                                id="altphone"
-                                value={dispatcherData.altphone}
-                                onChange={(e) => setAltphone(e.target.value)}
-                                placeholder="Enter Alternate Number"
-                                type="number"
-                              />
-          </FormGroup>
-          </div>
-          <div className="col-6">
-          <label>Customer Email ID:</label>
-          <FormGroup>
-          <input
-                                name="email"
-                                value={dispatcherData.email}
-                                id="email"
-                                // value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter Email Address"
-                                type="email"
-                              />
-          </FormGroup>
-          </div>
-          </div>
-
-          <div className="row">
-        <div className="col-6">
-          <label> Pick up Location</label>
-
+          <label> Drop Location</label>
           <FormGroup>
           <input
                                 name="pickuplocation"
                                 // value={pickuplocation}
-                                value={dispatcherData.address}
+                                value={dropLocation}
                                 onChange={(e) =>
                                   setPickuplocation(e.target.value)
                                 }
                                 id="pickuplocation"
-                                placeholder="Enter Pickup Location"
+                                placeholder="Drop Location"
                                 type="text"
                               />
           </FormGroup>
