@@ -567,19 +567,24 @@ function ShipmentDetails() {
   
   const saveEditedData = () => {
     const updatedData = {
-      customer_name: selectedCustomerName,
-      customer_name2: selectedCustomerName2,
+      customer_name: selectedDispatcher,
       customer_contact: customerContact,
+      customer_alt_num: customerAltNum,
       customer_email: customerEmail, // Add this line for customer email
+      pick_up_location: pickUpLocation,
+      pick_up_before: pickupDate,
+      customer_name2: selectedDispatcher1,
+      customer_contact2: customerContact2,
+      drop_location: dropLocation,
+      drop_date: dropDate,
       helper1: selectedHelper1,
       helper2: selectedHelper2,
-      driver_id: selectedDriverId,
-      customer_alt_num: customerAltNum,
-      customerContact2
+      driver_name: selectedDriverId,
+      vehicleplate: selectedVehicle
     };
 
     // Make a PUT request to update the data
-    axios.put(`http://localhost:5000/api/updatecustomer/${editItem.id}`, updatedData)
+    axios.put(`https://shipment-backend.onrender.com/api/updatecustomer/${editItem.id}`, updatedData)
       .then((response) => {
         console.log('Data updated successfully:', response.data);
         toast.success("Shipment Details Updated Successfully!", {
@@ -605,7 +610,6 @@ function ShipmentDetails() {
     setSelectedCustomerName2(item.customer_name2);
     setSelectedShipmentId(item.shipment_id);
     setSelectedVehicle(item.vehicleplate);
-    // customer_email customer_contact
     setSelectedDriverId(item.driver_name);
     setSelectedHelper1(item.helper1);
     setSelectedHelper2(item.helper2);
@@ -614,7 +618,7 @@ function ShipmentDetails() {
     setSelectedDispatcher(item.customer_name);
     setSelectedDispatcher1(item.customer_name2);
     setCustomerContact2(item.customer_contact2)
-    console.log("2nd "+ item.customer_contact);
+    // console.log("2nd "+ item.customer_contact);
     
     
     const selectedCustomer = data.find((customer) => customer.customer_name === item.customer_name);
@@ -622,7 +626,7 @@ function ShipmentDetails() {
     if (selectedCustomer) {
       setCustomerContact(selectedCustomer.customer_contact);
       setCustomerContact2(selectedCustomer.customer_contact2);
-      console.log("3nd "+ selectedCustomer.customer_contact);
+      // console.log("3nd "+ selectedCustomer.customer_contact);
       setCustomerAltNum(selectedCustomer.customer_alt_num);
       setPickUpLocation(selectedCustomer.pick_up_location);
       setDropLocation(selectedCustomer.drop_location);
@@ -1134,9 +1138,9 @@ console.log()
           <input
                                 name="pickuplocation"
                                 value={pickUpLocation}
-                                    // onChange={(e) =>
-                                    //   setPickuplocation(e.target.value)
-                                    // }
+                                    onChange={(e) =>
+                                      setPickuplocation(e.target.value)
+                                    }
                                 
                                 id="pickuplocation"
                                 placeholder="Enter Pickup Location"
@@ -1157,16 +1161,6 @@ console.log()
           </FormGroup>
           </div>
           </div>
-
-      
-          {/* <label>Pick-up Location:</label>
-          <FormGroup>
-          <input
-            type="text"
-            value={pickUpLocation}
-            onChange={(e) => setPickUpLocation(e.target.value)}
-          />
-          </FormGroup> */}
     <h5 className="p-4 text-center">Delivery Details</h5>
 <div className="row">
     <div className="col-6">
