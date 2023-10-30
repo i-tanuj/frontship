@@ -8,7 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 async function ContactData(getContact, id) {
   await axios
     .get(
-      "http://localhost:5000/api/creatcustomer",
+      "https://shipment-backend.onrender.com/api/creatcustomer",
       {
         headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
       }
@@ -37,7 +37,7 @@ function FormComponent() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/vehicledetails"
+        "https://shipment-backend.onrender.com/api/vehicledetails"
       );
       setVehicleDetails(response.data); // Assuming the API returns an array of vehicle details
     } catch (error) {
