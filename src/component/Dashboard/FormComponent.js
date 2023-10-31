@@ -57,7 +57,7 @@ function FormComponent() {
     async function fetchHelpers() {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/createhelper"
+          "https://shipment-backend.onrender.com/api/createhelper"
         );
         setHelpers(response.data);
       } catch (error) {
@@ -79,7 +79,7 @@ function FormComponent() {
   const fetchDrivers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/driver"
+        "https://shipment-backend.onrender.com/api/driver"
       );
       const driversData = response.data;
       setDrivers(driversData);
@@ -106,7 +106,7 @@ function FormComponent() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
           );
           const selectedDispatcherData = response.data;
           setDispatcherData(selectedDispatcherData);
@@ -125,7 +125,7 @@ function FormComponent() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData1 = response.data;
         setDispatcherData1(selectedDispatcherData1);
@@ -142,7 +142,7 @@ function FormComponent() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData2 = response.data;
         setDispatcherData2(selectedDispatcherData2);
@@ -157,7 +157,7 @@ function FormComponent() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
         );
         const selectedDispatcherData3 = response.data;
         setDispatcherData3(selectedDispatcherData3);
@@ -176,7 +176,7 @@ function FormComponent() {
     if (selectedVehicleValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/vehicledata/${selectedVehicleValue}`
+          `https://shipment-backend.onrender.com/api/vehicledata/${selectedVehicleValue}`
         );
         const selectedVehicleData = response.data;
         setVehicleData(selectedVehicleData);
@@ -199,7 +199,7 @@ function FormComponent() {
   const fetchDispatchers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/creatcustomer"
+        "https://shipment-backend.onrender.com/api/creatcustomer"
       );
       const dispatcherData = response.data;
       setDispatchers(dispatcherData);
@@ -215,7 +215,7 @@ function FormComponent() {
   const fetchVehicle = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/vehicledetails"
+        "https://shipment-backend.onrender.com/api/vehicledetails"
       );
       const vehicleData = response.data;
       setVehicle(vehicleData);
@@ -293,7 +293,7 @@ function FormComponent() {
 console.log()
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/newidshipment",
+        "https://shipment-backend.onrender.com/api/newidshipment",
         {
           customer_name: dispatcherData.name,
           customer_contact: dispatcherData.phoneno,
@@ -451,7 +451,7 @@ console.log()
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/helperdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
         );
         const selectedHelperData = response.data;
         setHelperData(selectedHelperData);
@@ -468,7 +468,7 @@ console.log()
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/helperdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
         );
         const selectedHelperData1 = response.data;
         setHelperData1(selectedHelperData1);
@@ -494,7 +494,7 @@ console.log()
   });
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/mergeapidata')
+    axios.get('https://shipment-backend.onrender.com/api/mergeapidata')
       .then(response => {
         setData(response.data);
         setFilteredData(response.data);
@@ -549,6 +549,24 @@ console.log()
     setEditData(null);
     setModalIsOpen(false);
   };
+
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("https://shipment-backend.onrender.com/api/vehicledetails");
+        setVehicleDetails(response.data); // Assuming the API returns an array of vehicle details
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // const handleVehicleChange = (event) => {
+  //   setSelectedVehicle(event.target.value);
+  // };
 
   
 
@@ -726,20 +744,17 @@ console.log()
                           <div className="row">
                             <div className="mb-4 w-50">
                               <label className="form-label">
-                                Pick up Location
+                                Select Vehicle
                                 <span className="stra-icon"></span>
                               </label>
-                              <input
-                                name="pickuplocation"
-                                // value={pickuplocation}
-                                value={dispatcherData.address}
-                                onChange={(e) =>
-                                  setPickuplocation(e.target.value)
-                                }
-                                id="pickuplocation"
-                                placeholder="Enter Pickup Location"
-                                type="text"
-                              />
+                              <select value={selectedVehicle} onChange={handleVehicleChange}>
+        <option value="">Select a vehicle</option>
+        {vehicleDetails.map((vehicle, index) => (
+          <option key={index} value={vehicle.name}>
+            {vehicle.name}
+          </option>
+        ))}
+      </select>
                             </div>
                             </div>
 

@@ -7,6 +7,7 @@ import FormComponent from './component/Dashboard/FormComponent';
 import DetailView from './component/Dashboard/DetailView';
 import ShipmentDetails from './component/Dashboard/ShipmentDetails';
 import CancelShip from './component/Dashboard/CancelShip';
+import VehicleSelector from './component/Dashboard/VehicleSelector';
 const Login = React.lazy(() => import("./component/Login"));
 const VerifyOTP =  React.lazy(() => import("./component/VerifyOTP"))
 const ForgetPassword =  React.lazy(() => import("./component/ForgetPassword"))
@@ -24,6 +25,7 @@ const ViewShipment = React.lazy(() => import("./component/Dashboard/ViewShipment
 const DelaydShip = React.lazy(() => import("./component/Dashboard/DelaydShip"))
 const PendingShip = React.lazy(() => import("./component/Dashboard/PendingShip"))
 const formcomponent = React.lazy(() => import("./component/Dashboard/FormComponent"))
+const vehicleselector = React.lazy(() => import("./component/Dashboard/VehicleSelector"))
 function App() {
   const tokendata =localStorage.getItem("jwt");
   return (
@@ -50,7 +52,7 @@ function App() {
             <Route  exact path="/pending" element={<PendingShip/>}/>
             <Route  exact path="/shipment-list" element={<ShipmentDetails/>}/>
             <Route  exact path="/cancel-shipment" element={<CancelShip/>}/>
-            <Route  exact path="/formcomponent" element={<FormComponent/>}/>
+            <Route  exact path="/vehicleselector" element={<VehicleSelector/>}/>
             <Route path="/details/:id" component={DetailView} />
           </Routes>
         </React.Suspense>

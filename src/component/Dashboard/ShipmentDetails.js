@@ -9,34 +9,26 @@ import * as FileSaver from "file-saver";
 import { toast, ToastContainer } from "react-toastify";
 import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 import { Link } from "react-router-dom";
-import { DateTime } from 'luxon'; 
-
-
+import { DateTime } from "luxon";
 
 async function ContactData(getContact, id) {
   await axios
-    .get(
-      "https://shipment-backend.onrender.com/api/creatcustomer",
-      {
-        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-      }
-    )
+    .get("https://shipment-backend.onrender.com/api/creatcustomer", {
+      headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
     .then((res) => {
       getContact(res.data);
     });
 }
 
-
 function ShipmentDetails() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  // const [contact, getContact] = useState([]);
   const [defaultcontact, DefaultgetContact] = useState([]);
   const [dispatchname, setDispatchName] = useState("");
   const [discontactnum, setDiscontactnum] = useState("");
-
-  const [searchTerm, setSearchTerm] = useState(''); // Initialize search term as empty
-  const [pickUpLocation, setPickUpLocation] = useState(''); // Pick-up Location
-  const [dropLocation, setDropLocation] = useState(''); // Pick-up Location
+  const [searchTerm, setSearchTerm] = useState(""); // Initialize search term as empty
+  const [pickUpLocation, setPickUpLocation] = useState(""); // Pick-up Location
+  const [dropLocation, setDropLocation] = useState(""); // Pick-up Location
   const [contact, getContact] = useState([]);
   const [name, setName] = useState("");
   const [data, setData] = useState([]);
@@ -75,14 +67,14 @@ function ShipmentDetails() {
   const [selectedHelper2, setSelectedHelper2] = useState("");
   const [helper1Options, setHelper1Options] = useState([]); // Helper 1 options
   const [helper2Options, setHelper2Options] = useState([]);
-  const [customerContact, setCustomerContact] = useState(''); // Customer Contact
-  const [customerContact2, setCustomerContact2] = useState(''); // Customer Contact
-  const [customerAddress, setCustomerAddress] = useState('');
-  const [customerAltNum, setCustomerAltNum] = useState(''); // Customer Alternate Number
-  const [customerEmail, setCustomerEmail] = useState(''); // Customer Alternate Number
-  const [customerEmail1, setCustomerEmail1] = useState(''); // Customer Alternate Number
-  const [pickupDate, setPickupDate] = useState(''); // Customer Alternate Number
-  const [dropDate, setDropDate] = useState(''); // Customer Alternate Number
+  const [customerContact, setCustomerContact] = useState(""); // Customer Contact
+  const [customerContact2, setCustomerContact2] = useState(""); // Customer Contact
+  const [customerAddress, setCustomerAddress] = useState("");
+  const [customerAltNum, setCustomerAltNum] = useState(""); // Customer Alternate Number
+  const [customerEmail, setCustomerEmail] = useState(""); // Customer Alternate Number
+  const [customerEmail1, setCustomerEmail1] = useState(""); // Customer Alternate Number
+  const [pickupDate, setPickupDate] = useState(""); // Customer Alternate Number
+  const [dropDate, setDropDate] = useState(""); // Customer Alternate Number
   const [filteredData, setFilteredData] = useState([]); // Filtered data
   const [email, setEmail] = useState("");
   const [email1, setEmail1] = useState("");
@@ -104,7 +96,6 @@ function ShipmentDetails() {
   const [adddescriptiondrop, setAdddescriptiondrop] = useState("");
   const [adddescriptiondrop1, setAdddescriptiondrop1] = useState("");
   const [isEditing, setIsEditing] = useState(false); // Track if we are in edit mode
-
   const [vehicles, setVehicle] = useState([]);
   const [link, setLink] = useState("");
   const [link1, setLink1] = useState("");
@@ -114,6 +105,8 @@ function ShipmentDetails() {
   const [longitude1, setLongitude1] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [vehicleDetails, setVehicleDetails] = useState([]);
+  const [filteredHelpers1, setFilteredHelpers1] = useState([]);
+  const [filteredHelpers2, setFilteredHelpers2] = useState([]);
   function handleInput(e) {
     setName(e.target.value);
   }
@@ -177,16 +170,91 @@ function ShipmentDetails() {
   };
 
   useEffect(() => {
+    async function fetchData() {
+      try {
+        const vehicleResponse = await axios.get(
+          "https://shipment-backend.onrender.com/api/vehicledetails"
+        );
+        setVehicleDetails(vehicleResponse.data);
+      } catch (error) {
+        console.error("Error fetching vehicle details:", error);
+      }
+
+      try {
+        const helperResponse = await axios.get(
+          "https://shipment-backend.onrender.com/api/createhelper"
+        );
+        setHelpers(helperResponse.data);
+      } catch (error) {
+        console.error("Error fetching helpers:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const handleVehicleChange = (event) => {
+    setSelectedVehicle(event.target.value);
+  };
+
+  const handleHelper1Change = (event) => {
+    setSelectedHelper1(event.target.value);
+  };
+
+  const handleHelper2Change = (event) => {
+    setSelectedHelper2(event.target.value);
+  };
+
+  useEffect(() => {
+    setFilteredHelpers1(
+      helpers.filter((helper) => helper.name !== selectedHelper2)
+    );
+  }, [selectedHelper2, helpers]);
+
+  useEffect(() => {
+    setFilteredHelpers2(
+      helpers.filter((helper) => helper.name !== selectedHelper1)
+    );
+  }, [selectedHelper1, helpers]);
+
+  useEffect(() => {
+    fetchVehicle();
+  }, []);
+
+  const fetchVehicle = async () => {
+    try {
+      const response = await axios.get(
+        "https://shipment-backend.onrender.com/api/vehicledetails"
+      );
+      const vehicleData = response.data;
+      setVehicle(vehicleData);
+    } catch (error) {
+      console.error("Error fetching dispatchers:", error);
+    }
+  };
+
+  useEffect(() => {
+    async function fetchHelpers() {
+      try {
+        const response = await axios.get(
+          "https://shipment-backend.onrender.com/api/createhelper"
+        );
+        setHelpers(response.data);
+      } catch (error) {
+        console.error("Error fetching helpers:", error);
+      }
+    }
+    fetchHelpers();
     fetchData();
   }, []);
 
   useEffect(() => {
-    axios.get('https://shipment-backend.onrender.com/api/mergeapidata')
+    axios
+      .get("https://shipment-backend.onrender.com/api/mergeapidata")
       .then((response) => {
         setData(response.data);
         const names = response.data.map((item) => item.customer_name);
         setCustomerNames(names);
-        
+
         const names2 = response.data.map((item) => item.customer_name2);
         setCustomerNames2(names2);
 
@@ -205,12 +273,11 @@ function ShipmentDetails() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
         setLoading(false);
       });
   }, []);
 
-  
   const handleSelectVehicle = async (event) => {
     const selectedVehicleValue = event.target.value;
     setSelectedVehicle(selectedVehicleValue);
@@ -246,18 +313,22 @@ function ShipmentDetails() {
     }
   };
 
-  
   useEffect(() => {
     if (!startDate || !endDate) {
       setFilteredData(data); // If either start or end date is empty, show all data
     } else {
-      const filtered = data.filter(customer => {
-        const formattedDate = DateTime.fromISO(customer.created_at, { zone: 'UTC' }); // Assuming the database time is in UTC
-        const start = DateTime.fromISO(startDate, { zone: 'UTC' });
-        const end = DateTime.fromISO(endDate, { zone: 'UTC' });
+      const filtered = data.filter((customer) => {
+        const formattedDate = DateTime.fromISO(customer.created_at, {
+          zone: "UTC",
+        }); // Assuming the database time is in UTC
+        const start = DateTime.fromISO(startDate, { zone: "UTC" });
+        const end = DateTime.fromISO(endDate, { zone: "UTC" });
 
         // Include dates within the selected date range, including the start and end dates
-        return start.startOf('day') <= formattedDate.startOf('day') && formattedDate.startOf('day') <= end.startOf('day');
+        return (
+          start.startOf("day") <= formattedDate.startOf("day") &&
+          formattedDate.startOf("day") <= end.startOf("day")
+        );
       });
       setFilteredData(filtered);
     }
@@ -268,7 +339,7 @@ function ShipmentDetails() {
     if (!searchTerm) {
       setFilteredData(data); // If search term is empty, show all data
     } else {
-      const filtered = data.filter(customer =>
+      const filtered = data.filter((customer) =>
         customer.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredData(filtered);
@@ -326,16 +397,15 @@ function ShipmentDetails() {
     }
   };
 
-
-  
   useEffect(() => {
-    axios.get('https://shipment-backend.onrender.com/api/mergeapidata')
-      .then(response => {
+    axios
+      .get("https://shipment-backend.onrender.com/api/mergeapidata")
+      .then((response) => {
         setData(response.data);
         setFilteredData(response.data);
       })
-      .catch(error => {
-        console.error('Error fetching data:', error);
+      .catch((error) => {
+        console.error("Error fetching data:", error);
       });
   }, []);
 
@@ -343,11 +413,16 @@ function ShipmentDetails() {
     if (!startDate || !endDate) {
       setFilteredData(data);
     } else {
-      const filtered = data.filter(customer => {
-        const formattedDate = DateTime.fromISO(customer.created_at, { zone: 'Asia/Dubai' });
-        const start = DateTime.fromISO(startDate, { zone: 'Asia/Dubai' });
-        const end = DateTime.fromISO(endDate, { zone: 'Asia/Dubai' });
-        return start.startOf('day') <= formattedDate.startOf('day') && formattedDate.startOf('day') <= end.startOf('day');
+      const filtered = data.filter((customer) => {
+        const formattedDate = DateTime.fromISO(customer.created_at, {
+          zone: "Asia/Dubai",
+        });
+        const start = DateTime.fromISO(startDate, { zone: "Asia/Dubai" });
+        const end = DateTime.fromISO(endDate, { zone: "Asia/Dubai" });
+        return (
+          start.startOf("day") <= formattedDate.startOf("day") &&
+          formattedDate.startOf("day") <= end.startOf("day")
+        );
       });
       setFilteredData(filtered);
     }
@@ -357,14 +432,12 @@ function ShipmentDetails() {
     if (!searchTerm) {
       setFilteredData(data);
     } else {
-      const filtered = data.filter(customer =>
+      const filtered = data.filter((customer) =>
         customer.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredData(filtered);
     }
   }, [searchTerm, data]);
-
-
 
   const [editData, setEditData] = useState({
     id: null,
@@ -385,22 +458,6 @@ function ShipmentDetails() {
     phoneno: "",
     altphone: "",
   });
-
-  // useEffect(() => {
-  //   fetchDispatchers();
-  // }, []);
-
-  // const fetchDispatchers = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       "https://shipment-backend.onrender.com/api/creatcustomer"
-  //     );
-  //     const dispatcherData = response.data;
-  //     setDispatchers(dispatcherData);
-  //   } catch (error) {
-  //     console.error("Error fetching dispatchers:", error);
-  //   }
-  // };
 
   const handleSelectChange5 = async (event) => {
     const selectedOptionValue = event.target.value;
@@ -447,9 +504,7 @@ function ShipmentDetails() {
 
   const fetchDrivers = async () => {
     try {
-      const response = await axios.get(
-        "https://shipment-backend.onrender.com/api/driver"
-      );
+      const response = await axios.get("https://shipment-backend.onrender.com/api/driver");
       const driversData = response.data;
       setDrivers(driversData);
     } catch (error) {
@@ -484,15 +539,10 @@ function ShipmentDetails() {
     setModalIsOpenDelete(true);
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
 
   const confirmDelete = () => {
     axios
-      .delete(
-        `https://shipment-backend.onrender.com/api/deleteShipmentsby/${deleteId}`
-      )
+      .delete(`https://shipment-backend.onrender.com/api/deleteShipmentsby/${deleteId}`)
       .then(() => {
         setCustomerData((prevData) =>
           prevData.filter((item) => item.shipment_id !== deleteId)
@@ -514,31 +564,32 @@ function ShipmentDetails() {
 
   const exportToExcel = () => {
     const dataToExport = filteredData.map((item) => ({
-      'Customer Name': item.customer_name,
-      'Pickup Date': item.pick_up_before,
-      'Customer Contact': item.customer_contact,
-      'Customer Alternate Number': item.customer_alt_num,
-      'Customer Email': item.customer_email,
-      'Pickup Location': item.pick_up_location,
-      'Customer Name 1': item.customer_name2,
-      'Customer Contact 1': item.customer_contact2,
-      'Drop Location': item.drop_location,
-      'Drop Date': item.drop_date,
-     'Vehicle Plate No.': item.vehicleplate,
-     'Helper 1': item.helper1,
-     'Helper 2': item.helper2,
-     'Driver Name': item.driver_name,
-     'Shipment Id': item.shipment_id,
-     'Create Date': item.created_at,
-
+      "Customer Name": item.customer_name,
+      "Pickup Date": item.pick_up_before,
+      "Customer Contact": item.customer_contact,
+      "Customer Alternate Number": item.customer_alt_num,
+      "Customer Email": item.customer_email,
+      "Pickup Location": item.pick_up_location,
+      "Customer Name 1": item.customer_name2,
+      "Customer Contact 1": item.customer_contact2,
+      "Drop Location": item.drop_location,
+      "Drop Date": item.drop_date,
+      "Vehicle Plate No.": item.vehicleplate,
+      "Helper 1": item.helper1,
+      "Helper 2": item.helper2,
+      "Driver Name": item.driver_name,
+      "Shipment Id": item.shipment_id,
+      "Create Date": item.created_at,
     }));
 
     const ws = XLSX.utils.json_to_sheet(dataToExport);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Data');
-    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    FileSaver.saveAs(blob, 'Shipment_Details.xlsx');
+    XLSX.utils.book_append_sheet(wb, ws, "Data");
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    FileSaver.saveAs(blob, "Shipment_Details.xlsx");
   };
 
   const handleSelectChange4 = async (event) => {
@@ -564,7 +615,7 @@ function ShipmentDetails() {
     setEditData(customer);
     setModalIsOpenEdit(true);
   }
-  
+
   const saveEditedData = () => {
     const updatedData = {
       customer_name: selectedDispatcher,
@@ -580,30 +631,33 @@ function ShipmentDetails() {
       helper1: selectedHelper1,
       helper2: selectedHelper2,
       driver_name: selectedDriverId,
-      vehicleplate: selectedVehicle
+      vehicleplate: selectedVehicle,
     };
 
     // Make a PUT request to update the data
-    axios.put(`https://shipment-backend.onrender.com/api/updatecustomer/${editItem.id}`, updatedData)
+    axios
+      .put(
+        `https://shipment-backend.onrender.com/api/updatecustomer/${editItem.id}`,
+        updatedData
+      )
       .then((response) => {
-        console.log('Data updated successfully:', response.data);
+        console.log("Data updated successfully:", response.data);
         toast.success("Shipment Details Updated Successfully!", {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-              });
-      setModalIsOpenEdit(false);
-
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+        });
+        setModalIsOpenEdit(false);
       })
       .catch((error) => {
-        console.error('Error updating data:', error);
+        console.error("Error updating data:", error);
       });
   };
-  
-  const openEditModal = ( item) => {
+
+  const openEditModal = (item) => {
     setEditItem(item);
     setModalIsOpenEdit(true);
     setSelectedCustomerName(item.customer_name);
@@ -617,12 +671,13 @@ function ShipmentDetails() {
     setDropDate(item.drop_date);
     setSelectedDispatcher(item.customer_name);
     setSelectedDispatcher1(item.customer_name2);
-    setCustomerContact2(item.customer_contact2)
+    setCustomerContact2(item.customer_contact2);
     // console.log("2nd "+ item.customer_contact);
-    
-    
-    const selectedCustomer = data.find((customer) => customer.customer_name === item.customer_name);
-    
+
+    const selectedCustomer = data.find(
+      (customer) => customer.customer_name === item.customer_name
+    );
+
     if (selectedCustomer) {
       setCustomerContact(selectedCustomer.customer_contact);
       setCustomerContact2(selectedCustomer.customer_contact2);
@@ -636,193 +691,6 @@ function ShipmentDetails() {
   };
 
 
-
-
-
-  
-  // const [selectedVehicle, setSelectedVehicle] = useState("");
-
-  
-
-  // const fetchData = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       "https://shipment-backend.onrender.com/api/vehicledetails"
-  //     );
-  //     setVehicleDetails(response.data); // Assuming the API returns an array of vehicle details
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-
-  const handleVehicleChange = (event) => {
-    setSelectedVehicle(event.target.value);
-  };
-
-  // Vehicle Dropdown end here
-
-  // Helper Dropdown login start here
-
-  // const [helpers, setHelpers] = useState([]);
-  // const [selectedHelper1, setSelectedHelper1] = useState("");
-  // const [selectedHelper2, setSelectedHelper2] = useState("");
-
-  // useEffect(() => {
-  //   async function fetchHelpers() {
-  //     try {
-  //       const response = await axios.get(
-  //         "https://shipment-backend.onrender.com/api/createhelper"
-  //       );
-  //       setHelpers(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching helpers:", error);
-  //     }
-  //   }
-  //   fetchHelpers();
-  // }, []);
-
-  // Helper Dropdown end here
-
-  // Driver Dropdown start here
-
-  // const [drivers, setDrivers] = useState([]);
-  // const [selectedDrivers, setSelectedDrivers] = useState("");
-
-  // useEffect(() => {
-  //   fetchDrivers();
-  // }, []);
-
-  // const fetchDrivers = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       "https://shipment-backend.onrender.com/api/driver"
-  //     );
-  //     const driversData = response.data;
-  //     setDrivers(driversData);
-  //   } catch (error) {
-  //     console.error("Error fetching drivers:", error);
-  //   }
-  // };
-
-  // Driver Dropdown end here
-
- 
-
-  // const handleSelectChange = async (event) => {
-  //   const selectedOptionValue = event.target.value;
-  //   setSelectedDispatcher(selectedOptionValue);
-  //   console.log(selectedOptionValue);
-
-  //   // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
-  //   if (selectedOptionValue) {
-  //     try {
-  //       const response = await axios.get(
-  //         `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
-  //       );
-  //       const selectedDispatcherData = response.data;
-  //       setDispatcherData(selectedDispatcherData);
-  //     } catch (error) {
-  //       console.error("Error fetching selected dispatcher:", error);
-  //     }
-  //   }
-  // };
-  // const handleSelectChange1 = async (event) => {
-  //   const selectedOptionValue = event.target.value;
-  //   setSelectedDispatcher1(selectedOptionValue);
-  //   console.log(selectedOptionValue);
-
-  //   // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
-  //   if (selectedOptionValue) {
-  //     try {
-  //       const response = await axios.get(
-  //         `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
-  //       );
-  //       const selectedDispatcherData1 = response.data;
-  //       setDispatcherData1(selectedDispatcherData1);
-  //     } catch (error) {
-  //       console.error("Error fetching selected dispatcher:", error);
-  //     }
-  //   }
-  // };
-  // const handleSelectChange2 = async (event) => {
-  //   const selectedOptionValue = event.target.value;
-  //   setSelectedDispatcher2(selectedOptionValue);
-  //   console.log(selectedOptionValue);
-
-  //   if (selectedOptionValue) {
-  //     try {
-  //       const response = await axios.get(
-  //         `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
-  //       );
-  //       const selectedDispatcherData2 = response.data;
-  //       setDispatcherData2(selectedDispatcherData2);
-  //     } catch (error) {
-  //       console.error("Error fetching selected dispatcher:", error);
-  //     }
-  //   }
-  // };
-  // const handleSelectChange3 = async (event) => {
-  //   const selectedOptionValue = event.target.value;
-  //   setSelectedDispatcher3(selectedOptionValue);
-  //   if (selectedOptionValue) {
-  //     try {
-  //       const response = await axios.get(
-  //         `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
-  //       );
-  //       const selectedDispatcherData3 = response.data;
-  //       setDispatcherData3(selectedDispatcherData3);
-  //     } catch (error) {
-  //       console.error("Error fetching selected dispatcher:", error);
-  //     }
-  //   }
-  // };
-
-
-  // useEffect(() => {
-  //   fetchVehicle();
-  // }, []);
-
-  // const fetchVehicle = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       "https://shipment-backend.onrender.com/api/vehicledetails"
-  //     );
-  //     const vehicleData = response.data;
-  //     setVehicle(vehicleData);
-  //   } catch (error) {
-  //     console.error("Error fetching dispatchers:", error);
-  //   }
-  // };
-
- 
- 
-
-  // const [name, setName] = useState("");
-  
-
-  // const [dispatcherData1, setDispatcherData1] = useState({
-  //   id: "",
-  //   name: "",
-  //   email: "",
-  //   phoneno: "",
-  //   altphone: "",
-  // });
-  // const [dispatcherData2, setDispatcherData2] = useState({
-  //   id: "",
-  //   name: "",
-  //   email: "",
-  //   phoneno: "",
-  //   altphone: "",
-  // });
-  // const [dispatcherData3, setDispatcherData3] = useState({
-  //   id: "",
-  //   name: "",
-  //   email: "",
-  //   phoneno: "",
-  //   altphone: "",
-  // });
-  
-
   const initialDispatcherData = {
     phoneno: "",
     email: "",
@@ -833,7 +701,7 @@ function ShipmentDetails() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-console.log()
+    console.log();
     try {
       const response = await axios.post(
         "https://shipment-backend.onrender.com/api/newidshipment",
@@ -859,7 +727,7 @@ console.log()
           helper1: helperData.name,
           helper2: helperData1.name,
           driver_id: selectedDriver.id,
-          driver_name : selectedDriver.full_name,
+          driver_name: selectedDriver.full_name,
           customer_name1: dispatcherData2.name,
           customer_contact1: dispatcherData2.phoneno,
           customer_email1: dispatcherData2.email,
@@ -871,12 +739,10 @@ console.log()
           customer_contact21: dispatcherData3.phoneno,
           drop_location1: dispatcherData3.address,
           drop_description1: adddescriptiondrop1,
-        },
-        
-       
-            );
-           
-            setModalIsOpen(false);
+        }
+      );
+
+      setModalIsOpen(false);
       toast.success("Shipment successfully created!", {
         position: "top-right",
         autoClose: 3000,
@@ -965,64 +831,7 @@ console.log()
       !selectedDispatcher1.includes(dispatcher.id) &&
       !selectedDispatcher2.includes(dispatcher.id)
   );
-  // const [selectedHelper, setSelectedHelper] = useState("");
-  // const availableHelpersForSelectedHelper1 = helpers.filter(
-  //   (helper) => !selectedHelper.includes(helper.id)
-  // );
 
-  // const [helperData, setHelperData] = useState({
-  //   id: "",
-  //   name: "",
-  //   email: "",
-  //   phoneno: "",
-  //   altphone: "",
-  // });
-  // const [helperData1, setHelperData1] = useState({
-  //   id: "",
-  //   name: "",
-  //   email: "",
-  //   phoneno: "",
-  //   altphone: "",
-  // });
-
-  // const handleSelectChange4 = async (event) => {
-  //   const selectedOptionValue = event.target.value;
-  //   setSelectedHelper(selectedOptionValue);
-  //   console.log(selectedOptionValue);
-
-  //   // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
-  //   if (selectedOptionValue) {
-  //     try {
-  //       const response = await axios.get(
-  //         `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
-  //       );
-  //       const selectedHelperData = response.data;
-  //       setHelperData(selectedHelperData);
-  //     } catch (error) {
-  //       console.error("Error fetching selected dispatcher:", error);
-  //     }
-  //   }
-  // }
-  // };
-  // const handleSelectChange5 = async (event) => {
-  //   const selectedOptionValue = event.target.value;
-  //   setSelectedHelper1(selectedOptionValue);
-  //   console.log(selectedOptionValue);
-
-  //   if (selectedOptionValue) {
-  //     try {
-  //       const response = await axios.get(
-  //         `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
-  //       );
-  //       const selectedHelperData1 = response.data;
-  //       setHelperData1(selectedHelperData1);
-  //     } catch (error) {
-  //       console.error("Error fetching selected dispatcher:", error);
-  //     }
-  //   }
-  // };
-
-  
   const handleEditClick = (customer) => {
     setEditData({ ...customer });
     setIsEditing(true);
@@ -1032,7 +841,6 @@ console.log()
     setSelectedDispatcher(customer.customer_name);
     setSelectedDispatcher1(customer.customer_name2);
   };
-
 
   const handleSaveEdit = () => {
     setIsEditing(false);
@@ -1061,241 +869,219 @@ console.log()
           <h5 className="main_h5">Edit Shipment Details</h5>
         </ModalBody>
         <Form className="form_main ">
-    <div className="row">
-    <h5 className="pb-4 text-center">Pickup Details</h5>
-        <div className="col-6">
-          <label>Customer Name:</label>
-          <FormGroup>
-          <select
-                value={selectedDispatcher} // Autofill the dropdown
-                onChange={handleSelectChange}
-                name="customer_name"
-                id="customer_name"
-              >
-                <option value="">Select Customer</option>
-                {dispatchers.map((dispatcher) => (
-                  <option
-                    key={dispatcher.id}
-                    value={dispatcher.name}
-                  >
-                    {dispatcher.name}
-                  </option>
-                ))}
-              </select>
-          </FormGroup>
-        </div>
-          <div className="col-6">
-          <label>Customer Contact:</label>
-          <FormGroup>
-          <input
-                                name="phoneno"
-                                value={customerContact}
-                                onChange={(e) => setPhone(e.target.value)}
-                                // readOnly
-                                id="phoneno"
-                                placeholder="Enter Contact Number"
-                                type="number"
-                              />
-          </FormGroup>
-          </div>
+          <div className="row">
+            <h5 className="pb-4 text-center">Pickup Details</h5>
+            <div className="col-6">
+              <label>Customer Name:</label>
+              <FormGroup>
+                <select
+                  value={selectedDispatcher} // Autofill the dropdown
+                  onChange={handleSelectChange}
+                  name="customer_name"
+                  id="customer_name"
+                >
+                  <option value="">Select Customer</option>
+                  {dispatchers.map((dispatcher) => (
+                    <option key={dispatcher.id} value={dispatcher.name}>
+                      {dispatcher.name}
+                    </option>
+                  ))}
+                </select>
+              </FormGroup>
+            </div>
+            <div className="col-6">
+              <label>Customer Contact:</label>
+              <FormGroup>
+                <input
+                  name="phoneno"
+                  value={customerContact}
+                  onChange={(e) => setPhone(e.target.value)}
+                  id="phoneno"
+                  placeholder="Enter Contact Number"
+                  type="number"
+                />
+              </FormGroup>
+            </div>
           </div>
 
           <div className="row">
-        <div className="col-6">
-          <FormGroup>
-          <label>Customer Alternate Number:</label>
-          <input
-                                name="altphone"
-                                id="altphone"
-                                value={customerAltNum}
-                                onChange={(e) => setAltphone(e.target.value)}
-                                placeholder="Enter Alternate Number"
-                                type="number"
-                              />
-          </FormGroup>
-          </div>
-          <div className="col-6">
-          <label>Customer Email ID:</label>
-          <FormGroup>
-          <input
-                                name="email"
-                                value={customerEmail}
-                                id="email"
-                                // value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter Email Address"
-                                type="email"
-                              />
-          </FormGroup>
-          </div>
+            <div className="col-6">
+              <FormGroup>
+                <label>Customer Alternate Number:</label>
+                <input
+                  name="altphone"
+                  id="altphone"
+                  value={customerAltNum}
+                  onChange={(e) => setAltphone(e.target.value)}
+                  placeholder="Enter Alternate Number"
+                  type="number"
+                />
+              </FormGroup>
+            </div>
+            <div className="col-6">
+              <label>Customer Email ID:</label>
+              <FormGroup>
+                <input
+                  name="email"
+                  value={customerEmail}
+                  id="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter Email Address"
+                  type="email"
+                />
+              </FormGroup>
+            </div>
           </div>
 
           <div className="row">
-        <div className="col-6">
-          <label> Pick up Location</label>
+            <div className="col-6">
+              <label> Pick up Location</label>
 
-          <FormGroup>
-          <input
-                                name="pickuplocation"
-                                value={pickUpLocation}
-                                    onChange={(e) =>
-                                      setPickuplocation(e.target.value)
-                                    }
-                                
-                                id="pickuplocation"
-                                placeholder="Enter Pickup Location"
-                                type="text"
-                              />
-          </FormGroup>
-          </div>
-          <div className="col-6">
+              <FormGroup>
+                <input
+                  name="pickuplocation"
+                  value={pickUpLocation}
+                  onChange={(e) => setPickuplocation(e.target.value)}
+                  id="pickuplocation"
+                  placeholder="Enter Pickup Location"
+                  type="text"
+                />
+              </FormGroup>
+            </div>
+            <div className="col-6">
+              <label>Pickup Date:</label>
 
-          <label>Pickup Date:</label>
-
-          <FormGroup>
-          <input
-            type="text"
-            value={pickupDate}
-            onChange={(e) => setPickupDate(e.target.value)}
-          />
-          </FormGroup>
+              <FormGroup>
+                <input
+                  type="text"
+                  value={pickupDate}
+                  onChange={(e) => setPickupDate(e.target.value)}
+                />
+              </FormGroup>
+            </div>
           </div>
-          </div>
-    <h5 className="p-4 text-center">Delivery Details</h5>
-<div className="row">
-    <div className="col-6">
-          <label>Customer Name:</label>
-          <FormGroup>
-          <select
-                value={selectedDispatcher1} // Autofill the dropdown
-                onChange={handleSelectChange1}
-                name="customer_name"
-                id="customer_name"
-              >
-                <option value="">Select Customer</option>
-                {dispatchers.map((dispatcher) => (
-                  <option
-                    key={dispatcher.id}
-                    value={dispatcher.name}
-                  >
-                    {dispatcher.name}
-                  </option>
-                ))}
-              </select>
-          </FormGroup>
-        </div>
-          <div className="col-6">
-          <label>Customer Contact:</label>
-          <FormGroup>
-          <input
-                                name="phoneno"
-                                value={customerContact2}
-                                onChange={(e) => setPhone(e.target.value)}
-                                // readOnly
-                                id="phoneno"
-                                placeholder="Enter Contact Number"
-                                type="number"
-                              />
-          </FormGroup>
-          </div>
+          <h5 className="p-4 text-center">Delivery Details</h5>
+          <div className="row">
+            <div className="col-6">
+              <label>Customer Name:</label>
+              <FormGroup>
+                <select
+                  value={selectedDispatcher1} // Autofill the dropdown
+                  onChange={handleSelectChange1}
+                  name="customer_name"
+                  id="customer_name"
+                >
+                  <option value="">Select Customer</option>
+                  {dispatchers.map((dispatcher) => (
+                    <option key={dispatcher.id} value={dispatcher.name}>
+                      {dispatcher.name}
+                    </option>
+                  ))}
+                </select>
+              </FormGroup>
+            </div>
+            <div className="col-6">
+              <label>Customer Contact:</label>
+              <FormGroup>
+                <input
+                  name="phoneno"
+                  value={customerContact2}
+                  onChange={(e) => setPhone(e.target.value)}
+                  id="phoneno"
+                  placeholder="Enter Contact Number"
+                  type="number"
+                />
+              </FormGroup>
+            </div>
           </div>
           <div className="row">
-        <div className="col-6">
-          <label> Drop Location</label>
-          <FormGroup>
-          <input
-                                name="pickuplocation"
-                                // value={pickuplocation}
-                                value={dropLocation}
-                                onChange={(e) =>
-                                  setPickuplocation(e.target.value)
-                                }
-                                id="pickuplocation"
-                                placeholder="Drop Location"
-                                type="text"
-                              />
-          </FormGroup>
-          </div>
-          <div className="col-6">
+            <div className="col-6">
+              <label> Drop Location</label>
+              <FormGroup>
+                <input
+                  name="pickuplocation"
+                  // value={pickuplocation}
+                  value={dropLocation}
+                  onChange={(e) => setPickuplocation(e.target.value)}
+                  id="pickuplocation"
+                  placeholder="Drop Location"
+                  type="text"
+                />
+              </FormGroup>
+            </div>
+            <div className="col-6">
+              <label>Drop Date:</label>
 
-          <label>Drop Date:</label>
-
-          <FormGroup>
-          <input
-            type="text"
-            value={dropDate}
-            onChange={(e) => setDropDate(e.target.value)}
-          />
-          </FormGroup>
+              <FormGroup>
+                <input
+                  type="text"
+                  value={dropDate}
+                  onChange={(e) => setDropDate(e.target.value)}
+                />
+              </FormGroup>
+            </div>
           </div>
-          </div>
-    <h5 className="p-4 text-center">Driver and Helpers Details</h5>
+          <h5 className="p-4 text-center">Driver and Helpers Details</h5>
 
           <div className="row">
-        <div className="col-6">
-          <label>Helper 1:</label>
-          <FormGroup>
-            <select
-              value={selectedHelper1}
-              onChange={(e) => setSelectedHelper1(e.target.value)}
-            >
-              {helper1Options.map((helper, index) => (
-                <option key={index} value={helper}>
-                  {helper}
-                </option>
-              ))}
-            </select>
-          </FormGroup>
+            <div className="col-6">
+              <label>Helper 1:</label>
+              <FormGroup>
+                <select value={selectedHelper1} onChange={handleHelper1Change}>
+                  <option value="">Select a helper</option>
+                  {filteredHelpers1.map((helper, index) => (
+                    <option key={index} value={helper.name}>
+                      {helper.name}
+                    </option>
+                  ))}
+                </select>
+              </FormGroup>
+            </div>
+            <div className="col-6">
+              <label>Helper 2:</label>
+              <FormGroup>
+                <select value={selectedHelper2} onChange={handleHelper2Change}>
+                  <option value="">Select a helper</option>
+                  {filteredHelpers2.map((helper, index) => (
+                    <option key={index} value={helper.name}>
+                      {helper.name}
+                    </option>
+                  ))}
+                </select>
+              </FormGroup>
+            </div>
           </div>
-          <div className="col-6">
-
-          <label>Helper 2:</label>
-          <FormGroup>
-            <select
-              value={selectedHelper2}
-              onChange={(e) => setSelectedHelper2(e.target.value)}
-            >
-              {helper2Options.map((helper, index) => (
-                <option key={index} value={helper}>
-                  {helper}
-                </option>
-              ))}
-            </select>
-          </FormGroup>
-          </div>
-          </div>
-
 
           <div className="row">
-        <div className="col-6">
-          <label>Vehicle Number:</label>
-          <FormGroup>
-          <input
-            type="text"
-            value={selectedVehicle}
-            onChange={(e) => setSelectedVehicle(e.target.value)}
-          />
-          </FormGroup>
+            <div className="col-6">
+              <label>Vehicle Number:</label>
+              <FormGroup>
+                <select value={selectedVehicle} onChange={handleVehicleChange}>
+                  <option value="">Select a vehicle</option>
+                  {vehicleDetails.map((vehicle, index) => (
+                    <option key={index} value={vehicle.vehicalplate}>
+                      {vehicle.vehicalplate}
+                    </option>
+                  ))}
+                </select>
+              </FormGroup>
+            </div>
+            <div className="col-6">
+              <label>Driver ID:</label>
+              <FormGroup>
+                <select
+                  value={selectedDriverId}
+                  onChange={(e) => setSelectedDriverId(e.target.value)}
+                >
+                  {driverIds.map((full_name, index) => (
+                    <option key={index} value={full_name}>
+                      {full_name}
+                    </option>
+                  ))}
+                </select>
+              </FormGroup>
+            </div>
           </div>
-          <div className="col-6">
-
-          <label>Driver ID:</label>
-          <FormGroup>
-            <select
-              value={selectedDriverId}
-              onChange={(e) => setSelectedDriverId(e.target.value)}
-            >
-              {driverIds.map((full_name, index) => (
-                <option key={index} value={full_name}>
-                  {full_name}
-                </option>
-              ))}
-            </select>
-          </FormGroup>
-          </div>
-          </div>
-          
-
 
           <p id="edit-validate-batch" style={{ color: "red" }}></p>
           <Button
@@ -1380,19 +1166,19 @@ console.log()
                 </div>
 
                 <div className="datepicker-date-comm">
-                <input
-          type="date"
-          id="startDate"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
+                  <input
+                    type="date"
+                    id="startDate"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
 
-<input
-          type="date"
-          id="endDate"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
+                  <input
+                    type="date"
+                    id="endDate"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
                 </div>
 
                 <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
@@ -1405,14 +1191,14 @@ console.log()
                       <i class="bi bi-search"></i>
                     </span>
                     <input
-                  style={{ fontSize: "15px" }}
-                  className="form-control me-2 serch-filed"
-                  aria-label="Search"
-                           type="text"
-          placeholder="Search by Name"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                      style={{ fontSize: "15px" }}
+                      className="form-control me-2 serch-filed"
+                      aria-label="Search"
+                      type="text"
+                      placeholder="Search by Name"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                   </div>
                 </div>
                 <div className="d-flex">
@@ -1435,7 +1221,6 @@ console.log()
               >
                 <thead class="tableheading">
                   <tr>
-
                     <th scope="col">Pickup Details</th>
                     <th scope="col">Delivery Details</th>
                     <th scope="col">Driver Name</th>
@@ -1468,7 +1253,7 @@ console.log()
                       <td>{item.helper2}</td>
                       <td>{item.vehicleplate}</td>
                       <td>{item.created_at}</td>
-              {/* <td>{DateTime.fromISO(item.created_at, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td> */}
+                      {/* <td>{DateTime.fromISO(item.created_at, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td> */}
 
                       <td>
                         <button
