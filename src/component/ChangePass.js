@@ -25,9 +25,6 @@ function ChangePass() {
     e.preventDefault();
     try {
       const response = await axios.post('https://shipment-backend.onrender.com/api/change-password', {
-        // username:,
-        // oldPassword,
-        // newPassword,
         username: "manmohan.rajput@dwellfox.com",
         oldPassword: `${oldPassword}`,
         newPassword: `${newPassword}`,
@@ -65,17 +62,14 @@ function ChangePass() {
 			<form className='mb-2'  onSubmit={handleSubmit}>
 				<div class="form-group">
 					<label for="exampleInputEmail1"  className='fontSize'>Current password</label>
-					{/* <input type="password" class="form-control form-control-sm"/> */}
                 <input  type="password" name="oldPassword" value={oldPassword} onChange={handleChange} className='form-control form-control-sm'/>         
 				</div>
 				<div class="form-group mt-2">
 					<label for="exampleInputEmail1" className='fontSize'>New password</label>
-					{/* <input type="password" class="form-control form-control-sm"/> */}
                    <input type="password" name="newPassword" value={newPassword} onChange={handleChange} className='form-control form-control-sm'/> 
 				</div>
 				<div class="form-group mt-2">
 					<label for="exampleInputEmail1" className='fontSize'>Confirm password</label>
-					{/* <input type="password" class="form-control form-control-sm"/> */}
                    <input type="password" name="newPassword" value={newPassword} onChange={handleChange} className='form-control form-control-sm'/> 
 				</div>
 				<button type="submit" class="btn submit-btn">Change Password</button>

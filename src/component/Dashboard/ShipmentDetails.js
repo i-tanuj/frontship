@@ -1228,6 +1228,7 @@ function ShipmentDetails() {
                     <th scope="col">Helper 2</th>
                     <th scope="col">Vehicle Plate No.</th>
                     <th scope="col">Created Date</th>
+                    <th scope="col">Task Status</th>
                     <th scope="col" class="borderre1">
                       Action
                     </th>
@@ -1253,6 +1254,10 @@ function ShipmentDetails() {
                       <td>{item.helper2}</td>
                       <td>{item.vehicleplate}</td>
                       <td>{item.created_at}</td>
+                      <td>
+              {item.pick_up_status === 1 ? <span className='px-3 py-2' style={{ color: 'white', background: 'orange' }}>ASSIGNED</span> : item.pick_up_status === 2 ? <span className='px-2 py-2' style={{ color: 'white', background: 'blue' }}>INPROGRESS</span> : item.pick_up_status === 3 ? <span className='px-2 py-2' style={{ color: 'white', background: 'green' }}>SUCCESSFUL</span> : ""}
+                      
+                      </td>
                       {/* <td>{DateTime.fromISO(item.created_at, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td> */}
 
                       <td>

@@ -53,6 +53,7 @@ function App() {
             <Route  exact path="/shipment-list" element={<ShipmentDetails/>}/>
             <Route  exact path="/cancel-shipment" element={<CancelShip/>}/>
             <Route  exact path="/vehicleselector" element={<VehicleSelector/>}/>
+            <Route  exact path="/formcomponent" element={<FormComponent/>}/>
             <Route path="/details/:id" component={DetailView} />
           </Routes>
         </React.Suspense>

@@ -2,91 +2,65 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const VehicleSelector = () => {
-  const [vehicleDetails, setVehicleDetails] = useState([]);
-  const [selectedVehicle, setSelectedVehicle] = useState('');
-  const [helpers, setHelpers] = useState([]);
-  const [selectedHelper1, setSelectedHelper1] = useState('');
-  const [selectedHelper2, setSelectedHelper2] = useState('');
-  const [filteredHelpers1, setFilteredHelpers1] = useState([]);
-  const [filteredHelpers2, setFilteredHelpers2] = useState([]);
+  const [details, setDetails] = useState([]);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const vehicleResponse = await axios.get("https://shipment-backend.onrender.com/api/vehicledetails");
-        setVehicleDetails(vehicleResponse.data);
-      } catch (error) {
-        console.error("Error fetching vehicle details:", error);
-      }
-
-      try {
-        const helperResponse = await axios.get("https://shipment-backend.onrender.com/api/createhelper");
-        setHelpers(helperResponse.data);
-      } catch (error) {
-        console.error("Error fetching helpers:", error);
-      }
-    }
-    fetchData();
+    axios.get('https://shipment-backend.onrender.com/api/identities')
+      .then(response => {
+        setDetails(response.data);
+      })
+      .catch(error => {
+        console.log('Error fetching data: ', error);
+      });
   }, []);
 
-  const handleVehicleChange = (event) => {
-    setSelectedVehicle(event.target.value);
+  const handleInputChange = (index, field, value) => {
+    const updatedDetails = [...details];
+    updatedDetails[index][field] = value;
+    setDetails(updatedDetails);
   };
 
-  const handleHelper1Change = (event) => {
-    setSelectedHelper1(event.target.value);
+  const handleUpdateDetails = (id, updatedDetails) => {
+    axios.put(`https://shipment-backend.onrender.com/api/updateadminapi/${id}`, updatedDetails)
+      .then(response => {
+        // Handle success, perhaps show a success message
+        console.log('Details updated:', response.data);
+      })
+      .catch(error => {
+        console.error('Error updating details: ', error);
+        // Handle the error, maybe show an error message to the user
+      });
   };
-
-  const handleHelper2Change = (event) => {
-    setSelectedHelper2(event.target.value);
-  };
-
-  useEffect(() => {
-    setFilteredHelpers1(helpers.filter((helper) => helper.name !== selectedHelper2));
-  }, [selectedHelper2, helpers]);
-
-  useEffect(() => {
-    setFilteredHelpers2(helpers.filter((helper) => helper.name !== selectedHelper1));
-  }, [selectedHelper1, helpers]);
 
   return (
     <div>
-      <div>
-        <label>Select a Vehicle:</label>
-        <select value={selectedVehicle} onChange={handleVehicleChange}>
-          <option value="">Select a vehicle</option>
-          {vehicleDetails.map((vehicle, index) => (
-            <option key={index} value={vehicle.name}>
-              {vehicle.name}
-            </option>
-          ))}
-        </select>
-        {selectedVehicle && <p>Selected Vehicle: {selectedVehicle}</p>}
-      </div>
-      <div>
-        <label>Select Helper 1:</label>
-        <select value={selectedHelper1} onChange={handleHelper1Change}>
-          <option value="">Select a helper</option>
-          {filteredHelpers1.map((helper, index) => (
-            <option key={index} value={helper.name}>
-              {helper.name}
-            </option>
-          ))}
-        </select>
-        {selectedHelper1 && <p>Selected Helper 1: {selectedHelper1}</p>}
-      </div>
-      <div>
-        <label>Select Helper 2:</label>
-        <select value={selectedHelper2} onChange={handleHelper2Change}>
-          <option value="">Select a helper</option>
-          {filteredHelpers2.map((helper, index) => (
-            <option key={index} value={helper.name}>
-              {helper.name}
-            </option>
-          ))}
-        </select>
-        {selectedHelper2 && <p>Selected Helper 2: {selectedHelper2}</p>}
-      </div>
+      <h1 className='text-center'>Details</h1>
+      {details.map((item, index) => (
+        <div className='p-2 text-center' key={index}>
+          <p>Detail ID: {item.id}</p>
+          <input
+            type="text"
+            value={item.username}
+            onChange={(e) => handleInputChange(index, 'username', e.target.value)}
+            placeholder="Name"
+            className='mt-2 p-2'
+
+          />
+          <br />
+          <input
+            type="text"
+            value={item.contact}
+            onChange={(e) => handleInputChange(index, 'contact', e.target.value)}
+            placeholder="Contact"
+            className='mt-2 p-2'
+          />
+          <div className='text-center justify-content-center align-items-center'>
+
+          <button className='bg-dark p-2 mt-3 text-center justify-content-center align-items-center' onClick={() => handleUpdateDetails(item.id, details[index])}>Update</button>
+          </div>
+          <hr />
+        </div>
+      ))}
     </div>
   );
 };

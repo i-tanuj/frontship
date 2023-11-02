@@ -67,8 +67,6 @@ function FormComponent() {
     fetchHelpers();
   }, []);
 
-
-
   const [drivers, setDrivers] = useState([]);
   const [selectedDriver, setSelectedDriver] = useState("");
 
@@ -87,9 +85,6 @@ function FormComponent() {
       console.error("Error fetching drivers:", error);
     }
   };
-
-  // Driver Dropdown end here
-
   const [selectshipdrop, setSelectshipdrop] = useState("");
   const [selectshipdrop1, setSelectshipdrop1] = useState("");
   const [adddescriptiondrop, setAdddescriptiondrop] = useState("");
@@ -101,8 +96,6 @@ function FormComponent() {
     const selectedOptionValue = event.target.value;
     setSelectedDispatcher(selectedOptionValue);
     console.log("tanu "+selectedOptionValue);
-    
-    // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
@@ -120,8 +113,6 @@ function FormComponent() {
     const selectedOptionValue = event.target.value;
     setSelectedDispatcher1(selectedOptionValue);
     console.log(selectedOptionValue);
-
-    // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
@@ -171,8 +162,6 @@ function FormComponent() {
     const selectedVehicleValue = event.target.value;
     setSelectedVehicle(selectedVehicleValue);
     console.log(selectedVehicleValue);
-
-    // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
     if (selectedVehicleValue) {
       try {
         const response = await axios.get(
@@ -329,8 +318,6 @@ console.log()
           drop_location1: dispatcherData3.address,
           drop_description1: adddescriptiondrop1,
         },
-        
-       
             );
            
             setModalIsOpen(false);
@@ -368,7 +355,6 @@ console.log()
       setSelectedDispatcher3("");
       setDropdate("");
       setDropdate1("");
-      // phoneno("");
       dispatcherData("");
       phone("");
     } catch (error) {
@@ -381,8 +367,6 @@ console.log()
   const handleLinkChange = (event) => {
     const newLink = event.target.value;
     setLink(newLink);
-
-    // Use regular expression to extract latitude and longitude
     const match = newLink.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
     if (match) {
       setLatitude(match[1]);
@@ -396,8 +380,6 @@ console.log()
   const handleLinkChange1 = (event) => {
     const newLink1 = event.target.value;
     setLink1(newLink1);
-
-    // Use regular expression to extract latitude and longitude
     const matchs = newLink1.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
     if (matchs) {
       setLatitude1(matchs[1]);
@@ -446,8 +428,6 @@ console.log()
     const selectedOptionValue = event.target.value;
     setSelectedHelper(selectedOptionValue);
     console.log(selectedOptionValue);
-
-    // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
@@ -533,8 +513,6 @@ console.log()
     setEditData({ ...customer });
     setIsEditing(true);
     setModalIsOpen(true);
-
-    // Set the selected value for the "Customer Name" dropdown
     setSelectedDispatcher(customer.customer_name);
   };
 
@@ -563,11 +541,6 @@ console.log()
 
     fetchData();
   }, []);
-
-  // const handleVehicleChange = (event) => {
-  //   setSelectedVehicle(event.target.value);
-  // };
-
   
 
   return (
@@ -610,6 +583,7 @@ console.log()
             <th>Helper1</th>
             <th>Helper2</th>
             <th>Driver Name</th>
+            <th>Status</th>
             <th>Date and Time (Dubai)</th>
             <th>Edit</th>
           </tr>
@@ -631,6 +605,11 @@ console.log()
               <td>{customer.helper1}</td>
               <td>{customer.helper2}</td>
               <td>{customer.driver_name}</td>
+              <td>
+
+              {customer.pick_up_status === 1 ? <span className='px-3 py-2' style={{ color: 'white', background: 'orange' }}>ASSIGNED</span> : customer.pick_up_status === 2 ? <span className='px-2 py-2' style={{ color: 'white', background: 'blue' }}>INPROGRESS</span> : customer.pick_up_status === 3 ? <span className='px-2 py-2' style={{ color: 'white', background: 'green' }}>SUCCESSFUL</span> : ""}
+              </td>
+
               <td>
                 {DateTime.fromISO(customer.created_at, { zone: 'Asia/Dubai' }).toLocaleString(DateTime.DATETIME_MED)}
               </td>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
-import { MdOutlineLock } from "react-icons/md";
 import { AiOutlineMail,AiOutlineUser,AiOutlineKey } from "react-icons/ai";
 import {BsArrowRight} from "react-icons/bs"
 import {
@@ -11,7 +10,6 @@ import {
   FormGroup,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-// import logo from "../images/logoPng.png";
 import "../css/login.css";
 
 function Login() {
@@ -142,9 +140,6 @@ P&G TRUCKERS</h2>
 
                 <p className="validate" id="validate_id"></p>
                 <p className="login" id="login_id"></p>
-
-              
-
                 <div className="d-flex mt-4">
                   <Button className="login-btn" onClick={handleLogin}>
                     Login <BsArrowRight/>
@@ -152,7 +147,6 @@ P&G TRUCKERS</h2>
                 
                 </div>
                 <div className="">
-                  {/* <span className="forgot-password">Forgot Password?</span> */}
                   <Link to="/verifyOTP" className="forgot-password">
                     Forget Password?
                   </Link>

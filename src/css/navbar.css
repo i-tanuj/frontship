@@ -125,11 +125,10 @@ input::placeholder{
   }
   button.btn.btn-secondary {
     width: 100%;
-    padding: 13px;
+    padding: 6px;
     background-color: #1b2644;
-    margin: 20px 10px 0;
+    /* margin: 20px 10px 0; */
 }
-
 button.logout-btn{
     width: 100px;
     padding: 13px;

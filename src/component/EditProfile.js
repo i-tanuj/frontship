@@ -8,11 +8,8 @@ import { Nav, NavItem } from "reactstrap";
 import { Link } from "react-router-dom";
 import { Input, Modal, ModalBody } from "reactstrap";
 
-
 function EditProfile() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const [username, setUsername] = useState("");
   const [data, setData] = useState([]);
   const [message, setMessage] = useState("");
 
@@ -29,7 +26,9 @@ function EditProfile() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("https://shipment-backend.onrender.com/api/identities");
+      const response = await axios.get(
+        "https://shipment-backend.onrender.com/api/identities"
+      );
       setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -42,11 +41,15 @@ function EditProfile() {
   }
   async function updateData() {
     try {
-      await axios.put(`https://shipment-backend.onrender.com/api/updateadminapi/${editData.id}`, {
-        username: editData.username,
-        password: editData.password,
-        contact: editData.contact,
-      });
+      await axios.put(
+        `https://shipment-backend.onrender.com/api/updateadminapi/${editData.id}`,
+        {
+          username: editData.username,
+          password: editData.password,
+          contact: editData.contact,
+        }
+        );
+        console.log("update data");
       toast.success("Admin Details Updated Successfully!", {
         position: "top-left",
         autoClose: 3000,
@@ -84,7 +87,6 @@ function EditProfile() {
                     <label for="exampleInputEmail1" className="fontSize">
                       User Name
                     </label>
-                    {/* <input type="password" class="form-control form-control-sm"/> */}
                     <Input
                       type="text"
                       name="name"
@@ -100,7 +102,6 @@ function EditProfile() {
                     <label for="exampleInputEmail1" className="fontSize">
                       Contact Number
                     </label>
-                    {/* <input type="password" class="form-control form-control-sm"/> */}
                     <input
                       type="text"
                       name="contact"
@@ -116,7 +117,6 @@ function EditProfile() {
                     <label for="exampleInputEmail1" className="fontSize">
                       Password
                     </label>
-                    {/* <input type="password" class="form-control form-control-sm"/> */}
                     <input
                       type="text"
                       name="password"
@@ -129,7 +129,6 @@ function EditProfile() {
                     />
                   </div>
                   <button
-                    // type="submit"
                     onClick={updateData}
                     class="btn submit-btn"
                   >
@@ -150,13 +149,12 @@ function EditProfile() {
                 <NavItem>
                   <img
                     src="/Assets/Navbar/profile.png"
-                    // onClick={() => setModalIsOpen(true)}
                     onClick={() => editDataItem(item)}
                   />
                 </NavItem>
               ))}
             </Link>
-<ToastContainer />
+            <ToastContainer />
           </div>
         </Nav>
       </div>

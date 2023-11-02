@@ -1,23 +1,15 @@
-import React,{useState,useEffect} from 'react'
+import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import axios from 'axios';
-import '../../css/dispatchlist.css'
-import { DateTime } from 'luxon'; 
+import axios from "axios";
+import "../../css/dispatchlist.css";
+import { DateTime } from "luxon";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
-import {
-  Form,
-  FormGroup,
-  Input,
-  Button,
-  Modal,
-  ModalBody,
-} from "reactstrap";
+import * as XLSX from "xlsx";
+import * as FileSaver from "file-saver";
+import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
 import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-
 
 async function ContactData(getContact, id) {
   await axios
@@ -512,7 +504,9 @@ function ShipmentRecords() {
 
   const fetchDrivers = async () => {
     try {
-      const response = await axios.get("https://shipment-backend.onrender.com/api/driver");
+      const response = await axios.get(
+        "https://shipment-backend.onrender.com/api/driver"
+      );
       const driversData = response.data;
       setDrivers(driversData);
     } catch (error) {
@@ -547,10 +541,11 @@ function ShipmentRecords() {
     setModalIsOpenDelete(true);
   };
 
-
   const confirmDelete = () => {
     axios
-      .delete(`https://shipment-backend.onrender.com/api/deleteShipmentsby/${deleteId}`)
+      .delete(
+        `https://shipment-backend.onrender.com/api/deleteShipmentsby/${deleteId}`
+      )
       .then(() => {
         setCustomerData((prevData) =>
           prevData.filter((item) => item.shipment_id !== deleteId)
@@ -697,7 +692,6 @@ function ShipmentRecords() {
       setCustomerEmail1(selectedCustomer.customer_email1);
     }
   };
-
 
   const initialDispatcherData = {
     phoneno: "",
@@ -862,10 +856,9 @@ function ShipmentRecords() {
     setModalIsOpen(false);
   };
 
-
   return (
     <section class="homedive ">
-     <Modal
+      <Modal
         isOpen={modalIsOpenEdit}
         className="main_modal_body dispatcher-list-form"
       >
@@ -1103,113 +1096,117 @@ function ShipmentRecords() {
         </Form>
       </Modal>
 
-<Modal isOpen={modalIsOpenDelete} className="modal_body-delete">
-          <ModalBody className="delete-popup-icon-holder">
+      <Modal isOpen={modalIsOpenDelete} className="modal_body-delete">
+        <ModalBody className="delete-popup-icon-holder">
           <div className="delete-popup-icon">
-              <h3 class="card-header-01" style={{ color: "grey", textAlign: "center" }}>
-                Do you really want to delete?
-              </h3>
-              <AiOutlineClose
-                className="main_AiOutlineClose close-icon-delete"
-                onClick={() => setModalIsOpenDelete(false)}
-                color="black"
+            <h3
+              class="card-header-01"
+              style={{ color: "grey", textAlign: "center" }}
+            >
+              Do you really want to delete?
+            </h3>
+            <AiOutlineClose
+              className="main_AiOutlineClose close-icon-delete"
+              onClick={() => setModalIsOpenDelete(false)}
+              color="black"
+            />
+          </div>
+        </ModalBody>
+        <Form className="">
+          <div
+            className="d-flex justify-content-center mt-5"
+            style={{ marginBottom: "50px" }}
+          >
+            <Button outline onClick={confirmDelete}>
+              Yes
+            </Button>
+            &nbsp;
+            <Button outline onClick={() => setModalIsOpenDelete(false)}>
+              Cancel
+            </Button>
+          </div>
+        </Form>
+      </Modal>
+
+      <div class="rightdiv px-3 py-2">
+        <div class="container-fluid table-header-title">
+          <div class="row justify-content-between">
+            <div class="w-30 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser w-auto">
+              <h2>Shipment List</h2>
+            </div>
+
+            <div className="datepicker-date-comm w-auto">
+              <input
+                type="date"
+                id="startDate"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <input
+                type="date"
+                id="endDate"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
               />
             </div>
-          </ModalBody>
-          <Form className="">
-          
-            <div
-              className="d-flex justify-content-center mt-5"
-              style={{ marginBottom: "50px" }}
-            >
-              <Button
-                outline
-                onClick={confirmDelete}
-              >
-                Yes
-              </Button>
-              &nbsp;
-              <Button outline onClick={() => setModalIsOpenDelete(false)}>
-              Cancel
-              </Button>
-            </div>
-          </Form>
-        </Modal>
-     
-    
-  
-  
-    <div class="rightdiv px-3 py-2">
-        <div class="container-fluid table-header-title">
-            <div class="row justify-content-between">
-              <div class="w-30 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser w-auto">
-                <h2>Shipment List</h2>
-              </div>
 
-              <div  className='datepicker-date-comm w-auto'>
-              <input
-          type="date"
-          id="startDate"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-                             <input
-          type="date"
-          id="endDate"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-									</div>
+            <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+              <div class="input-group input-group-lg">
+                <span
+                  style={{ backgroundColor: "#fff" }}
+                  class="input-group-text"
+                  id="basic-addon1"
+                >
+                  <i class="bi bi-search"></i>
+                </span>
+                {/* <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search By Helper Name" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} /> */}
 
-
-
-              <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
-                  <div class="input-group input-group-lg">
-                    <span style={{backgroundColor:"#fff"}} class="input-group-text" id="basic-addon1"><i class="bi bi-search" ></i></span>
-                    {/* <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search By Helper Name" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} /> */}
-
-                    <input
+                <input
                   style={{ fontSize: "15px" }}
                   className="form-control me-2 serch-filed"
                   aria-label="Search"
-                           type="text"
-          placeholder="Search by Name"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+                  type="text"
+                  placeholder="Search by Name"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                    <div className="export-btn">
-            <button className="create-dispatcher p-3 mt-0 mx-3" onClick={exportToExcel}>Export to Excel</button>
-          </div>
-                  </div>
-                  
+                <div className="export-btn">
+                  <button
+                    className="create-dispatcher p-3 mt-0 mx-3"
+                    onClick={exportToExcel}
+                  >
+                    Export to Excel
+                  </button>
+                </div>
               </div>
-             
             </div>
-          
-            <div className="row pt-0">
-              <div className='col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 '>
-            
-                    </div>
-                <div class="col p-0">
-                    <table class="table align-middle bg-white rounded m-0 dwf-shipment-rec" id="table-to-xls">
-                        <thead class="tableheading">
-                        <tr>
+          </div>
 
-<th scope="col">Pickup Details</th>
-<th scope="col">Delivery Details</th>
-<th scope="col">Driver Name</th>
-<th scope="col">Helper 1</th>
-<th scope="col">Helper 2</th>
-<th scope="col">Vehicle Plate No.</th>
-<th scope="col">Created Date</th>
-<th scope="col" class="borderre1">
-  Action
-</th>
-</tr>
-                        </thead>
-                      <tbody class="tbody">
-  
-                      {filteredData.map((item) => (
+          <div className="row pt-0">
+            <div className="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 "></div>
+            <div class="col p-0">
+              <table
+                class="table align-middle bg-white rounded m-0 dwf-shipment-rec"
+                id="table-to-xls"
+              >
+                <thead class="tableheading">
+                  <tr>
+                    <th scope="col">Pickup Details</th>
+                    <th scope="col">Delivery Details</th>
+                    <th scope="col">Driver Name</th>
+                    <th scope="col">Helper 1</th>
+                    <th scope="col">Helper 2</th>
+                    <th scope="col">Vehicle Plate No.</th>
+                    <th scope="col">Created Date</th>
+                    <th scope="col">Task Status</th>
+
+                    <th scope="col" class="borderre1">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="tbody">
+                  {filteredData.map((item) => (
                     <tr key={item.id}>
                       <td>
                         {item.pick_up_before}
@@ -1227,9 +1224,33 @@ function ShipmentRecords() {
                       <td>{item.helper1}</td>
                       <td>{item.helper2}</td>
                       <td>{item.vehicleplate}</td>
-                      <td>{item.created_at}</td>
-              {/* <td>{DateTime.fromISO(item.created_at, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td> */}
-
+                      <td className="date-td">{item.created_at}</td>
+                      <td>
+                        {item.pick_up_status === 1 ? (
+                          <span
+                            className="px-3 py-2"
+                            style={{ color: "white", background: "orange" }}
+                          >
+                            ASSIGNED
+                          </span>
+                        ) : item.pick_up_status === 2 ? (
+                          <span
+                            className="px-2 py-2"
+                            style={{ color: "white", background: "blue" }}
+                          >
+                            INPROGRESS
+                          </span>
+                        ) : item.pick_up_status === 3 ? (
+                          <span
+                            className="px-2 py-2"
+                            style={{ color: "white", background: "green" }}
+                          >
+                            SUCCESSFUL
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </td>
                       <td>
                         <button
                           className="btn btn1"
@@ -1251,50 +1272,60 @@ function ShipmentRecords() {
                       </td>
                     </tr>
                   ))}
-                    </tbody>
-                  </table>
-               <nav>
-        <ul className='pagination'>
-           <li className='page-item'>
-            <a href='#' className='page-link' onClick={prePage}>Previous</a>
-           </li>
-           {
-            numbers.map((n,i)=>{
-              <li className={`page-item ${currentPage === n ? 'active' : ''}`} key={i}>
-              <a href='#' className='page-link' onClick={()=>changeCPage(n)}>{n}</a>
-              </li>
-            })
-           }
-             <li className='page-item'>
-            <a href='#' className='page-link' onClick={nextPage}>Next</a>
-           </li>
-        </ul>
-      </nav>
-                </div>
-
+                </tbody>
+              </table>
+              <nav>
+                <ul className="pagination">
+                  <li className="page-item">
+                    <a href="#" className="page-link" onClick={prePage}>
+                      Previous
+                    </a>
+                  </li>
+                  {numbers.map((n, i) => {
+                    <li
+                      className={`page-item ${
+                        currentPage === n ? "active" : ""
+                      }`}
+                      key={i}
+                    >
+                      <a
+                        href="#"
+                        className="page-link"
+                        onClick={() => changeCPage(n)}
+                      >
+                        {n}
+                      </a>
+                    </li>;
+                  })}
+                  <li className="page-item">
+                    <a href="#" className="page-link" onClick={nextPage}>
+                      Next
+                    </a>
+                  </li>
+                </ul>
+              </nav>
             </div>
+          </div>
         </div>
-    </div>
-   </section>
-  )
+      </div>
+    </section>
+  );
 
-  function prePage (){
-    if(currentPage !== 1){
-      setCurrentPage(currentPage - 1)
+  function prePage() {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
     }
   }
-  
-  function changeCPage (id){
-   setCurrentPage(id)
+
+  function changeCPage(id) {
+    setCurrentPage(id);
   }
 
-  function nextPage (){
-    if(currentPage !== npage){
-      setCurrentPage(currentPage + 1)
+  function nextPage() {
+    if (currentPage !== npage) {
+      setCurrentPage(currentPage + 1);
     }
   }
 }
 
-export default ShipmentRecords
-
-
+export default ShipmentRecords;

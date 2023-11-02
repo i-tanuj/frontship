@@ -264,12 +264,9 @@ function SettlementRecords() {
             <tr key={i}>
                  <th scope="row"><span className="dispatcher-id">{i+1}</span></th>
             <td>{item.full_name}</td>
-            {/* <td>{console.log(item.driver_id)}</td> */}
             <td>{item.settlement_amount}</td>
             <td>
             <button className='Settle-amount  '  onClick={() => handleUpdateClick(item.driver_id)} id={item.driver_id}>Settled Amount</button>
-            {/* console.log(item.id); */}
-            {/* console.log("ids"+item.id); */}
             </td>
           </tr>
           )

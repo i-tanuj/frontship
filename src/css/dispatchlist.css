@@ -25,7 +25,7 @@ li.page-item a {
     font-size: 12px;
     font-weight: 700;
     line-height: 40px;
-    padding: 7px 28px;
+    padding: 7px 15px;
 }
 .delete::before {
     color: #1b2644;
