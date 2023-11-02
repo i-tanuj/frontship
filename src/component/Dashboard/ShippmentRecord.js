@@ -1228,22 +1228,22 @@ function ShipmentRecords() {
                       <td>
                         {item.pick_up_status === 1 ? (
                           <span
-                            className="px-3 py-2"
-                            style={{ color: "white", background: "orange" }}
+                            className="px-3 py-2 rounded-pill"
+                            style={{ color: "white", background: "orange", fontSize: "12px" }}
                           >
                             ASSIGNED
                           </span>
                         ) : item.pick_up_status === 2 ? (
                           <span
-                            className="px-2 py-2"
-                            style={{ color: "white", background: "blue" }}
+                            className="px-2 py-2 rounded-pill"
+                            style={{ color: "white", background: "blue", fontSize: "12px" }}
                           >
                             INPROGRESS
                           </span>
                         ) : item.pick_up_status === 3 ? (
                           <span
-                            className="px-2 py-2"
-                            style={{ color: "white", background: "green" }}
+                            className="px-2 py-2 rounded-pill"
+                            style={{ color: "white", background: "green", fontSize: "12px" }}
                           >
                             SUCCESSFUL
                           </span>

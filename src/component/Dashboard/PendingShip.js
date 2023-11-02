@@ -142,7 +142,7 @@ function PendingShip() {
   }, []);
 
   useEffect(() => {
-    axios.get('https://shipment-backend.onrender.com/api/mergeapidata')
+    axios.get('http://localhost:5000/api/mergeapidatapending')
       .then((response) => {
         setData(response.data);
         const names = response.data.map((item) => item.customer_name);
@@ -348,7 +348,7 @@ function PendingShip() {
 
   const fetchData = () => {
     axios
-      .get("https://shipment-backend.onrender.com/api/mergeapidata")
+      .get("http://localhost:5000/api/mergeapidatapending")
       .then((response) => {
         setCustomerData(response.data);
         // console.log(data.customer_contact);
@@ -663,7 +663,32 @@ function PendingShip() {
                       <td>{item.helper1}</td>
                       <td>{item.helper2}</td>
                       <td>{item.vehicleplate}</td>
-                      <td className=''>Pending</td>
+                      <td>
+                        {item.pick_up_status === 1 ? (
+                          <span
+                            className="px-3 py-2 rounded-pill"
+                            style={{ color: "white", background: "orange", fontSize: "12px" }}
+                          >
+                            PENDING
+                          </span>
+                        ) : item.pick_up_status === 2 ? (
+                          <span
+                            className="px-2 py-2 rounded-pill"
+                            style={{ color: "white", background: "blue", fontSize: "12px" }}
+                          >
+                            INPROGRESS
+                          </span>
+                        ) : item.pick_up_status === 3 ? (
+                          <span
+                            className="px-2 py-2 rounded-pill"
+                            style={{ color: "white", background: "green", fontSize: "12px" }}
+                          >
+                            SUCCESSFUL
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </td>
                       <td>{item.created_at}</td>
                       <td>
                         {/* <button

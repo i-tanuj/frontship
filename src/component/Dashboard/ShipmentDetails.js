@@ -504,7 +504,9 @@ function ShipmentDetails() {
 
   const fetchDrivers = async () => {
     try {
-      const response = await axios.get("https://shipment-backend.onrender.com/api/driver");
+      const response = await axios.get(
+        "https://shipment-backend.onrender.com/api/driver"
+      );
       const driversData = response.data;
       setDrivers(driversData);
     } catch (error) {
@@ -539,10 +541,11 @@ function ShipmentDetails() {
     setModalIsOpenDelete(true);
   };
 
-
   const confirmDelete = () => {
     axios
-      .delete(`https://shipment-backend.onrender.com/api/deleteShipmentsby/${deleteId}`)
+      .delete(
+        `https://shipment-backend.onrender.com/api/deleteShipmentsby/${deleteId}`
+      )
       .then(() => {
         setCustomerData((prevData) =>
           prevData.filter((item) => item.shipment_id !== deleteId)
@@ -689,7 +692,6 @@ function ShipmentDetails() {
       setCustomerEmail1(selectedCustomer.customer_email1);
     }
   };
-
 
   const initialDispatcherData = {
     phoneno: "",
@@ -853,7 +855,6 @@ function ShipmentDetails() {
     setEditData(null);
     setModalIsOpen(false);
   };
-
 
   return (
     <section class="homedive ">
@@ -1255,10 +1256,43 @@ function ShipmentDetails() {
                       <td>{item.vehicleplate}</td>
                       <td>{item.created_at}</td>
                       <td>
-              {item.pick_up_status === 1 ? <span className='px-3 py-2' style={{ color: 'white', background: 'orange' }}>ASSIGNED</span> : item.pick_up_status === 2 ? <span className='px-2 py-2' style={{ color: 'white', background: 'blue' }}>INPROGRESS</span> : item.pick_up_status === 3 ? <span className='px-2 py-2' style={{ color: 'white', background: 'green' }}>SUCCESSFUL</span> : ""}
-                      
+                        {item.pick_up_status === 1 ? (
+                          <span
+                            className="px-3 py-2 rounded-pill"
+                            style={{
+                              color: "white",
+                              background: "orange",
+                              fontSize: "12px",
+                            }}
+                          >
+                            ASSIGNED
+                          </span>
+                        ) : item.pick_up_status === 2 ? (
+                          <span
+                            className="px-2 py-2 rounded-pill"
+                            style={{
+                              color: "white",
+                              background: "blue",
+                              fontSize: "12px",
+                            }}
+                          >
+                            INPROGRESS
+                          </span>
+                        ) : item.pick_up_status === 3 ? (
+                          <span
+                            className="px-2 py-2 rounded-pill"
+                            style={{
+                              color: "white",
+                              background: "green",
+                              fontSize: "12px",
+                            }}
+                          >
+                            SUCCESSFUL
+                          </span>
+                        ) : (
+                          ""
+                        )}
                       </td>
-                      {/* <td>{DateTime.fromISO(item.created_at, { zone: 'IST' }).toLocaleString(DateTime.DATETIME_MED)}</td> */}
 
                       <td>
                         <button
