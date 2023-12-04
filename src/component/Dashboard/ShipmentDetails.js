@@ -81,6 +81,9 @@ function ShipmentDetails() {
   const [altphone1, setAltphone1] = useState("");
   const [phone, setPhone] = useState("");
   const [phone1, setPhone1] = useState("");
+  const [droplocation, setdroplocation] = useState("");
+  const [drop_location, setDrop_Location] = useState("");
+
   const [pickuplocation, setPickuplocation] = useState("");
   const [pickuplocation1, setPickuplocation1] = useState("");
   const [pickupdate, setPickupdate] = useState("");
@@ -163,12 +166,14 @@ function ShipmentDetails() {
         const selectedDispatcherData1 = response.data;
         console.log("Selected Dispatcher Data 1:", selectedDispatcherData1);
         if (selectedDispatcherData1.length > 0) {
-          const { phoneno, altphone, email } = selectedDispatcherData1[0];
+          const { phoneno, altphone, email, address } = selectedDispatcherData1[0];
           console.log("Altphone:", selectedDispatcherData1[0].altphone);
           console.log("Phoneno:", selectedDispatcherData1[0].phoneno);
+          console.log("Address:", selectedDispatcherData1[0].address);
           setAltphone1(altphone || '');
           setPhone1(phoneno || '');
           setCustomerEmail1(email || '');
+          setdroplocation(address || '');
         } else {
           // Handle the case when no data is returned for the selected name
           console.log("No data found for the selected name");
@@ -705,6 +710,9 @@ function ShipmentDetails() {
     setSelectedDispatcher1(item.customer_name2);
     setCustomerContact2(item.customer_contact2);
     setCustomerContact(selectedCustomer.phone);
+    setDrop_Location(item.drop_location);
+    // console.log("tww " +selectedCustomer.dropLocation)
+    console.log("tww " +selectedCustomer.address)
     
     
     // console.log("2nd "+ item.customer_contact);
@@ -716,10 +724,11 @@ function ShipmentDetails() {
     if (selectedCustomer) {
       setCustomerContact(selectedCustomer.phone);
       setCustomerContact2(selectedCustomer.phone1);
+      // setCustomerContact2(selectedCustomer.drop_location);
       // console.log("3nd "+ selectedCustomer.customer_contact);
       setCustomerAltNum(selectedCustomer.customer_alt_num);
       setPickUpLocation(selectedCustomer.pick_up_location);
-      setDropLocation(selectedCustomer.drop_location);
+      setAddress(selectedCustomer.address);
       setCustomerEmail(selectedCustomer.email);
       setCustomerEmail1(selectedCustomer.email1);
     }
@@ -1033,9 +1042,8 @@ function ShipmentDetails() {
               <FormGroup>
                 <input
                   name="pickuplocation"
-                  // value={pickuplocation}
-                  value={dropLocation}
-                  onChange={(e) => setPickuplocation(e.target.value)}
+                  value={droplocation}
+                  onChange={(e) => setdroplocation(e.target.value)}
                   id="pickuplocation"
                   placeholder="Drop Location"
                   type="text"
