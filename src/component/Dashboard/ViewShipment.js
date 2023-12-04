@@ -7,30 +7,13 @@ import { useParams } from 'react-router-dom';
 
 
 function ViewShipment() {
-    const [shipment, setShipment] = useState({});
     const [contact, getContact] = useState([]);
-    const [full_name, setFullName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
-    const [batchList,getBatchList] = useState([]);
-
-
-    const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
-    const [modalIsOpenEdit,setModalIsOpenEdit] = useState(false);
-    const [defaultcontact, DefaultgetContact] = useState([]);
-    const [ids, setIds] = useState('');
-    const [search,setSearch] =useState('');
-//   console.log(search)
   const [currentPage,setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
   const firstIndex= lastIndex - recordsPerPage;
   const records = contact.slice(firstIndex, lastIndex);
   const npage = Math.ceil(contact.length / recordsPerPage)
-  const numbers = [...Array(npage + 1).keys()].slice(1)
-
-  const { id } = useParams();
   const [data, setData] = useState({});
 //   const [loading, setLoading] = useState(true);
 

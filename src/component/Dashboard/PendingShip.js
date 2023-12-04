@@ -142,7 +142,7 @@ function PendingShip() {
   }, []);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/mergeapidatapending')
+    axios.get('https://shipment-backend.onrender.com/api/mergeapidatapending')
       .then((response) => {
         setData(response.data);
         const names = response.data.map((item) => item.customer_name);
@@ -348,7 +348,7 @@ function PendingShip() {
 
   const fetchData = () => {
     axios
-      .get("http://localhost:5000/api/mergeapidatapending")
+      .get("https://shipment-backend.onrender.com/api/mergeapidatapending")
       .then((response) => {
         setCustomerData(response.data);
         // console.log(data.customer_contact);

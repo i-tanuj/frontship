@@ -36,7 +36,6 @@ function ShipmentDetails() {
   const [endDate, setEndDate] = useState(null);
   const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
@@ -152,17 +151,29 @@ function ShipmentDetails() {
   });
 
   const handleSelectChange1 = async (event) => {
-    const selectedOptionValue = event.target.value;
-    setSelectedDispatcher1(selectedOptionValue);
-    console.log(selectedOptionValue);
+    const selectedOptionValue1 = event.target.value;
+    setSelectedDispatcher1(selectedOptionValue1);
+    console.log(selectedOptionValue1);
     // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
-    if (selectedOptionValue) {
+    if (selectedOptionValue1) {
       try {
         const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customer-details-main?name=${selectedOptionValue1}`
         );
         const selectedDispatcherData1 = response.data;
-        setDispatcherData1(selectedDispatcherData1);
+        console.log("Selected Dispatcher Data 1:", selectedDispatcherData1);
+        if (selectedDispatcherData1.length > 0) {
+          const { phoneno, altphone, email } = selectedDispatcherData1[0];
+          console.log("Altphone:", selectedDispatcherData1[0].altphone);
+          console.log("Phoneno:", selectedDispatcherData1[0].phoneno);
+          setAltphone1(altphone || '');
+          setPhone1(phoneno || '');
+          setCustomerEmail1(email || '');
+        } else {
+          // Handle the case when no data is returned for the selected name
+          console.log("No data found for the selected name");
+          // You might want to clear the fields or show a message to the user
+        }
       } catch (error) {
         console.error("Error fetching selected dispatcher:", error);
       }
@@ -387,15 +398,30 @@ function ShipmentDetails() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customer-details-main?name=${selectedOptionValue}`
         );
         const selectedDispatcherData = response.data;
-        setDispatcherData(selectedDispatcherData);
+        console.log("Selected Dispatcher Data:", selectedDispatcherData);
+
+        if (selectedDispatcherData.length > 0) {
+          const { phoneno, altphone, email, address } = selectedDispatcherData[0];
+          console.log("Altphone:", selectedDispatcherData[0].altphone);
+          console.log("Phoneno:", selectedDispatcherData[0].phoneno);
+          setAltphone(altphone || '');
+          setPhone(phoneno || '');
+          setCustomerEmail(email || '');
+          setCustomerAddress(address || '');
+        } else {
+          // Handle the case when no data is returned for the selected name
+          console.log("No data found for the selected name");
+          // You might want to clear the fields or show a message to the user
+        }
       } catch (error) {
         console.error("Error fetching selected dispatcher:", error);
       }
     }
   };
+
 
   useEffect(() => {
     axios
@@ -622,13 +648,13 @@ function ShipmentDetails() {
   const saveEditedData = () => {
     const updatedData = {
       customer_name: selectedDispatcher,
-      customer_contact: customerContact,
-      customer_alt_num: customerAltNum,
+      customer_contact: phone,
+      customer_alt_num: altphone,
       customer_email: customerEmail, // Add this line for customer email
       pick_up_location: pickUpLocation,
       pick_up_before: pickupDate,
       customer_name2: selectedDispatcher1,
-      customer_contact2: customerContact2,
+      customer_contact2: phone1,
       drop_location: dropLocation,
       drop_date: dropDate,
       helper1: selectedHelper1,
@@ -645,6 +671,8 @@ function ShipmentDetails() {
       )
       .then((response) => {
         console.log("Data updated successfully:", response.data);
+
+        
         toast.success("Shipment Details Updated Successfully!", {
           position: "top-right",
           autoClose: 3000,
@@ -665,6 +693,7 @@ function ShipmentDetails() {
     setModalIsOpenEdit(true);
     setSelectedCustomerName(item.customer_name);
     setSelectedCustomerName2(item.customer_name2);
+    setCustomerEmail(item.email)
     setSelectedShipmentId(item.shipment_id);
     setSelectedVehicle(item.vehicleplate);
     setSelectedDriverId(item.driver_name);
@@ -675,6 +704,9 @@ function ShipmentDetails() {
     setSelectedDispatcher(item.customer_name);
     setSelectedDispatcher1(item.customer_name2);
     setCustomerContact2(item.customer_contact2);
+    setCustomerContact(selectedCustomer.phone);
+    
+    
     // console.log("2nd "+ item.customer_contact);
 
     const selectedCustomer = data.find(
@@ -682,14 +714,14 @@ function ShipmentDetails() {
     );
 
     if (selectedCustomer) {
-      setCustomerContact(selectedCustomer.customer_contact);
-      setCustomerContact2(selectedCustomer.customer_contact2);
+      setCustomerContact(selectedCustomer.phone);
+      setCustomerContact2(selectedCustomer.phone1);
       // console.log("3nd "+ selectedCustomer.customer_contact);
       setCustomerAltNum(selectedCustomer.customer_alt_num);
       setPickUpLocation(selectedCustomer.pick_up_location);
       setDropLocation(selectedCustomer.drop_location);
-      setCustomerEmail(selectedCustomer.customer_email);
-      setCustomerEmail1(selectedCustomer.customer_email1);
+      setCustomerEmail(selectedCustomer.email);
+      setCustomerEmail1(selectedCustomer.email1);
     }
   };
 
@@ -895,7 +927,7 @@ function ShipmentDetails() {
               <FormGroup>
                 <input
                   name="phoneno"
-                  value={customerContact}
+                  value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   id="phoneno"
                   placeholder="Enter Contact Number"
@@ -912,7 +944,7 @@ function ShipmentDetails() {
                 <input
                   name="altphone"
                   id="altphone"
-                  value={customerAltNum}
+                  value={altphone}
                   onChange={(e) => setAltphone(e.target.value)}
                   placeholder="Enter Alternate Number"
                   type="number"
@@ -941,7 +973,7 @@ function ShipmentDetails() {
               <FormGroup>
                 <input
                   name="pickuplocation"
-                  value={pickUpLocation}
+                  value={customerAddress}
                   onChange={(e) => setPickuplocation(e.target.value)}
                   id="pickuplocation"
                   placeholder="Enter Pickup Location"
@@ -986,8 +1018,8 @@ function ShipmentDetails() {
               <FormGroup>
                 <input
                   name="phoneno"
-                  value={customerContact2}
-                  onChange={(e) => setPhone(e.target.value)}
+                  value={phone1}
+                  onChange={(e) => setPhone1(e.target.value)}
                   id="phoneno"
                   placeholder="Enter Contact Number"
                   type="number"
