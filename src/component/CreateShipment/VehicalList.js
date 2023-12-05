@@ -20,6 +20,7 @@ const currentDate = new Date().toLocaleString("en-IN", {
 });
 
 function VehicalList() {
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [contact, getContact] = useState([]);
@@ -102,6 +103,8 @@ function editDataItem(item) {
 }
 async function updateData() {
   try {
+    setIsLoading(true);
+
     await axios.put(
       `https://shipment-backend.onrender.com/api/updatevehicleapi/${editData.id}`,
       {
@@ -121,6 +124,9 @@ async function updateData() {
     fetchData(); // Refresh data after update
   } catch (error) {
     console.error("Error updating data:", error);
+  }
+  finally {
+    setIsLoading(false);
   }
 }
 
@@ -213,11 +219,13 @@ const exportToExcel = () => {
           <p id="edit-validate-batch" style={{ color: "red" }}></p>
           <Button
             variant="contained"
-            className="main_botton"
             style={{ backgroundColor: "#6A3187" }}
             onClick={updateData}
+            disabled={isLoading} // Disable the button while loading
+                    className={`submit-btn btn ${isLoading ? 'btn-disabled' : 'btn-primary'}`}
+
           >
-            Update Vehicle List
+                   {isLoading ? <span>Loading...</span> : <span>Update Vehicle List</span>}
           </Button>
         </Form>
       </Modal>

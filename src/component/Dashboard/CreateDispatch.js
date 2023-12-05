@@ -52,8 +52,6 @@ function CreateDispatch({ onDataCreated }) {
     setModalIsOpen(false);
           setName('');
           onDataCreated();
-      // Clear the form
-      // setName('');
       setPhone('');
       setEmail('');
       setPassword('');
@@ -170,7 +168,6 @@ function CreateDispatch({ onDataCreated }) {
                   </div>
                   <button
                     type="submit"
-                    // className="submit-btn"
                     value="Send Message"
                     disabled={isLoading} // Disable the button while loading
                     className={`submit-btn btn ${isLoading ? 'btn-disabled' : 'btn-primary'}`}

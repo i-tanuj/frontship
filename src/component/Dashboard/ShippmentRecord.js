@@ -4,12 +4,11 @@ import axios from "axios";
 import "../../css/dispatchlist.css";
 import { DateTime } from "luxon";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
-import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
+import { Form, FormGroup, Button, Modal, ModalBody } from "reactstrap";
 import { Link } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 async function ContactData(getContact, id) {
   await axios
@@ -22,13 +21,9 @@ async function ContactData(getContact, id) {
 }
 
 function ShipmentRecords() {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [defaultcontact, DefaultgetContact] = useState([]);
-  const [dispatchname, setDispatchName] = useState("");
-  const [discontactnum, setDiscontactnum] = useState("");
   const [searchTerm, setSearchTerm] = useState(""); // Initialize search term as empty
   const [pickUpLocation, setPickUpLocation] = useState(""); // Pick-up Location
-  const [dropLocation, setDropLocation] = useState(""); // Pick-up Location
   const [contact, getContact] = useState([]);
   const [name, setName] = useState("");
   const [data, setData] = useState([]);
@@ -36,7 +31,6 @@ function ShipmentRecords() {
   const [endDate, setEndDate] = useState(null);
   const [modalIsOpenDelete, setModalIsOpenDelete] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const lastIndex = currentPage * recordsPerPage;
@@ -54,7 +48,6 @@ function ShipmentRecords() {
   const [selectedDispatcher1, setSelectedDispatcher1] = useState("");
   const [selectedDispatcher2, setSelectedDispatcher2] = useState("");
   const [selectedDispatcher3, setSelectedDispatcher3] = useState("");
-  const [searchText, setSearchText] = useState(""); // Search text for filtering by customer name
   const [editItem, setEditItem] = useState(null);
   const [selectedCustomerName, setSelectedCustomerName] = useState("");
   const [selectedCustomerName2, setSelectedCustomerName2] = useState("");
@@ -77,32 +70,14 @@ function ShipmentRecords() {
   const [dropDate, setDropDate] = useState(""); // Customer Alternate Number
   const [filteredData, setFilteredData] = useState([]); // Filtered data
   const [email, setEmail] = useState("");
-  const [email1, setEmail1] = useState("");
   const [altphone, setAltphone] = useState("");
   const [altphone1, setAltphone1] = useState("");
   const [phone, setPhone] = useState("");
   const [phone1, setPhone1] = useState("");
+  const [droplocation, setdroplocation] = useState("");
+  const [drop_location, setDrop_Location] = useState("");
   const [pickuplocation, setPickuplocation] = useState("");
-  const [pickuplocation1, setPickuplocation1] = useState("");
-  const [pickupdate, setPickupdate] = useState("");
-  const [dropdate, setDropdate] = useState("");
-  const [dropdate1, setDropdate1] = useState("");
-  const [pickupdate1, setPickupdate1] = useState("");
-  const [description, setDescription] = useState("");
-  const [description1, setDescription1] = useState("");
-  const [maplink, setmaplink] = useState("");
-  const [selectedDriver, setSelectedDriver] = useState("");
-  const [selectshipdrop, setSelectshipdrop] = useState("");
-  const [adddescriptiondrop, setAdddescriptiondrop] = useState("");
-  const [adddescriptiondrop1, setAdddescriptiondrop1] = useState("");
-  const [isEditing, setIsEditing] = useState(false); // Track if we are in edit mode
   const [vehicles, setVehicle] = useState([]);
-  const [link, setLink] = useState("");
-  const [link1, setLink1] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [latitude1, setLatitude1] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [longitude1, setLongitude1] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [vehicleDetails, setVehicleDetails] = useState([]);
   const [filteredHelpers1, setFilteredHelpers1] = useState([]);
@@ -152,17 +127,27 @@ function ShipmentRecords() {
   });
 
   const handleSelectChange1 = async (event) => {
-    const selectedOptionValue = event.target.value;
-    setSelectedDispatcher1(selectedOptionValue);
-    console.log(selectedOptionValue);
+    const selectedOptionValue1 = event.target.value;
+    setSelectedDispatcher1(selectedOptionValue1);
+    console.log(selectedOptionValue1);
     // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
-    if (selectedOptionValue) {
+    if (selectedOptionValue1) {
       try {
         const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customer-details-main?name=${selectedOptionValue1}`
         );
         const selectedDispatcherData1 = response.data;
-        setDispatcherData1(selectedDispatcherData1);
+        console.log("Selected Dispatcher Data 1:", selectedDispatcherData1);
+        if (selectedDispatcherData1.length > 0) {
+          const { phoneno, altphone, email, address } =
+            selectedDispatcherData1[0];
+          setAltphone1(altphone || "");
+          setPhone1(phoneno || "");
+          setCustomerEmail1(email || "");
+          setdroplocation(address || "");
+        } else {
+          console.log("No data found for the selected name");
+           }
       } catch (error) {
         console.error("Error fetching selected dispatcher:", error);
       }
@@ -387,10 +372,23 @@ function ShipmentRecords() {
     if (selectedOptionValue) {
       try {
         const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
+          `https://shipment-backend.onrender.com/api/customer-details-main?name=${selectedOptionValue}`
         );
         const selectedDispatcherData = response.data;
-        setDispatcherData(selectedDispatcherData);
+        console.log("Selected Dispatcher Data:", selectedDispatcherData);
+
+        if (selectedDispatcherData.length > 0) {
+          const { phoneno, altphone, email, address } =
+            selectedDispatcherData[0];
+          setAltphone(altphone || "");
+          setPhone(phoneno || "");
+          setCustomerEmail(email || "");
+          setCustomerAddress(address || "");
+        } else {
+          // Handle the case when no data is returned for the selected name
+          console.log("No data found for the selected name");
+          // You might want to clear the fields or show a message to the user
+        }
       } catch (error) {
         console.error("Error fetching selected dispatcher:", error);
       }
@@ -439,17 +437,6 @@ function ShipmentRecords() {
     }
   }, [searchTerm, data]);
 
-  const [editData, setEditData] = useState({
-    id: null,
-    driver_id: "",
-    customer_name: "",
-    pick_up_location: "",
-    helper1: "",
-    helper2: "",
-    drop_date: "",
-    vehicleplate: "",
-    pick_up_before: "",
-  });
 
   const [helperData, setHelperData] = useState({
     id: "",
@@ -614,29 +601,27 @@ function ShipmentRecords() {
     }
   };
 
-  function editDataItem(customer) {
-    setEditData(customer);
-    setModalIsOpenEdit(true);
-  }
 
   const saveEditedData = () => {
     const updatedData = {
       customer_name: selectedDispatcher,
-      customer_contact: customerContact,
-      customer_alt_num: customerAltNum,
-      customer_email: customerEmail, // Add this line for customer email
-      pick_up_location: pickUpLocation,
+      customer_contact: phone,
+      customer_alt_num: altphone,
+      customer_email: customerEmail,
+      pick_up_location: customerAddress,
       pick_up_before: pickupDate,
       customer_name2: selectedDispatcher1,
-      customer_contact2: customerContact2,
-      drop_location: dropLocation,
+      customer_contact2: phone1,
+      drop_location: droplocation,
       drop_date: dropDate,
       helper1: selectedHelper1,
       helper2: selectedHelper2,
       driver_name: selectedDriverId,
       vehicleplate: selectedVehicle,
     };
-
+  
+    setIsLoading(true);
+  
     // Make a PUT request to update the data
     axios
       .put(
@@ -645,6 +630,7 @@ function ShipmentRecords() {
       )
       .then((response) => {
         console.log("Data updated successfully:", response.data);
+  
         toast.success("Shipment Details Updated Successfully!", {
           position: "top-right",
           autoClose: 3000,
@@ -657,14 +643,19 @@ function ShipmentRecords() {
       })
       .catch((error) => {
         console.error("Error updating data:", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
+  
 
   const openEditModal = (item) => {
     setEditItem(item);
     setModalIsOpenEdit(true);
     setSelectedCustomerName(item.customer_name);
     setSelectedCustomerName2(item.customer_name2);
+    setCustomerEmail(item.email);
     setSelectedShipmentId(item.shipment_id);
     setSelectedVehicle(item.vehicleplate);
     setSelectedDriverId(item.driver_name);
@@ -675,149 +666,27 @@ function ShipmentRecords() {
     setSelectedDispatcher(item.customer_name);
     setSelectedDispatcher1(item.customer_name2);
     setCustomerContact2(item.customer_contact2);
-    // console.log("2nd "+ item.customer_contact);
+    setCustomerContact(selectedCustomer.phone);
+    setDrop_Location(item.drop_location);
+    setCustomerEmail(selectedCustomer.email);
 
+ 
+   
     const selectedCustomer = data.find(
       (customer) => customer.customer_name === item.customer_name
     );
 
     if (selectedCustomer) {
-      setCustomerContact(selectedCustomer.customer_contact);
-      setCustomerContact2(selectedCustomer.customer_contact2);
-      // console.log("3nd "+ selectedCustomer.customer_contact);
+      setCustomerContact(selectedCustomer.phone);
+      setCustomerContact2(selectedCustomer.phone1);
       setCustomerAltNum(selectedCustomer.customer_alt_num);
       setPickUpLocation(selectedCustomer.pick_up_location);
-      setDropLocation(selectedCustomer.drop_location);
-      setCustomerEmail(selectedCustomer.customer_email);
-      setCustomerEmail1(selectedCustomer.customer_email1);
+      setAddress(selectedCustomer.address);
+      setCustomerEmail(selectedCustomer.email);
+      setCustomerEmail1(selectedCustomer.email1);
     }
   };
 
-  const initialDispatcherData = {
-    phoneno: "",
-    email: "",
-    altphone: "",
-    phone: "",
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    console.log();
-    try {
-      const response = await axios.post(
-        "https://shipment-backend.onrender.com/api/newidshipment",
-        {
-          customer_name: dispatcherData.name,
-          customer_contact: dispatcherData.phoneno,
-          customer_email: dispatcherData.email,
-          customer_alt_num: dispatcherData.altphone,
-          pick_up_location: dispatcherData.address,
-          pick_up_before: pickupdate,
-          drop_date: dropdate,
-          drop_date1: dropdate1,
-          latitude: latitude,
-          longitude: longitude,
-          latitude1: latitude1,
-          longitude1: longitude1,
-          description: description,
-          customer_name2: dispatcherData1.name,
-          customer_contact2: dispatcherData1.phoneno,
-          drop_location: dispatcherData1.address,
-          drop_description: adddescriptiondrop,
-          vehicleplate: selectedVehicle,
-          helper1: helperData.name,
-          helper2: helperData1.name,
-          driver_id: selectedDriver.id,
-          driver_name: selectedDriver.full_name,
-          customer_name1: dispatcherData2.name,
-          customer_contact1: dispatcherData2.phoneno,
-          customer_email1: dispatcherData2.email,
-          customer_alt_num1: dispatcherData2.altphone,
-          pick_up_location1: dispatcherData2.address,
-          pick_up_before1: pickupdate1,
-          description1: description1,
-          customer_name21: dispatcherData3.name,
-          customer_contact21: dispatcherData3.phoneno,
-          drop_location1: dispatcherData3.address,
-          drop_description1: adddescriptiondrop1,
-        }
-      );
-
-      setModalIsOpen(false);
-      toast.success("Shipment successfully created!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-      });
-      setDispatcherData(initialDispatcherData);
-      setName("");
-      setPhone("");
-      setPhone1("");
-      setEmail("");
-      setmaplink("");
-      setAltphone("");
-      setPickuplocation("");
-      setPickupdate("");
-      setDescription("");
-      setDescription1("");
-      setDispatchName("");
-      setDiscontactnum("");
-      setSelectshipdrop("");
-      setAdddescriptiondrop("");
-      setSelectedVehicle("");
-      setSelectedHelper1("");
-      selectedHelper1("");
-      setSelectedHelper2("");
-      setSelectedDriver("");
-      setSelectedDispatcher("");
-      setSelectedDispatcher1("");
-      setSelectedDispatcher2("");
-      setSelectedDispatcher3("");
-      setDropdate("");
-      setDropdate1("");
-      // phoneno("");
-      dispatcherData("");
-      phone("");
-    } catch (error) {
-      console.error("Error submitting data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleLinkChange = (event) => {
-    const newLink = event.target.value;
-    setLink(newLink);
-
-    // Use regular expression to extract latitude and longitude
-    const match = newLink.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-    if (match) {
-      setLatitude(match[1]);
-      setLongitude(match[2]);
-    } else {
-      setLatitude("");
-      setLongitude("");
-    }
-  };
-
-  const handleLinkChange1 = (event) => {
-    const newLink1 = event.target.value;
-    setLink1(newLink1);
-
-    // Use regular expression to extract latitude and longitude
-    const matchs = newLink1.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-    if (matchs) {
-      setLatitude1(matchs[1]);
-      setLongitude1(matchs[2]);
-    } else {
-      setLatitude1("");
-      setLongitude1("");
-    }
-  };
 
   const availableDispatchersForSelectedDispatcher1 = dispatchers.filter(
     (dispatcher) => !selectedDispatcher.includes(dispatcher.id)
@@ -833,28 +702,6 @@ function ShipmentRecords() {
       !selectedDispatcher1.includes(dispatcher.id) &&
       !selectedDispatcher2.includes(dispatcher.id)
   );
-
-  const handleEditClick = (customer) => {
-    setEditData({ ...customer });
-    setIsEditing(true);
-    setModalIsOpen(true);
-
-    // Set the selected value for the "Customer Name" dropdown
-    setSelectedDispatcher(customer.customer_name);
-    setSelectedDispatcher1(customer.customer_name2);
-  };
-
-  const handleSaveEdit = () => {
-    setIsEditing(false);
-    setEditData(null);
-    setModalIsOpen(false);
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    setEditData(null);
-    setModalIsOpen(false);
-  };
 
   return (
     <section class="homedive ">
@@ -895,7 +742,7 @@ function ShipmentRecords() {
               <FormGroup>
                 <input
                   name="phoneno"
-                  value={customerContact}
+                  value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   id="phoneno"
                   placeholder="Enter Contact Number"
@@ -912,7 +759,7 @@ function ShipmentRecords() {
                 <input
                   name="altphone"
                   id="altphone"
-                  value={customerAltNum}
+                  value={altphone}
                   onChange={(e) => setAltphone(e.target.value)}
                   placeholder="Enter Alternate Number"
                   type="number"
@@ -941,7 +788,7 @@ function ShipmentRecords() {
               <FormGroup>
                 <input
                   name="pickuplocation"
-                  value={pickUpLocation}
+                  value={customerAddress}
                   onChange={(e) => setPickuplocation(e.target.value)}
                   id="pickuplocation"
                   placeholder="Enter Pickup Location"
@@ -986,8 +833,8 @@ function ShipmentRecords() {
               <FormGroup>
                 <input
                   name="phoneno"
-                  value={customerContact2}
-                  onChange={(e) => setPhone(e.target.value)}
+                  value={phone1}
+                  onChange={(e) => setPhone1(e.target.value)}
                   id="phoneno"
                   placeholder="Enter Contact Number"
                   type="number"
@@ -1001,9 +848,8 @@ function ShipmentRecords() {
               <FormGroup>
                 <input
                   name="pickuplocation"
-                  // value={pickuplocation}
-                  value={dropLocation}
-                  onChange={(e) => setPickuplocation(e.target.value)}
+                  value={droplocation}
+                  onChange={(e) => setdroplocation(e.target.value)}
                   id="pickuplocation"
                   placeholder="Drop Location"
                   type="text"
@@ -1087,11 +933,14 @@ function ShipmentRecords() {
           <p id="edit-validate-batch" style={{ color: "red" }}></p>
           <Button
             variant="contained"
-            className="main_botton"
             style={{ backgroundColor: "#6A3187" }}
             onClick={saveEditedData}
+
+            disabled={isLoading} // Disable the button while loading
+                    className={`submit-btn btn ${isLoading ? 'btn-disabled' : 'btn-primary'}`}
+
           >
-            Update Shipment List
+                   {isLoading ? <span>Loading...</span> : <span>Update Shipment List</span>}
           </Button>
         </Form>
       </Modal>
@@ -1159,7 +1008,6 @@ function ShipmentRecords() {
                 >
                   <i class="bi bi-search"></i>
                 </span>
-                {/* <input  style={{fontSize:"15px"}} className="form-control me-2 serch-filed" type="search" placeholder="Search By Helper Name" aria-label="Search" onChange={(e)=>setSearch(e.target.value)} /> */}
 
                 <input
                   style={{ fontSize: "15px" }}
@@ -1184,12 +1032,12 @@ function ShipmentRecords() {
 
           <div className="row pt-0">
             <div className="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 "></div>
-            <div class="col p-0">
+            <div className="col p-0">
               <table
-                class="table align-middle bg-white rounded m-0 dwf-shipment-rec"
+                className="table align-middle bg-white rounded m-0 dwf-shipment-rec"
                 id="table-to-xls"
               >
-                <thead class="tableheading">
+                <thead className="tableheading">
                   <tr>
                     <th scope="col">Pickup Details</th>
                     <th scope="col">Delivery Details</th>
@@ -1200,12 +1048,12 @@ function ShipmentRecords() {
                     <th scope="col">Created Date</th>
                     <th scope="col">Task Status</th>
 
-                    <th scope="col" class="borderre1">
+                    <th scope="col" className="borderre1">
                       Action
                     </th>
                   </tr>
                 </thead>
-                <tbody class="tbody">
+                <tbody className="tbody">
                   {filteredData.map((item) => (
                     <tr key={item.id}>
                       <td>
@@ -1229,21 +1077,33 @@ function ShipmentRecords() {
                         {item.pick_up_status === 1 ? (
                           <span
                             className="px-3 py-2 rounded-pill"
-                            style={{ color: "white", background: "orange", fontSize: "12px" }}
+                            style={{
+                              color: "white",
+                              background: "orange",
+                              fontSize: "12px",
+                            }}
                           >
                             ASSIGNED
                           </span>
                         ) : item.pick_up_status === 2 ? (
                           <span
                             className="px-2 py-2 rounded-pill"
-                            style={{ color: "white", background: "blue", fontSize: "12px" }}
+                            style={{
+                              color: "white",
+                              background: "blue",
+                              fontSize: "12px",
+                            }}
                           >
                             INPROGRESS
                           </span>
                         ) : item.pick_up_status === 3 ? (
                           <span
                             className="px-2 py-2 rounded-pill"
-                            style={{ color: "white", background: "green", fontSize: "12px" }}
+                            style={{
+                              color: "white",
+                              background: "green",
+                              fontSize: "12px",
+                            }}
                           >
                             SUCCESSFUL
                           </span>
@@ -1266,7 +1126,7 @@ function ShipmentRecords() {
                         </button>
                         <Link to={`/view/${item.shipment_id}`}>
                           <button className="btn bt">
-                            <i class="bi bi-eye"></i>
+                            <i className="bi bi-eye"></i>
                           </button>
                         </Link>
                       </td>

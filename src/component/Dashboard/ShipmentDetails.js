@@ -6,8 +6,8 @@ import Navbar from "../Navbar";
 import "react-datepicker/dist/react-datepicker.css";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
-import { toast, ToastContainer } from "react-toastify";
-import { Form, FormGroup, Input, Button, Modal, ModalBody } from "reactstrap";
+import { toast } from "react-toastify";
+import { Form, FormGroup, Button, Modal, ModalBody } from "reactstrap";
 import { Link } from "react-router-dom";
 import { DateTime } from "luxon";
 
@@ -22,13 +22,9 @@ async function ContactData(getContact, id) {
 }
 
 function ShipmentDetails() {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [defaultcontact, DefaultgetContact] = useState([]);
-  const [dispatchname, setDispatchName] = useState("");
-  const [discontactnum, setDiscontactnum] = useState("");
   const [searchTerm, setSearchTerm] = useState(""); // Initialize search term as empty
   const [pickUpLocation, setPickUpLocation] = useState(""); // Pick-up Location
-  const [dropLocation, setDropLocation] = useState(""); // Pick-up Location
   const [contact, getContact] = useState([]);
   const [name, setName] = useState("");
   const [data, setData] = useState([]);
@@ -47,12 +43,9 @@ function ShipmentDetails() {
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
   const [selectedHelper1, setSelectedHelper1] = useState("");
-  const [selectedHelper, setSelectedHelper] = useState("");
   const [helpers, setHelpers] = useState([]);
   const [selectedDispatcher, setSelectedDispatcher] = useState("");
   const [selectedDispatcher1, setSelectedDispatcher1] = useState("");
-  const [selectedDispatcher2, setSelectedDispatcher2] = useState("");
-  const [selectedDispatcher3, setSelectedDispatcher3] = useState("");
   const [searchText, setSearchText] = useState(""); // Search text for filtering by customer name
   const [editItem, setEditItem] = useState(null);
   const [selectedCustomerName, setSelectedCustomerName] = useState("");
@@ -76,82 +69,23 @@ function ShipmentDetails() {
   const [dropDate, setDropDate] = useState(""); // Customer Alternate Number
   const [filteredData, setFilteredData] = useState([]); // Filtered data
   const [email, setEmail] = useState("");
-  const [email1, setEmail1] = useState("");
   const [altphone, setAltphone] = useState("");
   const [altphone1, setAltphone1] = useState("");
   const [phone, setPhone] = useState("");
   const [phone1, setPhone1] = useState("");
   const [droplocation, setdroplocation] = useState("");
   const [drop_location, setDrop_Location] = useState("");
-
   const [pickuplocation, setPickuplocation] = useState("");
-  const [pickuplocation1, setPickuplocation1] = useState("");
-  const [pickupdate, setPickupdate] = useState("");
-  const [dropdate, setDropdate] = useState("");
-  const [dropdate1, setDropdate1] = useState("");
-  const [pickupdate1, setPickupdate1] = useState("");
-  const [description, setDescription] = useState("");
-  const [description1, setDescription1] = useState("");
-  const [maplink, setmaplink] = useState("");
-  const [selectedDriver, setSelectedDriver] = useState("");
-  const [selectshipdrop, setSelectshipdrop] = useState("");
-  const [adddescriptiondrop, setAdddescriptiondrop] = useState("");
-  const [adddescriptiondrop1, setAdddescriptiondrop1] = useState("");
-  const [isEditing, setIsEditing] = useState(false); // Track if we are in edit mode
   const [vehicles, setVehicle] = useState([]);
-  const [link, setLink] = useState("");
-  const [link1, setLink1] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [latitude1, setLatitude1] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [longitude1, setLongitude1] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [vehicleDetails, setVehicleDetails] = useState([]);
   const [filteredHelpers1, setFilteredHelpers1] = useState([]);
   const [filteredHelpers2, setFilteredHelpers2] = useState([]);
-  function handleInput(e) {
-    setName(e.target.value);
-  }
   useEffect(() => {
     ContactData(getContact, DefaultgetContact);
   }, []);
   const [drivers, setDrivers] = useState([]);
   const [dispatchers, setDispatchers] = useState([]);
-  const [dispatcherData, setDispatcherData] = useState({
-    id: "",
-    name: "",
-    email: "",
-    phoneno: "",
-    altphone: "",
-  });
-
-  const [dispatcherData1, setDispatcherData1] = useState({
-    id: "",
-    name: "",
-    email: "",
-    phoneno: "",
-    altphone: "",
-  });
-  const [dispatcherData2, setDispatcherData2] = useState({
-    id: "",
-    name: "",
-    email: "",
-    phoneno: "",
-    altphone: "",
-  });
-  const [dispatcherData3, setDispatcherData3] = useState({
-    id: "",
-    name: "",
-    email: "",
-    phoneno: "",
-    altphone: "",
-  });
-  const [vehicleData, setVehicleData] = useState({
-    id: "",
-    name: "",
-    email: "",
-    vehicalplate: "",
-  });
 
   const handleSelectChange1 = async (event) => {
     const selectedOptionValue1 = event.target.value;
@@ -166,14 +100,13 @@ function ShipmentDetails() {
         const selectedDispatcherData1 = response.data;
         console.log("Selected Dispatcher Data 1:", selectedDispatcherData1);
         if (selectedDispatcherData1.length > 0) {
-          const { phoneno, altphone, email, address } = selectedDispatcherData1[0];
-          console.log("Altphone:", selectedDispatcherData1[0].altphone);
-          console.log("Phoneno:", selectedDispatcherData1[0].phoneno);
-          console.log("Address:", selectedDispatcherData1[0].address);
-          setAltphone1(altphone || '');
-          setPhone1(phoneno || '');
-          setCustomerEmail1(email || '');
-          setdroplocation(address || '');
+          const { phoneno, altphone, email, address } =
+            selectedDispatcherData1[0];
+          setAltphone1(altphone || "");
+          setPhone1(phoneno);
+          // setEmail(email || "");
+          setCustomerEmail1(email || "");
+          setdroplocation(address || "");
         } else {
           // Handle the case when no data is returned for the selected name
           console.log("No data found for the selected name");
@@ -294,24 +227,6 @@ function ShipmentDetails() {
       });
   }, []);
 
-  const handleSelectVehicle = async (event) => {
-    const selectedVehicleValue = event.target.value;
-    setSelectedVehicle(selectedVehicleValue);
-    console.log(selectedVehicleValue);
-
-    // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
-    if (selectedVehicleValue) {
-      try {
-        const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/vehicledata/${selectedVehicleValue}`
-        );
-        const selectedVehicleData = response.data;
-        setVehicleData(selectedVehicleData);
-      } catch (error) {
-        console.error("Error fetching selected dispatcher:", error);
-      }
-    }
-  };
 
   useEffect(() => {
     fetchDispatchers();
@@ -362,38 +277,6 @@ function ShipmentDetails() {
     }
   }, [searchTerm, data]);
 
-  const handleSelectChange2 = async (event) => {
-    const selectedOptionValue = event.target.value;
-    setSelectedDispatcher2(selectedOptionValue);
-    console.log(selectedOptionValue);
-
-    if (selectedOptionValue) {
-      try {
-        const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
-        );
-        const selectedDispatcherData2 = response.data;
-        setDispatcherData2(selectedDispatcherData2);
-      } catch (error) {
-        console.error("Error fetching selected dispatcher:", error);
-      }
-    }
-  };
-  const handleSelectChange3 = async (event) => {
-    const selectedOptionValue = event.target.value;
-    setSelectedDispatcher3(selectedOptionValue);
-    if (selectedOptionValue) {
-      try {
-        const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/customerdata/${selectedOptionValue}`
-        );
-        const selectedDispatcherData3 = response.data;
-        setDispatcherData3(selectedDispatcherData3);
-      } catch (error) {
-        console.error("Error fetching selected dispatcher:", error);
-      }
-    }
-  };
 
   const handleSelectChange = async (event) => {
     const selectedOptionValue = event.target.value;
@@ -409,13 +292,15 @@ function ShipmentDetails() {
         console.log("Selected Dispatcher Data:", selectedDispatcherData);
 
         if (selectedDispatcherData.length > 0) {
-          const { phoneno, altphone, email, address } = selectedDispatcherData[0];
+          const { phoneno, altphone, email, address } =
+            selectedDispatcherData[0];
           console.log("Altphone:", selectedDispatcherData[0].altphone);
           console.log("Phoneno:", selectedDispatcherData[0].phoneno);
-          setAltphone(altphone || '');
-          setPhone(phoneno || '');
-          setCustomerEmail(email || '');
-          setCustomerAddress(address || '');
+          setAltphone(altphone || "");
+          setPhone(phoneno || "");
+          // setCustomerEmail(email || "");
+          setEmail(email || "");
+          setCustomerAddress(address || "");
         } else {
           // Handle the case when no data is returned for the selected name
           console.log("No data found for the selected name");
@@ -426,7 +311,6 @@ function ShipmentDetails() {
       }
     }
   };
-
 
   useEffect(() => {
     axios
@@ -470,50 +354,7 @@ function ShipmentDetails() {
     }
   }, [searchTerm, data]);
 
-  const [editData, setEditData] = useState({
-    id: null,
-    driver_id: "",
-    customer_name: "",
-    pick_up_location: "",
-    helper1: "",
-    helper2: "",
-    drop_date: "",
-    vehicleplate: "",
-    pick_up_before: "",
-  });
 
-  const [helperData, setHelperData] = useState({
-    id: "",
-    name: "",
-    email: "",
-    phoneno: "",
-    altphone: "",
-  });
-
-  const handleSelectChange5 = async (event) => {
-    const selectedOptionValue = event.target.value;
-    setSelectedHelper1(selectedOptionValue);
-    console.log(selectedOptionValue);
-
-    if (selectedOptionValue) {
-      try {
-        const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
-        );
-        const selectedHelperData1 = response.data;
-        setHelperData1(selectedHelperData1);
-      } catch (error) {
-        console.error("Error fetching selected dispatcher:", error);
-      }
-    }
-  };
-  const [helperData1, setHelperData1] = useState({
-    id: "",
-    name: "",
-    email: "",
-    phoneno: "",
-    altphone: "",
-  });
 
   useEffect(() => {
     fetchDrivers();
@@ -545,10 +386,6 @@ function ShipmentDetails() {
     }
   };
 
-  const availableHelpersForSelectedHelper1 = helpers.filter(
-    (helper) => !selectedHelper.includes(helper.id)
-  );
-
   useEffect(() => {
     fetchData();
   }, []);
@@ -558,7 +395,6 @@ function ShipmentDetails() {
       .get("https://shipment-backend.onrender.com/api/mergeapidata")
       .then((response) => {
         setCustomerData(response.data);
-        // console.log(data.customer_contact);
         setLoading(false);
       })
       .catch((error) => {
@@ -625,49 +461,26 @@ function ShipmentDetails() {
     });
     FileSaver.saveAs(blob, "Shipment_Details.xlsx");
   };
-
-  const handleSelectChange4 = async (event) => {
-    const selectedOptionValue = event.target.value;
-    setSelectedHelper(selectedOptionValue);
-    console.log(selectedOptionValue);
-
-    // If you want to fetch data only when a specific dispatcher is selected, you can add this condition
-    if (selectedOptionValue) {
-      try {
-        const response = await axios.get(
-          `https://shipment-backend.onrender.com/api/helperdata/${selectedOptionValue}`
-        );
-        const selectedHelperData = response.data;
-        setHelperData(selectedHelperData);
-      } catch (error) {
-        console.error("Error fetching selected dispatcher:", error);
-      }
-    }
-  };
-
-  function editDataItem(customer) {
-    setEditData(customer);
-    setModalIsOpenEdit(true);
-  }
-
   const saveEditedData = () => {
     const updatedData = {
       customer_name: selectedDispatcher,
       customer_contact: phone,
       customer_alt_num: altphone,
-      customer_email: customerEmail, // Add this line for customer email
-      pick_up_location: pickUpLocation,
+      customer_email: email,
+      pick_up_location: customerAddress,
       pick_up_before: pickupDate,
       customer_name2: selectedDispatcher1,
       customer_contact2: phone1,
-      drop_location: dropLocation,
+      drop_location: droplocation,
       drop_date: dropDate,
       helper1: selectedHelper1,
       helper2: selectedHelper2,
       driver_name: selectedDriverId,
       vehicleplate: selectedVehicle,
     };
-
+  
+    setIsLoading(true);
+  
     // Make a PUT request to update the data
     axios
       .put(
@@ -676,8 +489,7 @@ function ShipmentDetails() {
       )
       .then((response) => {
         console.log("Data updated successfully:", response.data);
-
-        
+  
         toast.success("Shipment Details Updated Successfully!", {
           position: "top-right",
           autoClose: 3000,
@@ -690,6 +502,9 @@ function ShipmentDetails() {
       })
       .catch((error) => {
         console.error("Error updating data:", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -698,7 +513,7 @@ function ShipmentDetails() {
     setModalIsOpenEdit(true);
     setSelectedCustomerName(item.customer_name);
     setSelectedCustomerName2(item.customer_name2);
-    setCustomerEmail(item.email)
+    // setEmail(email);
     setSelectedShipmentId(item.shipment_id);
     setSelectedVehicle(item.vehicleplate);
     setSelectedDriverId(item.driver_name);
@@ -709,14 +524,18 @@ function ShipmentDetails() {
     setSelectedDispatcher(item.customer_name);
     setSelectedDispatcher1(item.customer_name2);
     setCustomerContact2(item.customer_contact2);
-    setCustomerContact(selectedCustomer.phone);
+    // setCustomerContact(selectedCustomer.phone);
     setDrop_Location(item.drop_location);
-    // console.log("tww " +selectedCustomer.dropLocation)
-    console.log("tww " +selectedCustomer.address)
     
+    setEmail(item.customer_email);
+    setPhone(item.customer_contact);
+    setAltphone(item.customer_alt_num);
+    setPickuplocation(item.pick_up_location);
+    // setPhone1(item.customer_contact2);
+    // setdroplocation(item.drop_location);
+    // console.log("drop location : " +item.drop_location);
+    console.log("pickup location : " +item.pick_up_location);
     
-    // console.log("2nd "+ item.customer_contact);
-
     const selectedCustomer = data.find(
       (customer) => customer.customer_name === item.customer_name
     );
@@ -724,181 +543,16 @@ function ShipmentDetails() {
     if (selectedCustomer) {
       setCustomerContact(selectedCustomer.phone);
       setCustomerContact2(selectedCustomer.phone1);
-      // setCustomerContact2(selectedCustomer.drop_location);
-      // console.log("3nd "+ selectedCustomer.customer_contact);
       setCustomerAltNum(selectedCustomer.customer_alt_num);
       setPickUpLocation(selectedCustomer.pick_up_location);
-      setAddress(selectedCustomer.address);
-      setCustomerEmail(selectedCustomer.email);
-      setCustomerEmail1(selectedCustomer.email1);
+      // setAddress(selectedCustomer.address);
+      // setCustomerEmail(selectedCustomer.email);
+      // setCustomerEmail1(selectedCustomer.email1);
     }
-  };
-
-  const initialDispatcherData = {
-    phoneno: "",
-    email: "",
-    altphone: "",
-    phone: "",
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    console.log();
-    try {
-      const response = await axios.post(
-        "https://shipment-backend.onrender.com/api/newidshipment",
-        {
-          customer_name: dispatcherData.name,
-          customer_contact: dispatcherData.phoneno,
-          customer_email: dispatcherData.email,
-          customer_alt_num: dispatcherData.altphone,
-          pick_up_location: dispatcherData.address,
-          pick_up_before: pickupdate,
-          drop_date: dropdate,
-          drop_date1: dropdate1,
-          latitude: latitude,
-          longitude: longitude,
-          latitude1: latitude1,
-          longitude1: longitude1,
-          description: description,
-          customer_name2: dispatcherData1.name,
-          customer_contact2: dispatcherData1.phoneno,
-          drop_location: dispatcherData1.address,
-          drop_description: adddescriptiondrop,
-          vehicleplate: selectedVehicle,
-          helper1: helperData.name,
-          helper2: helperData1.name,
-          driver_id: selectedDriver.id,
-          driver_name: selectedDriver.full_name,
-          customer_name1: dispatcherData2.name,
-          customer_contact1: dispatcherData2.phoneno,
-          customer_email1: dispatcherData2.email,
-          customer_alt_num1: dispatcherData2.altphone,
-          pick_up_location1: dispatcherData2.address,
-          pick_up_before1: pickupdate1,
-          description1: description1,
-          customer_name21: dispatcherData3.name,
-          customer_contact21: dispatcherData3.phoneno,
-          drop_location1: dispatcherData3.address,
-          drop_description1: adddescriptiondrop1,
-        }
-      );
-
-      setModalIsOpen(false);
-      toast.success("Shipment successfully created!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-      });
-      setDispatcherData(initialDispatcherData);
-      setName("");
-      setPhone("");
-      setPhone1("");
-      setEmail("");
-      setmaplink("");
-      setAltphone("");
-      setPickuplocation("");
-      setPickupdate("");
-      setDescription("");
-      setDescription1("");
-      setDispatchName("");
-      setDiscontactnum("");
-      setSelectshipdrop("");
-      setAdddescriptiondrop("");
-      setSelectedVehicle("");
-      setSelectedHelper1("");
-      selectedHelper1("");
-      setSelectedHelper2("");
-      setSelectedDriver("");
-      setSelectedDispatcher("");
-      setSelectedDispatcher1("");
-      setSelectedDispatcher2("");
-      setSelectedDispatcher3("");
-      setDropdate("");
-      setDropdate1("");
-      // phoneno("");
-      dispatcherData("");
-      phone("");
-    } catch (error) {
-      console.error("Error submitting data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleLinkChange = (event) => {
-    const newLink = event.target.value;
-    setLink(newLink);
-
-    // Use regular expression to extract latitude and longitude
-    const match = newLink.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-    if (match) {
-      setLatitude(match[1]);
-      setLongitude(match[2]);
-    } else {
-      setLatitude("");
-      setLongitude("");
-    }
-  };
-
-  const handleLinkChange1 = (event) => {
-    const newLink1 = event.target.value;
-    setLink1(newLink1);
-
-    // Use regular expression to extract latitude and longitude
-    const matchs = newLink1.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-    if (matchs) {
-      setLatitude1(matchs[1]);
-      setLongitude1(matchs[2]);
-    } else {
-      setLatitude1("");
-      setLongitude1("");
-    }
-  };
-
-  const availableDispatchersForSelectedDispatcher1 = dispatchers.filter(
-    (dispatcher) => !selectedDispatcher.includes(dispatcher.id)
-  );
-  const availableDispatchersForSelectedDispatcher2 = dispatchers.filter(
-    (dispatcher) =>
-      !selectedDispatcher.includes(dispatcher.id) &&
-      !selectedDispatcher1.includes(dispatcher.id)
-  );
-  const availableDispatchersForSelectedDispatcher3 = dispatchers.filter(
-    (dispatcher) =>
-      !selectedDispatcher.includes(dispatcher.id) &&
-      !selectedDispatcher1.includes(dispatcher.id) &&
-      !selectedDispatcher2.includes(dispatcher.id)
-  );
-
-  const handleEditClick = (customer) => {
-    setEditData({ ...customer });
-    setIsEditing(true);
-    setModalIsOpen(true);
-
-    // Set the selected value for the "Customer Name" dropdown
-    setSelectedDispatcher(customer.customer_name);
-    setSelectedDispatcher1(customer.customer_name2);
-  };
-
-  const handleSaveEdit = () => {
-    setIsEditing(false);
-    setEditData(null);
-    setModalIsOpen(false);
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    setEditData(null);
-    setModalIsOpen(false);
   };
 
   return (
-    <section class="homedive ">
+    <section className="homedive ">
       <Modal
         isOpen={modalIsOpenEdit}
         className="main_modal_body dispatcher-list-form"
@@ -965,7 +619,7 @@ function ShipmentDetails() {
               <FormGroup>
                 <input
                   name="email"
-                  value={customerEmail}
+                  value={email}
                   id="email"
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter Email Address"
@@ -983,6 +637,7 @@ function ShipmentDetails() {
                 <input
                   name="pickuplocation"
                   value={customerAddress}
+                  // onChange={(e) => setPickuplocation(e.target.value)}
                   onChange={(e) => setPickuplocation(e.target.value)}
                   id="pickuplocation"
                   placeholder="Enter Pickup Location"
@@ -1127,11 +782,16 @@ function ShipmentDetails() {
           <p id="edit-validate-batch" style={{ color: "red" }}></p>
           <Button
             variant="contained"
-            className="main_botton"
+            // className="main_botton"
             style={{ backgroundColor: "#6A3187" }}
             onClick={saveEditedData}
+            disabled={isLoading} // Disable the button while loading
+                    className={`submit-btn btn ${isLoading ? 'btn-disabled' : 'btn-primary'}`}
+
           >
-            Update Shipment List
+                   {isLoading ? <span>Loading...</span> : <span>Update Shipment List</span>}
+
+            
           </Button>
         </Form>
       </Modal>
@@ -1168,20 +828,20 @@ function ShipmentDetails() {
         </Form>
       </Modal>
 
-      <div class="rightdiv px-3 py-2">
-        <div class="container-fluid table-header-title">
-          <div class="row">
-            <div class="w-50 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser">
+      <div className="rightdiv px-3 py-2">
+        <div className="container-fluid table-header-title">
+          <div className="row">
+            <div className="w-50 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 nameuser">
               <h2>Shipment Record</h2>
             </div>
-            <div class="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
-              <div class="input-group input-group-lg">
+            <div className="w-50 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+              <div className="input-group input-group-lg">
                 <span
                   style={{ backgroundColor: "#fff" }}
-                  class="input-group-text"
+                  className="input-group-text"
                   id="basic-addon1"
                 >
-                  <i class="bi bi-search"></i>
+                  <i className="bi bi-search"></i>
                 </span>
                 <input
                   style={{ fontSize: "15px" }}
@@ -1222,14 +882,14 @@ function ShipmentDetails() {
                   />
                 </div>
 
-                <div class="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
-                  <div class="input-group input-group-lg">
+                <div className="w-30 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+                  <div className="input-group input-group-lg">
                     <span
                       style={{ backgroundColor: "#fff" }}
-                      class="input-group-text"
+                      className="input-group-text"
                       id="basic-addon1"
                     >
-                      <i class="bi bi-search"></i>
+                      <i className="bi bi-search"></i>
                     </span>
                     <input
                       style={{ fontSize: "15px" }}
@@ -1257,10 +917,10 @@ function ShipmentDetails() {
                 </div>
               </div>
               <table
-                class="table align-middle bg-white rounded m-0"
+                className="table align-middle bg-white rounded m-0"
                 id="table-to-xls"
               >
-                <thead class="tableheading">
+                <thead className="tableheading">
                   <tr>
                     <th scope="col">Pickup Details</th>
                     <th scope="col">Delivery Details</th>
@@ -1270,12 +930,12 @@ function ShipmentDetails() {
                     <th scope="col">Vehicle Plate No.</th>
                     <th scope="col">Created Date</th>
                     <th scope="col">Task Status</th>
-                    <th scope="col" class="borderre1">
+                    <th scope="col" className="borderre1">
                       Action
                     </th>
                   </tr>
                 </thead>
-                <tbody class="tbody">
+                <tbody className="tbody">
                   {filteredData.map((item) => (
                     <tr key={item.id}>
                       <td>
@@ -1339,17 +999,17 @@ function ShipmentDetails() {
                           className="btn btn1"
                           onClick={() => openEditModal(item)}
                         >
-                          <i class="bi bi-pen"></i>
+                          <i className="bi bi-pen"></i>
                         </button>
                         <button
                           className="btn bt"
                           onClick={() => handleDelete(item.shipment_id)}
                         >
-                          <i class="bi bi-trash delete"></i>
+                          <i className="bi bi-trash delete"></i>
                         </button>
                         <Link to={`/view/${item.shipment_id}`}>
                           <button className="btn bt">
-                            <i class="bi bi-eye"></i>
+                            <i className="bi bi-eye"></i>
                           </button>
                         </Link>
                       </td>
