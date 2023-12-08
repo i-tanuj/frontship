@@ -198,7 +198,7 @@ function ShipmentDetails() {
 
   useEffect(() => {
     axios
-      .get("https://shipment-backend.onrender.com/api/mergeapidata")
+      .get("http://localhost:5000/api/mergeapidata")
       .then((response) => {
         setData(response.data);
         const names = response.data.map((item) => item.customer_name);
@@ -314,7 +314,7 @@ function ShipmentDetails() {
 
   useEffect(() => {
     axios
-      .get("https://shipment-backend.onrender.com/api/mergeapidata")
+      .get("http://localhost:5000/api/mergeapidata")
       .then((response) => {
         setData(response.data);
         setFilteredData(response.data);
@@ -392,7 +392,7 @@ function ShipmentDetails() {
 
   const fetchData = () => {
     axios
-      .get("https://shipment-backend.onrender.com/api/mergeapidata")
+      .get("http://localhost:5000/api/mergeapidata")
       .then((response) => {
         setCustomerData(response.data);
         setLoading(false);
@@ -531,9 +531,9 @@ function ShipmentDetails() {
     setPhone(item.customer_contact);
     setAltphone(item.customer_alt_num);
     setPickuplocation(item.pick_up_location);
-    // setPhone1(item.customer_contact2);
-    // setdroplocation(item.drop_location);
-    // console.log("drop location : " +item.drop_location);
+    setPhone1(item.customer_contact2);
+    setdroplocation(item.drop_location);
+    console.log("drop location : " +item.drop_location);
     console.log("pickup location : " +item.pick_up_location);
     
     const selectedCustomer = data.find(

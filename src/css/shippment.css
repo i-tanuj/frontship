@@ -3,6 +3,10 @@
     padding: 10px 10px;
     cursor: pointer;
   }
+  .accordsecond{
+    background-color: rgb(242, 236, 227);
+    border-radius: 02%;
+  }
   
   .btn-primary {
     background-color: #007bff;

@@ -10,12 +10,9 @@ import "react-datepicker/dist/react-datepicker.css";
 
 async function ContactData(getContact, id) {
   await axios
-    .get(
-      "https://shipment-backend.onrender.com/api/creatcustomer",
-      {
-        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-      }
-    )
+    .get("https://shipment-backend.onrender.com/api/creatcustomer", {
+      headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
     .then((res) => {
       getContact(res.data);
     });
@@ -303,14 +300,120 @@ function CreateShipment() {
     // ... other fields
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+  //   console.log();
+  //   try {
+  //       const response = await axios.post(
+  //         "http://localhost:5000/api/newidshipment",
+  //         {
+  //         customer_name: dispatcherData.name,
+  //         customer_contact: dispatcherData.phoneno,
+  //         customer_email: dispatcherData.email,
+  //         customer_alt_num: dispatcherData.altphone,
+  //         pick_up_location: dispatcherData.address,
+  //         pick_up_before: pickupdate,
+  //         drop_date: dropdate,
+  //         drop_date1: dropdate1,
+  //         latitude: latitude,
+  //         longitude: longitude,
+  //         latitude1: latitude1,
+  //         longitude1: longitude1,
+  //         description: description,
+  //         customer_name2: dispatcherData1.name,
+  //         customer_contact2: dispatcherData1.phoneno,
+  //         drop_location: dispatcherData1.address,
+  //         drop_description: adddescriptiondrop,
+  //         vehicleplate: selectedVehicle,
+  //         helper1: helperData.name,
+  //         helper2: helperData1.name,
+  //         driver_id: selectedDriver.id,
+  //         driver_name: selectedDriver.full_name,
+  //         customer_name1: dispatcherData2.name,
+  //         customer_contact1: dispatcherData2.phoneno,
+  //         customer_email1: dispatcherData2.email,
+  //         customer_alt_num1: dispatcherData2.altphone,
+  //         pick_up_location1: dispatcherData2.address,
+  //         pick_up_before1: pickupdate1,
+  //         description1: description1,
+  //         customer_name21: dispatcherData3.name,
+  //         customer_contact21: dispatcherData3.phoneno,
+  //         drop_location1: dispatcherData3.address,
+  //         drop_description1: adddescriptiondrop1,
+  //       }
+  //     );
+
+  //     setModalIsOpen(false);
+  //     toast.success("Shipment successfully created!", {
+  //       position: "top-right",
+  //       autoClose: 3000,
+  //       hideProgressBar: true,
+  //       closeOnClick: true,
+  //       pauseOnHover: false,
+  //       draggable: true,
+  //     });
+  //     setDispatcherData(initialDispatcherData);
+  //     setName("");
+  //     setPhone("");
+  //     setPhone1("");
+  //     setEmail("");
+  //     setmaplink("");
+  //     setAltphone("");
+  //     setPickuplocation("");
+  //     setPickupdate("");
+  //     setDescription("");
+  //     setDescription1("");
+  //     setDispatchName("");
+  //     setDiscontactnum("");
+  //     setSelectshipdrop("");
+  //     setAdddescriptiondrop("");
+  //     setSelectedVehicle("");
+  //     setSelectedHelper1("");
+  //     selectedHelper1("");
+  //     setSelectedHelper2("");
+  //     setSelectedDriver("");
+  //     setSelectedDispatcher("");
+  //     setSelectedDispatcher1("");
+  //     setSelectedDispatcher2("");
+  //     setSelectedDispatcher3("");
+  //     setDropdate("");
+  //     setDropdate1("");
+  //     // phoneno("");
+  //     dispatcherData("");
+  //     phone("");
+  //   } catch (error) {
+  //     console.error("Error submitting data:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const handleLinkChange = (event) => {
+    const newLink = event.target.value;
+    setLink(newLink);
+
+    // Use regular expression to extract latitude and longitude
+    const match = newLink.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (match) {
+      setLatitude(match[1]);
+      setLongitude(match[2]);
+    } else {
+      setLatitude("");
+      setLongitude("");
+    }
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-console.log()
+    console.log();
     try {
-      const response = await axios.post(
-        "https://shipment-backend.onrender.com/api/newidshipment",
-        {
+      let requestData;
+  
+      if (isCheckboxChecked) {
+        requestData = {
           customer_name: dispatcherData.name,
           customer_contact: dispatcherData.phoneno,
           customer_email: dispatcherData.email,
@@ -332,24 +435,63 @@ console.log()
           helper1: helperData.name,
           helper2: helperData1.name,
           driver_id: selectedDriver.id,
-          driver_name : selectedDriver.full_name,
-          customer_name1: dispatcherData2.name,
-          customer_contact1: dispatcherData2.phoneno,
-          customer_email1: dispatcherData2.email,
-          customer_alt_num1: dispatcherData2.altphone,
-          pick_up_location1: dispatcherData2.address,
-          pick_up_before1: pickupdate1,
-          description1: description1,
+          driver_name: selectedDriver.full_name,
+          customer_name1: dispatcherData.name,
+          customer_contact1: dispatcherData.phoneno,
+          customer_email1: dispatcherData.email,
+          customer_alt_num1: dispatcherData.altphone,
+          pick_up_location1: dispatcherData.address,
+          pick_up_before1: pickupdate,
+          description1: description,
           customer_name21: dispatcherData3.name,
           customer_contact21: dispatcherData3.phoneno,
           drop_location1: dispatcherData3.address,
           drop_description1: adddescriptiondrop1,
-        },
-        
-       
-            );
-           
-            setModalIsOpen(false);
+        };
+      } else {
+        requestData = {
+          customer_name: dispatcherData.name,
+                  customer_contact: dispatcherData.phoneno,
+                  customer_email: dispatcherData.email,
+                  customer_alt_num: dispatcherData.altphone,
+                  pick_up_location: dispatcherData.address,
+                  pick_up_before: pickupdate,
+                  drop_date: dropdate,
+                  drop_date1: dropdate1,
+                  latitude: latitude,
+                  longitude: longitude,
+                  latitude1: latitude1,
+                  longitude1: longitude1,
+                  description: description,
+                  customer_name2: dispatcherData1.name,
+                  customer_contact2: dispatcherData1.phoneno,
+                  drop_location: dispatcherData1.address,
+                  drop_description: adddescriptiondrop,
+                  vehicleplate: selectedVehicle,
+                  helper1: helperData.name,
+                  helper2: helperData1.name,
+                  driver_id: selectedDriver.id,
+                  driver_name: selectedDriver.full_name,
+                  customer_name1: dispatcherData2.name,
+                  customer_contact1: dispatcherData2.phoneno,
+                  customer_email1: dispatcherData2.email,
+                  customer_alt_num1: dispatcherData2.altphone,
+                  pick_up_location1: dispatcherData2.address,
+                  pick_up_before1: pickupdate1,
+                  description1: description1,
+                  customer_name21: dispatcherData3.name,
+                  customer_contact21: dispatcherData3.phoneno,
+                  drop_location1: dispatcherData3.address,
+                  drop_description1: adddescriptiondrop1,
+        };
+      }
+  
+      const response = await axios.post(
+        "http://localhost:5000/api/newidshipment",
+        requestData
+      );
+  
+      setModalIsOpen(false);
       toast.success("Shipment successfully created!", {
         position: "top-right",
         autoClose: 3000,
@@ -359,55 +501,40 @@ console.log()
         draggable: true,
       });
       setDispatcherData(initialDispatcherData);
-      setName("");
-      setPhone("");
-      setPhone1("");
-      setEmail("");
-      setmaplink("");
-      setAltphone("");
-      setPickuplocation("");
-      setPickupdate("");
-      setDescription("");
-      setDescription1("");
-      setDispatchName("");
-      setDiscontactnum("");
-      setSelectshipdrop("");
-      setAdddescriptiondrop("");
-      setSelectedVehicle("");
-      setSelectedHelper1("");
-      selectedHelper1("");
-      setSelectedHelper2("");
-      setSelectedDriver("");
-      setSelectedDispatcher("");
-      setSelectedDispatcher1("");
-      setSelectedDispatcher2("");
-      setSelectedDispatcher3("");
-      setDropdate("");
-      setDropdate1("");
-      // phoneno("");
-      dispatcherData("");
-      phone("");
+          setName("");
+          setPhone("");
+          setPhone1("");
+          setEmail("");
+          setmaplink("");
+          setAltphone("");
+          setPickuplocation("");
+          setPickupdate("");
+          setDescription("");
+          setDescription1("");
+          setDispatchName("");
+          setDiscontactnum("");
+          setSelectshipdrop("");
+          setAdddescriptiondrop("");
+          setSelectedVehicle("");
+          setSelectedHelper1("");
+          selectedHelper1("");
+          setSelectedHelper2("");
+          setSelectedDriver("");
+          setSelectedDispatcher("");
+          setSelectedDispatcher1("");
+          setSelectedDispatcher2("");
+          setSelectedDispatcher3("");
+          setDropdate("");
+          setDropdate1("");
+          dispatcherData("");
+          phone("");
     } catch (error) {
       console.error("Error submitting data:", error);
     } finally {
       setIsLoading(false);
     }
   };
-
-  const handleLinkChange = (event) => {
-    const newLink = event.target.value;
-    setLink(newLink);
-
-    // Use regular expression to extract latitude and longitude
-    const match = newLink.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-    if (match) {
-      setLatitude(match[1]);
-      setLongitude(match[2]);
-    } else {
-      setLatitude("");
-      setLongitude("");
-    }
-  };
+  
 
   const handleLinkChange1 = (event) => {
     const newLink1 = event.target.value;
@@ -494,6 +621,37 @@ console.log()
     }
   };
 
+  const [isCheckboxChecked, setCheckboxChecked] = useState(false);
+  const [isCheckboxCheckeds, setCheckboxCheckeds] = useState(false);
+
+  const [fillDetails, setFillDetails] = useState(false);
+  const [fillDetail, setFillDetail] = useState(false);
+
+  const handleCheckboxChange = () => {
+    setFillDetails(!fillDetails);
+    setCheckboxChecked(!isCheckboxChecked);
+    if (!fillDetails) {
+      // console.log("pick" +pick_up_before);
+      // Fetch details from the API when the checkbox is checked
+      ContactData(getContact, DefaultgetContact);
+    } else {
+      // Clear details when the checkbox is unchecked
+      setDispatcherData(initialDispatcherData);
+    }
+  };
+  const handleCheckboxChanges = () => {
+    setFillDetail(!fillDetail);
+    setCheckboxCheckeds(!isCheckboxCheckeds);
+    // if (!fillDetails) {
+    //   // console.log("pick" +pick_up_before);
+    //   // Fetch details from the API when the checkbox is checked
+    //   ContactData(getContact, DefaultgetContact);
+    // } else {
+    //   // Clear details when the checkbox is unchecked
+    //   setDispatcherData(initialDispatcherData);
+    // }
+  };
+
   return (
     <div>
       <Modal
@@ -530,6 +688,8 @@ console.log()
                           <h3 className="text-center pt-2 pb-4">
                             Pickup Details
                           </h3>
+                        
+
                           <div className="row">
                             <div className="mb-4 w-50">
                               <label className="form-label">
@@ -654,6 +814,22 @@ console.log()
                               />
                             </div>
                           </div>
+                          <div className="justify-content-start text-start align-items-center">
+                            <div className="justify-content-start text-start align-items-center">
+                              <label className="form-label">
+                                Check Box
+                                <span className="stra-icon"></span>{" "}
+                              </label>
+                            </div>
+                          </div>
+                        
+
+                              <input
+                              className="justify-content-start text-start align-items-center"
+                              type="checkbox"
+                              checked={fillDetails}
+                              onChange={handleCheckboxChange}
+                            />
                           <h3 className="text-center pt-3 pb-4">
                             Delivery Details
                           </h3>
@@ -765,146 +941,362 @@ console.log()
                               <Accordion.Header>
                                 <div className="plus-icon Another-Location">
                                   {" "}
-                                  <img src="/Assets/dash/plus.png" /> Add
-                                  Another Location
+                                  <img src="/Assets/dash/plus.png" />
+                                  <input type="checkbox" name="" id=""   
+                                   checked={fillDetail}
+                              onChange={handleCheckboxChanges} />
+                                  Add Another Location
                                 </div>
                               </Accordion.Header>
-                              <Accordion.Body>
+                              <Accordion.Body className="accordsecond">
                                 <div className="row">
-                                  <div className="mb-4 w-50">
-                                    <label className="form-label">
-                                      Customer Name
-                                      <span className="stra-icon"></span>
-                                    </label>
+                                  <h3 className="text-center pt-2 pb-4">
+                                    Second Pickup Details
+                                  </h3>
 
-                                    <select
-                                      value={selectedDispatcher2}
-                                      onChange={handleSelectChange2}
-                                      name="customer_name"
-                                      id="customer_name"
-                                    >
-                                      <option value="">Select Customer</option>
-                                      {availableDispatchersForSelectedDispatcher2.map(
-                                        (dispatcher) => (
-                                          <option
-                                            key={dispatcher.id}
-                                            value={dispatcher.id}
-                                            name="customer_name"
-                                            id="customer_name"
-                                          >
-                                            {dispatcher.name}
-                                          </option>
-                                        )
-                                      )}
-                                    </select>
-                                  </div>
+                                  {!isCheckboxCheckeds && (
 
-                                  <div className="mb-4 w-50">
-                                    <label className="form-label">
-                                      Customer Contact Number
-                                      <span className="stra-icon"></span>
-                                    </label>
-                                    <input
-                                      name="phoneno"
-                                      value={dispatcherData2.phoneno}
-                                      onChange={(e) => setPhone(e.target.value)}
-                                      // readOnly
-                                      id="phoneno"
-                                      placeholder="Enter Contact Number"
-                                      type="number"
-                                    />
-                                  </div>
+                                    <div className="mb-4 w-50">
+                                      <label className="form-label">
+                                        Customer Names
+                                        <span className="stra-icon"></span>
+                                      </label>
+                                      <input
+                                          type="text"
+                                          value={
+                                            fillDetails
+                                              ? dispatcherData.name
+                                              : name
+                                          }
+                                          onChange={(e) =>
+                                            fillDetails
+                                              ? setDispatcherData({
+                                                  ...dispatcherData,
+                                                  name: e.target.value,
+                                                })
+                                              : setName(e.target.value)
+                                          }
+                                        />
+                                    </div>
+                                  )}
+                                  {!isCheckboxCheckeds && (
+                               
+                                    <div className="mb-4 w-50">
+                                      <label className="form-label">
+                                        Customer Contact Number
+                                        <span className="stra-icon"></span>
+                                      </label>
+                                      <input
+                                          type="text"
+                                          value={
+                                            fillDetails
+                                              ? dispatcherData.phoneno
+                                              : phone
+                                          }
+                                          onChange={(e) =>
+                                            fillDetails
+                                              ? setDispatcherData({
+                                                  ...dispatcherData,
+                                                  phoneno: e.target.value,
+                                                })
+                                              : setPhone(e.target.value)
+                                          }
+                                        />
+                                    </div>
+                                  )}
+
+                              
                                 </div>
                                 <div className="row">
-                                  <div className="mb-4 w-50">
-                                    <label className="form-label">
-                                      Customer Email Address
-                                      <span className="stra-icon"></span>
-                                    </label>
-                                    <input
-                                      name="email"
-                                      value={dispatcherData2.email}
-                                      id="email"
-                                      // value={email}
-                                      onChange={(e) =>
-                                        setEmail1(e.target.value)
-                                      }
-                                      placeholder="Enter Email Address"
-                                      type="email"
-                                    />
-                                  </div>
-                                  <div className="mb-4 w-50">
-                                    <label className="form-label">
-                                      Customer Alternate Number
-                                      <span className="stra-icon"></span>{" "}
-                                    </label>
-                                    <input
-                                      name="altphone"
-                                      id="altphone"
-                                      value={dispatcherData2.altphone}
-                                      onChange={(e) =>
-                                        setAltphone1(e.target.value)
-                                      }
-                                      placeholder="Enter Alternate Number"
-                                      type="number"
-                                    />
-                                  </div>
+                              
+                                  {!isCheckboxCheckeds && (
+                               
+                                    <div className="mb-4 w-50">
+                                      <label className="form-label">
+                                        Customer Email Address
+                                        <span className="stra-icon"></span>
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={
+                                          fillDetails
+                                            ? dispatcherData.email
+                                            : email1
+                                        }
+                                        onChange={(e) =>
+                                          fillDetails
+                                            ? setDispatcherData({
+                                                ...dispatcherData,
+                                                email: e.target.value,
+                                              })
+                                            : setEmail1(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                    )}
+                                  {!isCheckboxCheckeds && (
+                               
+                           
+                                    <div className="mb-4 w-50">
+                                      <label className="form-label">
+                                        Customer Alternate Number
+                                        <span className="stra-icon"></span>{" "}
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={
+                                          fillDetails
+                                            ? dispatcherData.altphone
+                                            : altphone1
+                                        }
+                                        onChange={(e) =>
+                                          fillDetails
+                                            ? setDispatcherData({
+                                                ...dispatcherData,
+                                                altphone: e.target.value,
+                                              })
+                                            : setAltphone(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                  )}
+                             
                                 </div>
                                 <div className="row">
-                                  <div className="mb-4 w-50">
-                                    <label className="form-label">
-                                      Pick up Location
-                                      <span className="stra-icon"></span>
-                                    </label>
-                                    <input
-                                      name="pickuplocation"
-                                      value={dispatcherData2.address}
-                                      onChange={(e) =>
-                                        setPickuplocation1(e.target.value)
-                                      }
-                                      id="pickuplocation"
-                                      placeholder="Enter Pickup Location"
-                                      type="text"
-                                    />
-                                  </div>
-                                  <div className="mb-4 w-50">
-                                    <label className="form-label">
-                                      Pick up Before
-                                      <span className="stra-icon"></span>{" "}
-                                    </label>
-                                    <input
-                                      name="pickupdate"
-                                      value={pickupdate1}
-                                      onChange={(e) =>
-                                        setPickupdate1(e.target.value)
-                                      }
-                                      id="pickupdate"
-                                      placeholder="Drop Location"
-                                      type="datetime-local"
-                                    />
-                                  </div>
+                               
+                                  {!isCheckboxCheckeds && (
+                               
+                                    <div className="mb-4 w-50">
+                                      <label className="form-label">
+                                        Pick up Location
+                                        <span className="stra-icon"></span>
+                                      </label>
+
+                                      <input
+                                        type="text"
+                                        value={
+                                          fillDetails
+                                            ? dispatcherData.address
+                                            : pickuplocation1
+                                        }
+                                        onChange={(e) =>
+                                          fillDetails
+                                            ? setDispatcherData({
+                                                ...dispatcherData,
+                                                address: e.target.value,
+                                              })
+                                            : setPickuplocation(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                    )}
+                                  {!isCheckboxCheckeds && (
+                               
+                            
+                                    <div className="mb-4 w-50">
+                                      <label className="form-label">
+                                        Pick up Before
+                                        <span className="stra-icon"></span>{" "}
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={
+                                          fillDetails
+                                            ? dispatcherData.pickupdate
+                                            : pickupdate
+                                        }
+                                        onChange={(e) =>
+                                          fillDetails
+                                            ? setDispatcherData({
+                                                ...dispatcherData,
+                                                pickupdate: e.target.value,
+                                              })
+                                            : setPickupdate(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                  )}
+                                  
                                 </div>
                                 <div className="row">
-                                  <div className="mb-4 w-100">
-                                    <label className="form-label">
-                                      Add Description
-                                      <span className="stra-icon"></span>{" "}
-                                    </label>
-                                    <input
-                                      className="p-3"
-                                      name="description1"
-                                      onChange={(e) =>
-                                        setDescription1(e.target.value)
-                                      }
-                                      value={description1}
-                                      id="description"
-                                      placeholder="Description"
-                                      type="text"
-                                    />
-                                  </div>
+                           
+                                  {!isCheckboxCheckeds && (
+                               
+                                    <div className="mb-4 w-100">
+                                      <label className="form-label">
+                                        Add Description
+                                        <span className="stra-icon"></span>{" "}
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={
+                                          fillDetails
+                                            ? dispatcherData.description
+                                            : description
+                                        }
+                                        onChange={(e) =>
+                                          fillDetails
+                                            ? setDispatcherData({
+                                                ...dispatcherData,
+                                                description: e.target.value,
+                                              })
+                                            : setDescription(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                  )}
+
+                                  {!isCheckboxChecked && (
+                                    <div className="mb-4 w-50">
+                                      <label className="form-label">
+                                        Customer Name
+                                        <span className="stra-icon"></span>
+                                      </label>
+
+                                      <select
+                                        value={selectedDispatcher2}
+                                        onChange={handleSelectChange2}
+                                        name="customer_name"
+                                        id="customer_name"
+                                      >
+                                        <option value="">
+                                          Select Customer
+                                        </option>
+                                        {availableDispatchersForSelectedDispatcher2.map(
+                                          (dispatcher) => (
+                                            <option
+                                              key={dispatcher.id}
+                                              value={dispatcher.id}
+                                              name="customer_name"
+                                              id="customer_name"
+                                            >
+                                              {dispatcher.name}
+                                            </option>
+                                          )
+                                        )}
+                                      </select>
+                                    </div>
+                                  )}
+                                  {!isCheckboxChecked && (
+                                    <div className="mb-4 w-50">
+                                      <label className="form-label">
+                                        Customer Contact Number
+                                        <span className="stra-icon"></span>
+                                      </label>
+                                      <input
+                                        name="phoneno"
+                                        value={dispatcherData2.phoneno}
+                                        onChange={(e) =>
+                                          setPhone(e.target.value)
+                                        }
+                                        id="phoneno"
+                                        placeholder="Enter Contact Number"
+                                        type="number"
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="row">
+                                  {!isCheckboxChecked && (
+                                    <div className="mb-4 w-50">
+                                      <label className="form-label">
+                                        Customer Email Address
+                                        <span className="stra-icon"></span>
+                                      </label>
+                                      <input
+                                        name="email"
+                                        value={dispatcherData2.email}
+                                        id="email"
+                                        // value={email}
+                                        onChange={(e) =>
+                                          setEmail1(e.target.value)
+                                        }
+                                        placeholder="Enter Email Address"
+                                        type="email"
+                                      />
+                                    </div>
+                                  )}
+                                  {!isCheckboxChecked && (
+                                    <div className="mb-4 w-50">
+                                      <label className="form-label">
+                                        Customer Alternate Number
+                                        <span className="stra-icon"></span>{" "}
+                                      </label>
+                                      <input
+                                        name="altphone"
+                                        id="altphone"
+                                        value={dispatcherData2.altphone}
+                                        onChange={(e) =>
+                                          setAltphone1(e.target.value)
+                                        }
+                                        placeholder="Enter Alternate Number"
+                                        type="number"
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="row">
+                                  {!isCheckboxChecked && (
+                                    <div className="mb-4 w-50">
+                                      <label className="form-label">
+                                        Pick up Location
+                                        <span className="stra-icon"></span>
+                                      </label>
+
+                                      <input
+                                        name="pickuplocation"
+                                        value={dispatcherData2.address}
+                                        onChange={(e) =>
+                                          setPickuplocation1(e.target.value)
+                                        }
+                                        id="pickuplocation"
+                                        placeholder="Enter Pickup Location"
+                                        type="text"
+                                      />
+                                    </div>
+                                  )}
+                                  {!isCheckboxChecked && (
+                                    <div className="mb-4 w-50">
+                                      <label className="form-label">
+                                        Pick up Before
+                                        <span className="stra-icon"></span>{" "}
+                                      </label>
+                                      <input
+                                        name="pickupdate"
+                                        value={pickupdate1}
+                                        onChange={(e) =>
+                                          setPickupdate1(e.target.value)
+                                        }
+                                        id="pickupdate"
+                                        placeholder="Drop Location"
+                                        type="datetime-local"
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="row">
+                                  {!isCheckboxChecked && (
+                                    <div className="mb-4 w-100">
+                                      <label className="form-label">
+                                        Add Description
+                                        <span className="stra-icon"></span>{" "}
+                                      </label>
+                                      <input
+                                        className="p-3"
+                                        name="description1"
+                                        onChange={(e) =>
+                                          setDescription1(e.target.value)
+                                        }
+                                        value={description1}
+                                        id="description"
+                                        placeholder="Description"
+                                        type="text"
+                                      />
+                                    </div>
+                                  )}
                                 </div>
                                 <h3 className="text-center pt-3 pb-4">
-                                  Delivery Details
+                                  Second Delivery Details
                                 </h3>
 
                                 <div className="row">
@@ -1038,7 +1430,10 @@ console.log()
                               >
                                 <option value="">Select a Vehicle</option>
                                 {vehicleDetails.map((vehicle) => (
-                                  <option key={vehicle.id} value={vehicle.vehicalplate}>
+                                  <option
+                                    key={vehicle.id}
+                                    value={vehicle.vehicalplate}
+                                  >
                                     {vehicle.name} - {vehicle.model}
                                   </option>
                                 ))}
@@ -1052,22 +1447,21 @@ console.log()
 
                               <select
                                 value={JSON.stringify(selectedDriver)}
-                                onChange={(e) =>
-                                 {
-                                  setSelectedDriver(JSON.parse(e.target.value))
+                                onChange={(e) => {
+                                  setSelectedDriver(JSON.parse(e.target.value));
                                   console.log(e.target.value);
-                                 }
-                                }
+                                }}
                               >
                                 <option value="">Select Driver</option>
                                 {drivers.map((driver) => (
-                                  <option key={driver.id} value={JSON.stringify(driver)}>
+                                  <option
+                                    key={driver.id}
+                                    value={JSON.stringify(driver)}
+                                  >
                                     {driver.full_name}
                                   </option>
                                 ))}
                               </select>
-                            
-                             
                             </div>
                           </div>
                           <div className="row">
@@ -1106,8 +1500,6 @@ console.log()
                                   )
                                 )}
                               </select>
-
-                          
                             </div>
                           </div>
 
@@ -1139,11 +1531,6 @@ console.log()
                       <div></div>
                     </div>
                   </div>
-                  {/* <div className="form-map-section">
-                    <div>
-                      <img src="assets/dashboard/map-img.png" alt="" />
-                    </div>
-                  </div> */}
                 </div>
               </div>
             </div>
