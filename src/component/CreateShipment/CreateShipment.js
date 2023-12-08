@@ -306,7 +306,7 @@ function CreateShipment() {
   //   console.log();
   //   try {
   //       const response = await axios.post(
-  //         "http://localhost:5000/api/newidshipment",
+  //         "https://shipment-backend.onrender.com/api/newidshipment",
   //         {
   //         customer_name: dispatcherData.name,
   //         customer_contact: dispatcherData.phoneno,
@@ -487,7 +487,7 @@ function CreateShipment() {
       }
   
       const response = await axios.post(
-        "http://localhost:5000/api/newidshipment",
+        "https://shipment-backend.onrender.com/api/newidshipment",
         requestData
       );
   
