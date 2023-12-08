@@ -327,3 +327,33 @@ span.stra-icon {
 input::placeholder{
     color: #6B7DB1;
 }
+.checkbox-new-add-d-from{
+    padding-left: 5px;
+}
+.checkbox-new-add-d-from input {
+    width: auto;
+    margin-right: 10px;
+    transform: scale(1.3);
+}
+.checkbox-add-form input {
+    width: auto;
+    margin-right: 10px;
+    transform: scale(2.0);
+}
+.checkbox-add-form input:after {
+    content: '';
+    background-color: #1b2644;
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 29px;
+    height: 29px;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAEfSURBVHgB7ZgxbsIwFIZ/J23VqnRo1S5dGbp1YmThEtwELsE1uAcLI1eAkSkSAyCkIBT+pzwYTJBiRcEB+ZN+W36K5F9P78mxDZQsyyJO31RLVSc7KjHGrE4BoyaeObWpF9yWlJrT0D7SgA8T0D3bTEQcc/jk4gv+iKlzXfjmXYy8wT+tCA0hGLF5KCN/VA8VeUJ1hlRGTVCBUCM2jTHiWiNSmB9WTH4Z5BTvWPGlqhSGh94/yjMtMHKNNdUt+a1zRvrUrxUb6DzCpZHSuBopSvcGefvOUIHQNTZ3275FjOHQptdwbd/aCDViE4zYNMrIBv7ZiZEt/JOIkQT5rdwXqTxPRBwOXCw8mUl17/x95IS+DPxQr6gXKQepzUQTgSMKLTzsdAqHJAAAAABJRU5ErkJggg==);
+    background-size: cover;
+    border-radius: 6px;
+    transform: scale(.7);
+}
+.addspan{
+    display: inline-block;
+    margin-left: 20px;
+}

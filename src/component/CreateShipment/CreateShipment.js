@@ -815,21 +815,22 @@ function CreateShipment() {
                             </div>
                           </div>
                           <div className="justify-content-start text-start align-items-center">
-                            <div className="justify-content-start text-start align-items-center">
-                              <label className="form-label">
-                                Check Box
-                                <span className="stra-icon"></span>{" "}
-                              </label>
-                            </div>
-                          </div>
-                        
-
+                            <div className="checkbox-new-add-d-from justify-content-start text-start align-items-center">
                               <input
                               className="justify-content-start text-start align-items-center"
                               type="checkbox"
                               checked={fillDetails}
                               onChange={handleCheckboxChange}
                             />
+                              <label className="form-label">
+                                Same Pickup for both delivery
+                                <span className="stra-icon"></span>{" "}
+                              </label>
+                            </div>
+                          </div>
+                        
+
+                              
                           <h3 className="text-center pt-3 pb-4">
                             Delivery Details
                           </h3>
@@ -939,14 +940,24 @@ function CreateShipment() {
                           <Accordion>
                             <Accordion.Item eventKey="0">
                               <Accordion.Header>
-                                <div className="plus-icon Another-Location">
+
+
+                                <div className="checkbox-add-form">
                                   {" "}
-                                  <img src="/Assets/dash/plus.png" />
-                                  <input type="checkbox" name="" id=""   
+                                  {/* <img src="/Assets/dash/plus.png" /> */}
+                                  <input className="" type="checkbox" name="" id=""   
                                    checked={fillDetail}
                               onChange={handleCheckboxChanges} />
+                                <span className="addspan">
+
                                   Add Another Location
+                                </span>
                                 </div>
+
+
+
+
+
                               </Accordion.Header>
                               <Accordion.Body className="accordsecond">
                                 <div className="row">
